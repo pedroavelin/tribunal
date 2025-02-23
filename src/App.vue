@@ -1,30 +1,38 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-</script>
-
 <template>
-  <RouterView />
+  <v-app id="inspire"><router-view /></v-app>
 </template>
 
 <style>
-/* Estiliza a barra de rolagem para toda a aplicação */
-::-webkit-scrollbar-track {
-  background-color: rgba(199, 202, 202, 0.445);	
-}
+/* ===== Scrollbar CSS ===== */
+  /* Firefox */
+  * {
+    scrollbar-width: none;
+    scrollbar-color: #011d60 #057eff;
+  }
 
-::-webkit-scrollbar {
-  width: 9px;
-  background-color: #F5F5F5;
-}
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 16px;
+  }
 
-::-webkit-scrollbar-thumb {
-  border-radius: 0px;
-  background-image: -webkit-gradient(linear,
-									   left bottom,
-									   left top,
-									   color-stop(0.44, rgb(122,153,217)),
-									   color-stop(0.72, rgb(73,125,189)),
-									   color-stop(0.86, rgb(28,58,148)));
-}
+  *::-webkit-scrollbar-track {
+    background: #057eff;
+  }
 
+  *::-webkit-scrollbar-thumb {
+    background-color: #011d60;
+    border-radius: 10px;
+    border: 3px solid #ffffff;
+  }
+  .bg-gradient{
+    background-color: #1746a2!important;
+    background-image: linear-gradient(72deg, rgb(11 33 66 / 0%) 22%, #6085be 56%, #00bdb600 86%, #fff) !important;
+    color: #fff!important;
+  }
+  .card-process{
+    color: #fff!important;
+    background-image: url('@/assets/processo.png'); /* Caminho da imagem */
+    background-size: cover;  /* Garante que a imagem cubra o card */
+    background-repeat: no-repeat;  /* Evita repetição da imagem */
+  }
 </style>
