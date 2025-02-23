@@ -2,7 +2,6 @@
    <AppBar/>
    <NavigationDrawer/>
   <v-main class="style-1">
-    <v-img class="img-background" cover gradient="to top right, rgba(1,1,2,.1),  rgba(2,3,1,.1)" src="@/assets/bagImg.jpg"/>
     <div class="content-container-process">
       <ListProcess />
     </div>
@@ -10,8 +9,7 @@
 
   <!-- Modal para Adicionar Processo -->
   <v-dialog transition="dialog-top-transition" v-model="modalAddProcesso" max-width="756px" persistent>
-    <v-card  color="border-0" subtitle="Preencha os campos abaixo para adicionar um novo processo"
-      prepend-icon="mdi-folder-open">
+    <v-card  color="border-0" subtitle="Preencha os campos abaixo para adicionar um novo processo" prepend-icon="mdi-folder-open">
       <v-card-text>
         <!-- Lista dinâmica -->
         <v-row class="mb-0" no-gutters>
