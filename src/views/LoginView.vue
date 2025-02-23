@@ -18,13 +18,13 @@
     <form action="index.html">
       <div class="form-group mb10">
         <div class="input-group">
-          <span class="input-group-addon"><i class="material-icons">person</i></span>
+          <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
           <input type="text" class="form-control" placeholder="Digite o seu nome">
         </div>
       </div>
       <div class="form-group nomargin">
         <div class="input-group">
-          <span class="input-group-addon"><i class="material-icons">lock</i></span>
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
           <input type="text" class="form-control" placeholder="Digite a sua senha">
         </div>
       </div>
