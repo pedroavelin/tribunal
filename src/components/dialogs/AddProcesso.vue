@@ -23,44 +23,48 @@ const cols = computed(() => {
               <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Número" density="compact"/></v-sheet></v-col>
               <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Ano" density="compact" /></v-sheet></v-col>
             </v-row>
-            <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="2" clearable></v-textarea>
+            <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="1" clearable></v-textarea>
 
             <v-list>
               <div class="d-flex justify-space-between">
                 <div class=""><span class="text-caption mx-4">Arguido(s)</span></div>
-                <div class=""><span class="text-caption"> Adicionar arguido </span></div>
+                <div class=""><span class="text-caption"> Adicionar </span></div>
               </div>
-              <v-card class="overflow-y-auto text-caption" elevation="0" max-height="275">
-                <div>
+              <v-card class="overflow-y-auto text-caption" elevation="0" max-height="175">
+              <div>
                   <v-list-item class="p-0 mb-0" :key="i">
                     <v-list-item-title class="border">
-                      <v-row no-gutters class="mt-1">
-                        <v-col cols="11">
+                      <v-row no-gutters>
+                        <v-col cols="10">
                           <v-text-field class="text-caption mx-1" label="Nome" density="compact" />
                         </v-col>
-                        <v-col cols="1">
+                        <v-col cols="2">
                           <div class="mt-1">
-                            <v-btn density="compact" variant="elevated" class="text-caption mx-1" color="red"
+                            <v-btn density="compact" variant="tonal" class="text-caption mx-1" color="red"
                               icon="mdi-delete"></v-btn>
                           </div>
                         </v-col>
                       </v-row>
-                      <v-row no-gutters class="mx-1">
-                        <v-col cols="4">
+                      <v-row no-gutters>
+                        <v-col :cols="cols[1]">
                           <v-text-field class="text-caption mx-1" label="Julgamento" density="compact" />
                         </v-col>
-                        <v-col cols="4">
+                        <v-col :cols="cols[1]">
                           <v-text-field class="text-caption mx-1" label="Estado" density="compact" />
                         </v-col>
-                        <v-col cols="4">
+                      </v-row>
+                      <v-row no-gutters>
+                        <v-col :cols="[0]">
                           <v-text-field class="text-caption" label="Pena" density="compact" />
                         </v-col>
-                        <v-textarea clear-icon="mdi-close-circle" label="Descrição" rows="1" clearable></v-textarea>
+                        <v-col :cols="[0]">
+                          <v-textarea class="mx-1" clear-icon="mdi-close-circle" label="Descrição" rows="1" clearable></v-textarea>
+                        </v-col>
                       </v-row>
                     </v-list-item-title>
                   </v-list-item>
                 </div>
-                <div >
+                <!-- <div>
                   <v-card color="" height="300">
                     <div class="text-center">
                       <div class="mt-5">
@@ -71,20 +75,19 @@ const cols = computed(() => {
                       </div>
                     </div>
                   </v-card>
-                </div>
+                </div> -->
               </v-card>
             </v-list>
         <!-- Lista dinâmica -->
+        <div class="d-flex justify-end">
+          <div class="">
+            <v-btn @click="modalStore.closseModal()" class="text-caption" text="Fechar" variant="flat" color="red" density="compact" rounded="0"></v-btn>
+          </div>
+          <div class="">
+            <v-btn class="text-caption" text="Salvar" variant="flat" color="success" density="compact" rounded="0"></v-btn>
+          </div>
+        </div>
       </v-card-text>
-      <v-divider></v-divider>
-      <div class="d-flex justify-end">
-        <div class="">
-          <v-btn @click="modalStore.closseModal()" class="text-caption" text="Fechar" variant="flat" color="red" density="compact" rounded="0"></v-btn>
-        </div>
-        <div class="">
-          <v-btn class="text-caption" text="Salvar" variant="flat" color="success" density="compact" rounded="0"></v-btn>
-        </div>
-      </div>
     </v-card>
   </v-dialog>
 </template>
