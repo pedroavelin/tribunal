@@ -61,7 +61,7 @@ import { useModalStore } from '@/stores/modalStore';
                       <div class="mt-5">
                         <span class="text-h6">Nenhum arguido adicionado ao <br> processo</span>
                         <div class="">
-                          <v-btn v-model="modalStore.closseModal" class="text-caption" text="ADICIONAR" variant="flat" color="success" density="compact" rounded="0"></v-btn>
+                          <v-btn class="text-caption" text="ADICIONAR" variant="flat" color="success" density="compact" rounded="0"></v-btn>
                         </div>
                       </div>
                     </div>
@@ -76,7 +76,7 @@ import { useModalStore } from '@/stores/modalStore';
       <v-divider></v-divider>
       <div class="d-flex justify-end">
         <div class="">
-          <v-btn v-model="modalStore.closseModal" class="text-caption" text="Fechar" variant="flat" color="red" density="compact" rounded="0"></v-btn>
+          <v-btn @click="modalStore.closseModal()" class="text-caption" text="Fechar" variant="flat" color="red" density="compact" rounded="0"></v-btn>
         </div>
         <div class="">
           <v-btn class="text-caption" text="Salvar" variant="flat" color="success" density="compact" rounded="0"></v-btn>
