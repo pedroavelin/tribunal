@@ -1,23 +1,29 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { useDisplay } from 'vuetify';
 import { useModalStore } from '@/stores/modalStore';
 
-  const modalStore = useModalStore();
+const modalStore = useModalStore();
+const display = useDisplay();
 
+const cols = computed(() => {
+  return display.lg.value ? [6, 6]
+    : display.sm.value ? [6, 6]
+    : display.md.value ? [6, 6]
+      : [6, 6];
+});
 </script>
+
 <template>
     <v-dialog v-model="modalStore.isOpen" transition="dialog-top-transition" max-width="756px" persistent>
     <v-card  color="border-0" subtitle="Novo processo" prepend-icon="mdi-folder-open">
       <v-card-text>
         <!-- Lista dinâmica -->
-        <v-row class="mb-0" no-gutters>
-          <v-col>
-              <div class="d-flex">
-                <div><v-text-field class="text-caption" label="Número do processo" density="compact"/></div>
-                <div><v-text-field class="text-caption" label="Ano" density="compact" /></div>
-              </div>
-              <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="2" clearable></v-textarea>
-          </v-col>
+            <v-row no-gutters>
+              <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Número" density="compact"/></v-sheet></v-col>
+              <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Ano" density="compact" /></v-sheet></v-col>
+            </v-row>
+            <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="2" clearable></v-textarea>
 
             <v-list>
               <div class="d-flex justify-space-between">
@@ -68,7 +74,6 @@ import { useModalStore } from '@/stores/modalStore';
                 </div>
               </v-card>
             </v-list>
-        </v-row>
         <!-- Lista dinâmica -->
       </v-card-text>
       <v-divider></v-divider>
