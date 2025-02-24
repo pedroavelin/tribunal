@@ -16,15 +16,14 @@ const cols = computed(() => {
 
 <template>
     <v-dialog v-model="modalStore.isOpen" transition="dialog-top-transition" max-width="756px" persistent>
-    <v-card  color="border-0" subtitle="Novo processo" prepend-icon="mdi-folder-open">
+    <v-card  color="border-0" subtitle="Novo processo [Letra - CD]" prepend-icon="mdi-folder-open">
       <v-card-text>
         <!-- Lista dinâmica -->
             <v-row no-gutters>
               <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Número" density="compact"/></v-sheet></v-col>
               <v-col :cols="cols[0]"><v-sheet class="pa-1"><v-text-field class="text-caption" label="Ano" density="compact" /></v-sheet></v-col>
             </v-row>
-            <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="1" clearable></v-textarea>
-
+            <v-text-field class="text-caption ma-0 pa-0" label="Crime" density="compact" />
             <v-list>
               <div class="d-flex justify-space-between">
                 <div class=""><span class="text-caption mx-4">Arguido(s)</span></div>
@@ -33,7 +32,7 @@ const cols = computed(() => {
               <v-card class="overflow-y-auto text-caption" elevation="0" max-height="175">
               <div>
                   <v-list-item class="p-0 mb-0" :key="i">
-                    <v-list-item-title class="border">
+                    <v-list-item-title>
                       <v-row no-gutters>
                         <v-col cols="10">
                           <v-text-field class="text-caption mx-1" label="Nome" density="compact" />
