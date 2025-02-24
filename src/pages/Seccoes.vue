@@ -10,7 +10,6 @@ const seccaoStore = useSeccaoStore();
 onMounted(() => {
   seccaoStore.listarSeccao();
 });
-
 </script>
 
 <template>
@@ -21,7 +20,7 @@ onMounted(() => {
     <h1 v-else-if="seccaoStore.erro">{{ seccaoStore.erro }}</h1>
     <v-container fluid>
       <v-row>
-        <v-col v-for="(item, index) in seccaoStore.seccao" :key="index" cols="2" >
+        <v-col v-for="(item, index) in seccaoStore.seccao" :key="index" class="col-sm-2 col-md-3 col-lg-3">
           <v-card  class="mx-auto" max-width="250" elevation="10" height="260">
             <v-img class="align-end text-white" height="200" gradient="to top right, rgba(100,111,112,.900),  rgba(2,3,1,.1)" src="@/assets/imgSeccao.webp" cover>
               <v-card-title>15ª Secção</v-card-title>

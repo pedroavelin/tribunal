@@ -5,11 +5,11 @@ const drawerStore  = useDrawerStore();
 </script>
 
 <template>
- <v-app-bar class="bg-gradient" density="compact" elevation="10">
+ <v-app-bar color="indigo" density="compact" elevation="10">
     <v-app-bar-nav-icon @click="drawerStore.toggleDrawer()"></v-app-bar-nav-icon>
-    <v-app-bar-title>PLANETAs</v-app-bar-title>
+    <v-app-bar-title>LOGO</v-app-bar-title>
 
-    <v-combobox prepend-inner-icon="mdi-magnify"  :items="['101', '312', '413', '114', '65', '216']" density="compact" label="Pesquisar processo ..." class="mt-5 text-caption"></v-combobox>
+    <!-- <v-combobox prepend-inner-icon="mdi-magnify"  :items="['101', '312', '413', '114', '65', '216']" density="compact" label="Pesquisar processo ..." class="mt-5 text-caption"></v-combobox> -->
     <v-spacer></v-spacer>
 
     <v-sheet class="" max-height="210">
