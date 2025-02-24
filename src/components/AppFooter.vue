@@ -1,5 +1,5 @@
 <template>
-  <v-footer elevation="16" v-if="route.name !== '/'" height="40" app color="indigo">
+  <v-footer elevation="16" v-if="route.name !== '/'" height="40" app color="light-blue-darken-4">
     <v-badge dot color="success">
       <v-icon icon="mdi-account" class="mx-1"></v-icon>
     </v-badge>
