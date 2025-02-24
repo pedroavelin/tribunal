@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { useDrawerStore } from '@/stores/useDrawerStore';
+import { useModalStore } from '@/stores/modalStore';
 
 const drawerStore  = useDrawerStore();
+const modalStore = useModalStore();
+
 </script>
 
 <template>
@@ -15,7 +18,7 @@ const drawerStore  = useDrawerStore();
       <div class="row">
         <div class="text-center">
           <div class="bg-success btn-add-processo">
-            <v-btn elevation="0" density="compact" class="text-caption" rounded="0">Novo Processo</v-btn>
+            <v-btn @click="modalStore.openModal" elevation="0" density="compact" class="text-caption" rounded="0">Novo Processo</v-btn>
           </div>
           <div>
             <v-btn density="compact" class="text-caption border-0" color="red" rounded="0" variant="flat">Preso(100)</v-btn>
