@@ -7,27 +7,26 @@ import { useModalStore } from '@/stores/modalStore';
 </script>
 <template>
     <v-dialog v-model="modalStore.isOpen" transition="dialog-top-transition" max-width="756px" persistent>
-    <v-card  color="border-0" subtitle="Preencha os campos abaixo para adicionar um novo processo" prepend-icon="mdi-folder-open">
+    <v-card  color="border-0" subtitle="Novo processo" prepend-icon="mdi-folder-open">
       <v-card-text>
         <!-- Lista dinâmica -->
         <v-row class="mb-0" no-gutters>
-          <v-col cols="4">
-            <v-card elevation="0">
-              <v-text-field class="text-caption" label="Número do processo" density="compact" />
-              <v-text-field class="text-caption" label="Ano" density="compact" />
-              <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="6" clearable></v-textarea>
-            </v-card>
+          <v-col>
+              <div class="d-flex">
+                <div><v-text-field class="text-caption" label="Número do processo" density="compact"/></div>
+                <div><v-text-field class="text-caption" label="Ano" density="compact" /></div>
+              </div>
+              <v-textarea clear-icon="mdi-close-circle" label="Crime" rows="2" clearable></v-textarea>
           </v-col>
 
-          <v-col cols="8">
             <v-list>
               <div class="d-flex justify-space-between">
                 <div class=""><span class="text-caption mx-4">Arguido(s)</span></div>
                 <div class=""><span class="text-caption"> Adicionar arguido </span></div>
               </div>
               <v-card class="overflow-y-auto text-caption" elevation="0" max-height="275">
-                <div style="display: none;">
-                  <v-list-item class="p-0 mb-0" v-for="i in 2" :key="i">
+                <div>
+                  <v-list-item class="p-0 mb-0" :key="i">
                     <v-list-item-title class="border">
                       <v-row no-gutters class="mt-1">
                         <v-col cols="11">
@@ -69,7 +68,6 @@ import { useModalStore } from '@/stores/modalStore';
                 </div>
               </v-card>
             </v-list>
-          </v-col>
         </v-row>
         <!-- Lista dinâmica -->
       </v-card-text>
