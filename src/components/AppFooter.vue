@@ -4,13 +4,26 @@
       <v-icon icon="mdi-account" class="mx-1"></v-icon>
     </v-badge>
 
-    <router-link to="/perfil" class="text-decoration-none mx-3 text-white" href="#!" rel="noopener noreferrer">
-      <span v-if="auth.isAuthenticated()">
-        <p> {{ auth.fullName }}</p>
-      </span>
-      </router-link>
-    <div
-      class="text-caption text-disabled" style="position: absolute; right: 16px;">
+    <v-menu ref="menu" transition="scale-transition" v-model="menuOpen">
+      <template v-slot:activator="{ props }">
+          <span v-bind="props" class="text-decoration-none mx-3 text-white">
+            <p @click="closeMenu">{{ auth.fullName }}</p>
+          </span>
+      </template>
+
+      <v-list>
+        <v-list-item @click="goToPerfil">
+          <v-list-item-title class="text-caption">Meu Perfil</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item @click="logout">
+          <v-list-item-title class="text-caption">Sair</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+
+    <div class="text-caption text-disabled" style="position: absolute; right: 16px;">
       <div class="text-white">{{ (new Date()).getFullYear() }}</div>
     </div>
   </v-footer>
@@ -18,12 +31,26 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { useAuth } from '@/stores/auth.js'
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const auth = useAuth();
 const route = useRoute();
+const menuOpen = ref(false);
 
 onMounted(async () => {
   await auth.getUserDetails();
 });
+
+const closeMenu = () => {
+  menuOpen.value = false;
+};
+const goToPerfil = () => {
+  router.push('/perfil');
+  closeMenu();
+};
+
+const logout = (route) => {
+  router.push('/login');
+  closeMenu();
+};
 </script>
