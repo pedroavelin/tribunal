@@ -8,7 +8,7 @@ const items = ref([
   {
     title: 'Processos',
     disabled: false,
-    href: '#!',
+    to: '/processo',
   },
   {
     title: 'Novo Processo',
@@ -30,7 +30,7 @@ const onScroll = () => {
 
 <template>
   <AppBar />
-  <!-- <NavigationDrawer /> -->
+  <NavigationDrawer />
   <br>
   <v-container fluid>
   <v-breadcrumbs :items="items">

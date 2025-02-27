@@ -1,7 +1,23 @@
 <template>
    <AppBar/>
    <NavigationDrawer/>
+
   <v-main class="style-1">
+    <v-card
+    class="mx-auto"
+    color="surface-light"
+    max-width="400"
+  >
+    <v-card-text>
+      <v-text-field
+        append-inner-icon="mdi-magnify"
+        density="compact"
+        label="Pesquisar processo"
+        variant="solo"
+        hide-details
+      ></v-text-field>
+    </v-card-text>
+  </v-card>
     <div class="content-container-process">
       <ListProcess />
     </div>

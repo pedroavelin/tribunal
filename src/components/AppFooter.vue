@@ -10,8 +10,8 @@
       </span>
       </router-link>
     <div
-      class="text-caption text-disabled text-white" style="position: absolute; right: 16px;">
-      {{ (new Date()).getFullYear() }}
+      class="text-caption text-disabled" style="position: absolute; right: 16px;">
+      <div class="text-white">{{ (new Date()).getFullYear() }}</div>
     </div>
   </v-footer>
 </template>
