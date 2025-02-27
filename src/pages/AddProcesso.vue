@@ -30,7 +30,9 @@ const onScroll = () => {
 
 <template>
   <AppBar />
-  <NavigationDrawer />
+  <NavigationDrawer/>
+  <br/>
+  <br/>
   <v-sheet>
     <v-breadcrumbs class="text-caption" :items="items">
       <template v-slot:divider>

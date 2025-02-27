@@ -4,7 +4,6 @@ import { useModalStore } from '@/stores/modalStore';
 
 const drawerStore  = useDrawerStore();
 const modalStore = useModalStore();
-
 </script>
 
 <template>
