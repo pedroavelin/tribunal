@@ -19,7 +19,7 @@
 
           <v-text-field
             v-model="user.password"
-             prepend-inner-icon="mdi-lock-outline"
+            prepend-inner-icon="mdi-lock-outline"
             label="Palavra passe"
             placeholder="Digite a sua palavra passe"
             variant="underlined"
