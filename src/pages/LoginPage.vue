@@ -1,7 +1,8 @@
 <template>
   <v-container fluid class="d-flex justify-center align-center bg-light-blue-darken-4" style="height: 100vh;">
     <v-sheet rounded>
-      <v-card elevation="10" class="mx-auto px-6 py-8" width="350">
+      <v-card elevation="16" class="mx-auto px-6 py-8" width="350">
+        <v-card-title>Entrar</v-card-title>
         <h3 class="text-subtitle-2 mb-4">Seja Bem vindo, preencha os campos abaixo para aceder a sua conta.</h3>
         <v-form @submit.prevent="login()">
 
@@ -27,7 +28,7 @@
             density="compact"
             clearable
           ></v-text-field>
-          <br>
+
           <v-btn
             color="success"
             size="large"
@@ -38,6 +39,7 @@
           >
             Entrar
           </v-btn>
+          
         </v-form>
       </v-card>
     </v-sheet>
