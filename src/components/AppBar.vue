@@ -18,7 +18,9 @@ const modalStore = useModalStore();
       <div class="row">
         <div class="text-center">
           <div class="bg-success btn-add-processo">
-            <v-btn @click="modalStore.openModal" elevation="0" density="compact" class="text-caption" rounded="0">Novo Processo</v-btn>
+            <RouterLink to="/add-processo">
+            <v-btn elevation="0" density="compact" class="text-caption" rounded="0">Novo Processo</v-btn>
+          </RouterLink>
           </div>
           <div>
             <v-btn density="compact" class="text-caption border-0" color="red" rounded="0" variant="flat">Preso(100)</v-btn>

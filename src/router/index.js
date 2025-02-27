@@ -11,6 +11,7 @@ import ProcessosPage from '@/pages/ProcessosPage.vue'
 import LoginPage from '@/pages/LoginPage.vue'
 import PerfilPage from '@/pages/PerfilPage.vue'
 import Seccoes from '@/pages/Seccoes.vue'
+import AddProcesso from '@/pages/AddProcesso.vue'
 import { useAuth } from '@/stores/auth.js'
 
 const routes = [
@@ -44,12 +45,17 @@ const routes = [
   //   }
   // },
   {
-    path: '/Seccoes',
+    path: '/seccoes',
     name: 'seccoes',
     component: Seccoes,
     meta: {
       auth: true
     }
+  },
+  {
+    path: '/add-processo',
+    name: 'add-processo',
+    component: AddProcesso,
   },
   // {
   //   path: '/Permisoes',

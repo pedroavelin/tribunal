@@ -10,8 +10,8 @@
       </span>
       </router-link>
     <div
-      class="text-caption text-disabled" style="position: absolute; right: 16px;">
-      <span class="text-white">&copy; 2024-{{ (new Date()).getFullYear() }}</span> <span class="d-none d-sm-inline-block text-white">15ª - Cacuaco</span>
+      class="text-caption text-disabled text-white" style="position: absolute; right: 16px;">
+      {{ (new Date()).getFullYear() }}
     </div>
   </v-footer>
 </template>
