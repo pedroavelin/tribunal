@@ -19,7 +19,7 @@ const modalStore = useModalStore();
         <div class="text-center">
           <div class="bg-success btn-add-processo">
             <RouterLink to="/add-processo">
-            <v-btn elevation="0" density="compact" class="text-caption" rounded="0">Novo Processo</v-btn>
+            <v-btn elevation="0" density="compact" class="text-caption text-white" rounded="0">Novo Processo</v-btn>
           </RouterLink>
           </div>
           <div>
