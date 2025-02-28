@@ -12,15 +12,14 @@
     <v-divider></v-divider>
 
     <v-list :lines="false" density="compact" nav>
-      <RouterLink v-for="(item, i) in items" :key="i" color="primary" :to="item.to">
-        <v-list-item :value="item"  >
+      <Routerlink v-for="(item, i) in items" :key="i" >
+        <v-list-item :value="item" color="primary" :to="item.to" >
           <template v-slot:prepend>
             <v-icon :icon="item.icon"></v-icon>
           </template>
-
           <v-list-item-title :textContent="item.text">Liquidação de pena</v-list-item-title>
         </v-list-item>
-      </RouterLink>
+      </Routerlink>
 
     </v-list>
   </v-navigation-drawer>
@@ -50,7 +49,7 @@ onMounted(async () => {
 });
 
 const items = [
-  { text: "Secções", icon: "mdi-folder", to: "/seccoes" },
+  { text: "Secções", icon: "mdi-folder", to: "/seccoes"},
   { text: "Processos", icon: "mdi-folder", to: "/processo" },
   // { text: "Documentos", icon: "mdi-folder", to: "/documento" },
   // { text: "Auditoria", icon: "mdi-account-multiple", to: "/auditoria"},

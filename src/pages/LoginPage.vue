@@ -2,8 +2,8 @@
   <v-container fluid class="d-flex justify-center align-center bg-light-blue-darken-4" style="height: 100vh;">
     <v-sheet rounded>
       <v-card elevation="16" class="mx-auto px-6 py-8" width="350">
-        <v-card-title>Entrar</v-card-title>
-        <h3 class="text-subtitle-2 mb-4">Seja Bem vindo, preencha os campos abaixo para aceder a sua conta.</h3>
+        <h2>Entrar</h2>
+        <h3 class="text-body-2 mb-4">Seja Bem vindo, preencha os campos abaixo para aceder a sua conta.</h3>
         <v-form @submit.prevent="login()">
 
           <v-text-field
@@ -36,6 +36,7 @@
             variant="flat"
             density="compact"
             block
+            :loading="loading"
           >
             Entrar
           </v-btn>
@@ -52,6 +53,7 @@ import { reactive } from "vue";
 import { useAuth } from '@/stores/auth.js'
 import { useRouter } from 'vue-router';
 
+const loading = ref(false);
 const router = useRouter();
 const auth = useAuth();
 const user = reactive({
@@ -62,9 +64,9 @@ const user = reactive({
   async function login(){
     try {
       const { data } = await https.post('/auth/login', user);
-      console.log(data);
       auth.setToken(data.access_token);
       auth.setUser(data.user)
+      this.loading = true;
 
       router.push({ name: 'processos' });
     } catch (error) {

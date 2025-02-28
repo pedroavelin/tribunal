@@ -1,83 +1,65 @@
-<script setup lang="ts">
-import { computed, ref } from 'vue';
-import { useDisplay } from 'vuetify';
+<v-card elevation="0" class="overflow-y-auto" max-height="250" v-scroll.self="onScroll">
+        <v-list-item class="p-0 m-0" v-for="p in 4" :key="p">
+          <v-list-item-title> Processo <br> <v-icon color="success" icon="mdi mdi-calendar" size="15" /> Julgamento
+            <v-icon color="warning" icon="mdi mdi-calendar" size="15" /> Soltura</v-list-item-title>
+          <v-list-item-subtitle>Descrição do Processo</v-list-item-subtitle>
+          <template v-slot:append>
+            <!-- START - MENU -->
+            <v-menu>
+              <template v-slot:activator="{ props }">
+                <v-btn color="grey-lighten-1" icon="mdi-dots-vertical" variant="text" v-bind="props">
+                </v-btn>
+              </template>
 
-const display = useDisplay();
-const scrollInvoked = ref(0);
+              <v-list>
+                <v-list-item value="1">
+                  <v-list-item-title>Editar</v-list-item-title>
+                  <v-divider />
+                </v-list-item>
+                <v-list-item value="2">
+                  <v-list-item-title>Eliminar</v-list-item-title>
+                </v-list-item>
+              </v-list>
+
+            </v-menu>
+          </template>
+        </v-list-item>
+      </v-card>
 
 
-const items = ref([
-  {
-    title: 'Processos',
-    disabled: false,
-    to: '/processo',
-  },
-  {
-    title: 'Novo Processo',
-    disabled: true,
-    href: 'breadcrumbs_link_1',
-  },
-])
-const cols = computed(() => {
-  return display.lg.value ? [6, 6]
-    : display.sm.value ? [6, 6]
-      : display.md.value ? [6, 6]
-        : [6, 6];
-});
-</script>
 
-<template>
-  <AppBar />
-  <NavigationDrawer />
-  <br />
-  <br />
-  <v-container fluid>
-    <v-breadcrumbs class="text-caption" :items="items">
-      <template v-slot:divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
-    <!-- Lista dinâmica -->
 
-    <!-- <v-sheet class="ma-0 pa-2">Preencha o formulário para adicionar um novo processo</v-sheet> -->
-    <v-stepper
-      editable
-      prev-text="Retoceder"
-      next-text="Avançar"
-      :items="['Novo processo', 'Adicionar arguido', 'Salvar']"
-    >
-      <template v-slot:item.1>
-        <v-card subtitle="Preencha os campos abaixo para adicionar um novo processo" flat>
+
+
+
+
+      <v-list lines="three" select-strategy="classic">
+        <v-container>
           <v-row no-gutters>
-            <v-col cols="6">
+            <v-col cols="3">
               <v-sheet class="mx-1">
                 <v-text-field variant="underlined" color="primary" density="compact" label="Nº"></v-text-field>
               </v-sheet>
             </v-col>
-
-            <v-col cols="6">
-              <v-sheet class="mx-1">
+  
+            <v-col cols="2">
+              <v-sheet class="">
                 <v-text-field variant="underlined" color="primary" density="compact" label="Ano"></v-text-field>
               </v-sheet>
             </v-col>
-
-            <v-col cols="6">
+  
+            <v-col cols="4">
               <v-sheet class="mx-1">
                 <v-text-field variant="underlined" color="primary" density="compact" label="Crime"></v-text-field>
               </v-sheet>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="3">
               <v-sheet class="mx-1">
                 <v-text-field variant="underlined" color="primary" density="compact"
                   label="Estado do processo"></v-text-field>
               </v-sheet>
             </v-col>
           </v-row>
-        </v-card>
-      </template>
-
-      <template v-slot:item.2>
-        <v-card title="Adicionar arguido" flat>
           <v-row no-gutters>
             <v-col cols="4">
               <v-sheet class="mx-1">
@@ -114,15 +96,16 @@ const cols = computed(() => {
               </v-sheet>
             </v-col>
           </v-row>
-        </v-card>
-      </template>
-
-      <template v-slot:item.3>
-        <v-card title="Terminar" flat>...</v-card>
-      </template>
-    </v-stepper>
-  </v-container>
-  <!-- Lista dinâmica -->
-  <AppFooter />
-</template>
-
+        </v-container>
+  
+        <v-row align="start" justify="center">
+          <v-col cols="auto">
+            <v-btn
+            class="text-none"
+              color="blue-darken-4"
+              rounded="0"
+              variant="outlined"
+            size="small" elevation="16">Adicionar +</v-btn>
+          </v-col>
+        </v-row>
+      </v-list>
