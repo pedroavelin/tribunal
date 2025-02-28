@@ -30,10 +30,10 @@
           ></v-text-field>
 
           <v-btn
-            color="success"
+            color="primary"
             size="large"
             type="submit"
-            variant="flat"
+            variant="outlined"
             density="compact"
             block
             :loading="loading"
