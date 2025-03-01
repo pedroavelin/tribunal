@@ -21,7 +21,7 @@ const routes = [
     component: LoginPage,
   },
   {
-    path: '/Processo',
+    path: '/processo',
     name: 'processos',
     component: ProcessosPage,
     meta: {
@@ -29,7 +29,7 @@ const routes = [
     }
   },
   {
-    path: '/Perfil',
+    path: '/perfil',
     name: 'perfl',
     component: PerfilPage,
     meta: {
@@ -65,6 +65,12 @@ const routes = [
   //     auth: true
   //   }
   // }
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: () => import('@/pages/NotFound.vue'),
+  }
+
 ]
 
 

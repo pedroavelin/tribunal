@@ -13,9 +13,9 @@
 
     <v-list :lines="false" density="compact" nav>
       <Routerlink v-for="(item, i) in items" :key="i" >
-        <v-list-item :value="item" color="primary" :to="item.to" >
+        <v-list-item variant="flat" rounded="0" :value="item" color="primary" :to="item.to" >
           <template v-slot:prepend>
-            <v-icon :icon="item.icon"></v-icon>
+            <v-icon  :icon="item.icon"></v-icon>
           </template>
           <v-list-item-title :textContent="item.text">Liquidação de pena</v-list-item-title>
         </v-list-item>
@@ -49,12 +49,13 @@ onMounted(async () => {
 });
 
 const items = [
-  { text: "Secções", icon: "mdi-folder", to: "/seccoes"},
-  { text: "Processos", icon: "mdi-folder", to: "/processo" },
-  // { text: "Documentos", icon: "mdi-folder", to: "/documento" },
-  // { text: "Auditoria", icon: "mdi-account-multiple", to: "/auditoria"},
-  // { text: "Utilizadores", icon: "mdi-account-multiple", to: "/utilizador"},
-  // { text: "Permissões", icon: "mdi-account-multiple", to: "/permissoes" },
-  // { text: "Sobre", icon: "mdi-account-multiple", to: "/sobre"},
+  { text: "Tribunal", icon: "mdi-home-analytics", to: "/tribunal"},
+  { text: "Secção", icon: "mdi-home-city", to: "/seccoes"},
+  { text: "Processo", icon: "mdi-file-document", to: "/processo" },
+  { text: "Documento", icon: "mdi-folder-open", to: "/documento" },
+  { text: "Auditoria", icon: "mdi-sitemap", to: "/auditoria"},
+  { text: "Utilizador", icon: "mdi-account-group", to: "/utilizador"},
+  { text: "Acessos", icon: "mdi-account-lock", to: "/permissoes" },
+  { text: "Meu perfil", icon: "mdi-account-multiple", to: "/perfil"},
 ];
 </script>

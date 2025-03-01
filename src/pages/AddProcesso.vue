@@ -21,7 +21,8 @@ const tribunais = ref([
 
 const estadosProcesso = ref([
   { id: 1, nome: 'Em andamento' },
-  { id: 2, nome: 'Encerrado' }
+  { id: 2, nome: 'Encerrado' },
+  { id: 3, nome: 'Redistribuido' }
 ]);
 
 const estadosArguido = ref([
@@ -42,7 +43,17 @@ const validarCampo = (campo, valor) => {
 };
 
 const adicionarArguido = () => {
-  processo.value.arguidos.push({ nome: '', bi: '', morada: '', pena: '', dataJulgamento: '', datasoltura: '', crime: '', descricao: '', idEstadoArguido: null });
+  processo.value.arguidos.push(
+    { nome: '',
+    bi: '',
+    morada: '',
+    pena: '',
+    dataJulgamento: '',
+    datasoltura: '',
+    crime: '',
+    descricao: '',
+    idEstadoArguido: null
+  });
 };
 
 const removerArguido = (index) => {
@@ -66,6 +77,12 @@ const items = ref([
   },
 ])
 
+
+const scrollInvoked = ref(0)
+
+const onScroll = () => {
+  scrollInvoked.value++
+}
 </script>
 
 <template>
@@ -80,60 +97,59 @@ const items = ref([
   </v-breadcrumbs>
   <AppFooter></AppFooter>
   <v-container>
-    <v-card class="pa-0 elevation-10">
+    <v-card class="pa-0 elevation-2">
       <v-card-title>Cadastro de Processo</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="salvarProcesso">
           <v-row no-gutters>
             <v-col cols="12" md="2">
-              <v-text-field class="mx-1" density="compact" v-model="processo.numeroProcesso" label="Nº"
+              <v-text-field variant="solo" class="mx-1" density="compact" v-model="processo.numeroProcesso" label="Nº"
                 :error-messages="erros.numeroProcesso" @blur="validarCampo('numeroProcesso', processo.numeroProcesso)"
                 dense></v-text-field>
             </v-col>
             <v-col cols="12" md="2">
-              <v-text-field class="mx-1" density="compact" v-model="processo.ano" label="Ano" type="number"
+              <v-text-field variant="solo" class="mx-1" density="compact" v-model="processo.ano" label="Ano" type="number"
                 :error-messages="erros.ano" dense @blur="validarCampo('ano', processo.ano)"></v-text-field>
             </v-col>
             <v-col cols="12" md="4">
-              <v-text-field class="mx-1" density="compact" v-model="processo.ano" label="Crime" type="number"
+              <v-text-field variant="solo" class="mx-1" density="compact" v-model="processo.ano" label="Crime" type="text"
                 :error-messages="erros.crime" dense @blur="validarCampo('ano', processo.ano)"></v-text-field>
             </v-col>
             <v-col cols="12" md="2">
-              <v-select density="compact" v-model="processo.idTribunal" :items="tribunais" label="Tribunal"
+              <v-select variant="solo" density="compact" v-model="processo.idTribunal" :items="tribunais" label="Tribunal"
                 item-title="nome" item-value="id" dense></v-select>
             </v-col>
             <v-col cols="12" md="2">
-              <v-select class="mx-1" density="compact" v-model="processo.idEstadoProcesso" :items="estadosProcesso"
+              <v-select variant="solo" class="mx-1" density="compact" v-model="processo.idEstadoProcesso" :items="estadosProcesso"
                 label="Estado" item-title="nome" item-value="id" dense></v-select>
             </v-col>
           </v-row>
-          <v-textarea rows="2" density="compact" v-model="processo.descricao" label="Descrição do Processo"
-            dense></v-textarea>
-          <v-divider class="my-1"></v-divider>
-          <div class="scrollable-arguidos">
+          <v-card class="overflow-y-auto ma-1 pa-1" elevation="0" max-height="200" v-scroll.self="onScroll">
           <v-row no-gutters v-for="(arguido, index) in processo.arguidos" :key="index" class="align-center">
-            <v-col cols="12" md="3">
+            <v-col class="mb-5" cols="12" md="1">
+             {{ index + 1 }}
+            </v-col>
+            <v-col cols="12" md="4">
               <v-sheet class="pa-0 ma-0">
-                <v-text-field density="compact" v-model="arguido.nome" label="Nome" dense></v-text-field>
+                <v-text-field variant="solo" density="compact" v-model="arguido.nome" label="Nome" dense></v-text-field>
               </v-sheet>
             </v-col>
-            <v-col cols="12" md="3">
+            <v-col cols="12" md="4">
               <v-sheet class="pa-1 ma-0">
-                <v-text-field density="compact" v-model="arguido.bi" label="Crime" dense></v-text-field>
-              </v-sheet>
-            </v-col>
-            <v-col cols="12" md="3">
-              <v-sheet class="pa-1 ma-0">
-                <v-text-field density="compact" v-model="arguido.morada" label="Morada" dense></v-text-field>
+                <v-text-field variant="solo" density="compact" v-model="arguido.bi" label="Crime" dense></v-text-field>
               </v-sheet>
             </v-col>
             <v-col cols="12" md="2">
-              <v-sheet class="pa-1 ma-0">
-                <v-btn density="compact" icon="mdi-delete" color="red" @click="removerArguido(index)"></v-btn>
+              <v-select variant="solo" class="mx-1" density="compact" :items="estadosArguido"
+                label="Estado" item-title="nome" item-value="id" dense></v-select>
+            </v-col>
+            <v-col cols="12" md="1" class="mb-4">
+              <v-sheet>
+                <v-btn variant="solo" density="compact" icon="mdi-delete" color="red" @click="removerArguido(index)"></v-btn>
               </v-sheet>
             </v-col>
           </v-row>
-        </div>
+        </v-card>
           <v-divider class="my-4"></v-divider>
           <v-row>
             <v-col cols="6" class="d-flex justify-start">
@@ -150,9 +166,5 @@ const items = ref([
     </v-card>
   </v-container>
 </template>
-<style scoped>
-.scrollable-arguidos {
-  max-height: 200px;
-  overflow-y: auto;
-}
-</style>
+
+

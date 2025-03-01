@@ -1,13 +1,13 @@
 <template>
   <v-app id="inspire"><router-view /></v-app>
 </template>
-<style>
+<style scoped>
 /* ===== Scrollbar CSS ===== */
 
   /* Firefox */
   * {
     scrollbar-width: none;
-    scrollbar-color: #011d60 #057eff;
+    scrollbar-color: #011d60 #d8dbdd;
   }
 
   /* Chrome, Edge, and Safari */
