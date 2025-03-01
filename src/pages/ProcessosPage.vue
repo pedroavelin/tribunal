@@ -8,7 +8,7 @@
     color="surface-light"
     max-width="400"
   >
-    <v-card-text>
+    <v-card-text  style="display:none">
       <v-text-field
         append-inner-icon="mdi-magnify"
         density="compact"

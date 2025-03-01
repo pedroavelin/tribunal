@@ -29,10 +29,6 @@
 
 
 
-
-
-
-
       <v-list lines="three" select-strategy="classic">
         <v-container>
           <v-row no-gutters>

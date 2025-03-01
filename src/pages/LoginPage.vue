@@ -1,11 +1,10 @@
 <template>
   <v-container fluid class="d-flex justify-center align-center bg-light-blue-darken-4" style="height: 100vh;">
     <v-sheet rounded>
-      <v-card elevation="16" class="mx-auto px-6 py-8" width="350">
+      <v-card elevation="1" rounded="0" class="mx-auto px-6 py-8" width="350">
         <h2>Entrar</h2>
         <h3 class="text-body-2 mb-4">Seja Bem vindo, preencha os campos abaixo para aceder a sua conta.</h3>
         <v-form @submit.prevent="login()">
-
           <v-text-field
             v-model="user.email"
             prepend-inner-icon="mdi-email-outline"
@@ -37,6 +36,7 @@
             density="compact"
             block
             :loading="loading"
+            rounded="0"
           >
             Entrar
           </v-btn>
