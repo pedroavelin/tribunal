@@ -67,7 +67,6 @@ const user = reactive({
       auth.setToken(data.access_token);
       auth.setUser(data.user)
       this.loading = true;
-
       router.push({ name: 'processos' });
     } catch (error) {
       console.log(error?.response?.data);
