@@ -131,7 +131,7 @@ const onScroll = () => {
             </v-col>
             <v-col cols="12" md="4">
               <v-sheet class="pa-0 ma-0">
-                <v-text-field variant="solo" density="compact" v-model="arguido.nome" label="Nome" dense></v-text-field>
+                <v-text-field variant="solo" density="compact" v-model="arguido.nome" label="Nome do arguido" dense></v-text-field>
               </v-sheet>
             </v-col>
             <v-col cols="12" md="4">
@@ -145,7 +145,7 @@ const onScroll = () => {
             </v-col>
             <v-col cols="12" md="1" class="mb-4">
               <v-sheet>
-                <v-btn variant="solo" density="compact" icon="mdi-delete" color="red" @click="removerArguido(index)"></v-btn>
+                <v-btn variant="text" density="compact" icon="mdi-delete" color="red" @click="removerArguido(index)"></v-btn>
               </v-sheet>
             </v-col>
           </v-row>
@@ -154,7 +154,7 @@ const onScroll = () => {
           <v-row>
             <v-col cols="6" class="d-flex justify-start">
               <v-btn density="compact" color="primary" @click="adicionarArguido">
-                <v-icon left>mdi-plus</v-icon> Adicionar Arguido
+                 Adicionar <v-icon left>mdi-plus</v-icon> Arguido
               </v-btn>
             </v-col>
             <v-col cols="6" class="d-flex justify-end">

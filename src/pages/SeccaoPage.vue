@@ -11,13 +11,31 @@ const seccaoStore = useSeccaoStore();
 onMounted(() => {
   seccaoStore.listarSeccao();
 });
+const items = ref([
+  {
+    title: 'Processos',
+    disabled: false,
+    to: '/processo',
+  },
+  {
+    title: 'Novo Processo',
+    disabled: true,
+    href: 'breadcrumbs_link_1',
+  },
+])
 </script>
 
 <template>
   <AppBar />
   <NavigationDrawer />
-  <br v-for="i in 3" :key="i">
 
+
+  <br v-for="i in 2" :key="i">
+  <v-breadcrumbs class="text-caption" :items="items">
+    <template v-slot:divider>
+      <v-icon icon="mdi-chevron-right"></v-icon>
+    </template>
+  </v-breadcrumbs>
   <h1 v-if="seccaoStore.erro">{{ seccaoStore.erro }}</h1>
 
   <v-container fluid>

@@ -7,23 +7,18 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import { components } from 'vuetify/dist/vuetify-labs.js'
-import ProcessosPage from '@/pages/ProcessosPage.vue'
-import LoginPage from '@/pages/LoginPage.vue'
-import PerfilPage from '@/pages/PerfilPage.vue'
-import Seccoes from '@/pages/Seccoes.vue'
-import AddProcesso from '@/pages/AddProcesso.vue'
 import { useAuth } from '@/stores/auth.js'
 
 const routes = [
   {
     path: '/',
     name: 'login',
-    component: LoginPage,
+    component: () => import('@/pages/LoginPage.vue'),
   },
   {
     path: '/processo',
     name: 'processos',
-    component: ProcessosPage,
+    component: () => import('@/pages/ProcessosPage.vue'),
     meta: {
       auth: true
     }
@@ -31,23 +26,23 @@ const routes = [
   {
     path: '/perfil',
     name: 'perfl',
-    component: PerfilPage,
+    component: () => import('@/pages/PerfilPage.vue'),
     meta: {
       auth: true
     }
   },
-  // {
-  //   path: '/Tribunal',
-  //   name: 'tribunal',
-  //   component: Tribunal,
-  //   meta: {
-  //     auth: true
-  //   }
-  // },
   {
-    path: '/seccoes',
-    name: 'seccoes',
-    component: Seccoes,
+    path: '/Tribunal',
+    name: 'tribunal',
+    component: () => import('@/pages/TribunalPage.vue'),
+    meta: {
+      auth: true
+    }
+  },
+  {
+    path: '/seccao',
+    name: 'seccao',
+    component: () => import('@/pages/SeccaoPage.vue'),
     meta: {
       auth: true
     }
@@ -55,16 +50,16 @@ const routes = [
   {
     path: '/add-processo',
     name: 'add-processo',
-    component: AddProcesso,
+    component: () => import('@/pages/AddProcesso.vue')
   },
-  // {
-  //   path: '/Permisoes',
-  //   name: 'permisoes',
-  //   component: Permisoes,
-  //   meta: {
-  //     auth: true
-  //   }
-  // }
+  {
+    path: '/utilizador',
+    name: 'utilizador',
+    component: () => import('@/pages/UtilizadorPage.vue'),
+    meta: {
+      auth: true
+    }
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
@@ -72,7 +67,6 @@ const routes = [
   }
 
 ]
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

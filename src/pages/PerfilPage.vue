@@ -8,7 +8,7 @@ import { useAuth } from '@/stores/auth.js'
 
 const utilizadorStore = useUtilizadorStore();
 
-const auth = useAuth(); 
+const auth = useAuth();
 // Buscar os dados do utilizador ao carregar o componente
 onMounted(() => {
   utilizadorStore.detalhesUtilizador(); // Chamada correta da função

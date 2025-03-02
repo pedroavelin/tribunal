@@ -1,9 +1,10 @@
 <template>
-    <v-navigation-drawer v-model="drawerStore.drawer" temporary>
-    <v-img src="https://picsum.photos/1920/1080?random" gradient="to top right, rgba(19,84,122,.90), rgba(128,208,199,.90)" height="80" cover class="pt-2">
+    <v-navigation-drawer  v-model="drawerStore.drawer" temporary>
+    <v-img  gradient="to top right, rgba(19,84,122,.90), rgba(128,208,199,.90)" height="80" cover class="pt-2">
       <v-list>
         <v-list-item
-          prepend-avatar="https://media.licdn.com/dms/image/C4D03AQF7jP4O_1Dh1Q/profile-displayphoto-shrink_400_400/0/1630611358440?e=1718236800&v=beta&t=aQkK_GYU9_nrDrrO3Adzq2_E1YI0Tz7rngwdHLJG900"
+        class="text-white"
+          prepend-avatar="@/assets/user.png"
           :subtitle="utilizadorStore.getEmail" :title="auth.fullName">
         </v-list-item>
       </v-list>
@@ -13,7 +14,7 @@
 
     <v-list :lines="false" density="compact" nav>
       <Routerlink v-for="(item, i) in items" :key="i" >
-        <v-list-item variant="flat" rounded="0" :value="item" color="primary" :to="item.to" >
+        <v-list-item variant="flat" rounded="0" :value="item" color="light-blue-darken-4" :to="item.to" >
           <template v-slot:prepend>
             <v-icon  :icon="item.icon"></v-icon>
           </template>
@@ -22,6 +23,13 @@
       </Routerlink>
 
     </v-list>
+    <template v-slot:append>
+          <div class="pa-2">
+            <v-btn block>
+              Terminar sessão
+            </v-btn>
+          </div>
+        </template>
   </v-navigation-drawer>
 </template>
 
@@ -50,12 +58,12 @@ onMounted(async () => {
 
 const items = [
   { text: "Tribunal", icon: "mdi-home-analytics", to: "/tribunal"},
-  { text: "Secção", icon: "mdi-home-city", to: "/seccoes"},
-  { text: "Processo", icon: "mdi-file-document", to: "/processo" },
+  { text: "Secção", icon: "mdi-home-city", to: "/seccao"},
+  { text: "Processo", icon: "mdi-view-dashboard", to: "/processo" },
   { text: "Documento", icon: "mdi-folder-open", to: "/documento" },
   { text: "Auditoria", icon: "mdi-sitemap", to: "/auditoria"},
   { text: "Utilizador", icon: "mdi-account-group", to: "/utilizador"},
-  { text: "Acessos", icon: "mdi-account-lock", to: "/permissoes" },
+  { text: "Acessos", icon: "mdi-account-lock", to: "/permissao" },
   { text: "Meu perfil", icon: "mdi-account-multiple", to: "/perfil"},
 ];
 </script>
