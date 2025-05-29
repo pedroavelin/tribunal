@@ -1,0 +1,17 @@
+npm install express sequelize sequelize-cli mysql2 jsonwebtoken bcryptjs dotenv cors helmet express-rate-limit csurf express-validator
+npm install --save-dev nodemon
+
+npx sequelize-cli model:generate --name User --attributes username:string,email:string,password:string,isActive:boolean
+npx sequelize-cli model:generate --name Role --attributes name:string,description:string
+npx sequelize-cli model:generate --name Permission --attributes name:string,description:string
+
+execurar as seeds
+npx sequelize-cli db:seed:all
+
+Acessos:
+senha da kenny: Senha039@kkk
+senha do Pedro: teste2040@kkk
+
+http://localhost:3000/api-docs/#/
+
+GET /api/audit-logs?page=1&limit=10&action=LOGIN&resource=Auth&startDate=2024-01-01&endDate=2025-01-01
