@@ -109,4 +109,6 @@ router.post('/:userId/assign-role', [verifyToken, isAdmin], userController.assig
  */
 router.delete('/:userId/remove-role', [verifyToken, isAdmin], userController.removeRole);
 
+router.get('/online',[verifyToken, isAdmin], userController.getOnlineUsers);
+
 module.exports = router;

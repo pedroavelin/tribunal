@@ -281,3 +281,22 @@ exports.removeRole = async (req, res) => {
     });
   }
 };
+
+exports.getOnlineUsers = async (req, res) => {
+  try {
+    const { lastMinutes = 5 } = req.query; // Parâmetro opcional: /users/online?lastMinutes=5
+
+    const onlineUsers = await User.findAll({
+      where: {
+        isOnline: true,
+        lastActivity: {
+          [Op.gte]: new Date(Date.now() - lastMinutes * 60 * 1000), // Filtro de tempo
+        },
+      },
+      attributes: ['id', 'username', 'email', 'lastActivity'],
+    });
+    res.status(200).json({ success: true, data: onlineUsers });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};

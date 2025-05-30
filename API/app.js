@@ -11,6 +11,7 @@ const permissionRoutes = require('./routes/permissionRoutes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 require('./jobs/tokenCleaner');
+const activityTracker = require('./middleware/activityTracker');
 const app = express();
 
 // Middlewares
@@ -31,10 +32,12 @@ db.sequelize.authenticate()
   });
 
 // Sync database (remove force: true in production)
-db.sequelize.sync({force: false})
+db.sequelize.sync()
   .then(() => {
     console.log('Banco de dados sincronizado');
-    // Initial roles and permissions can be seeded here
+  })
+  .catch(err => {
+    console.error('Erro ao sincronizar o banco:', err);
   });
 
 // Routes
@@ -49,7 +52,7 @@ app.use('/api/logs', auditLoRoutes);
 
 // Montar as rotas de autenticação sob o prefixo /api/auth
 app.use('/api/auth', authRoutes); 
-
+app.use(activityTracker); // Deve vir DEPOIS do middleware de autenticação
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

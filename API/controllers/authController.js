@@ -23,7 +23,7 @@ const AuthController = {
         });
         await user.setRoles(roles);
       } else {
-        await user.setRoles([1]); // Default role 'user'
+        await user.setRoles([1]);
       }
 
       return res.status(201).json({
