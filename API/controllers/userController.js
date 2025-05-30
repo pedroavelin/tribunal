@@ -284,19 +284,25 @@ exports.removeRole = async (req, res) => {
 
 exports.getOnlineUsers = async (req, res) => {
   try {
-    const { lastMinutes = 5 } = req.query; // Parâmetro opcional: /users/online?lastMinutes=5
-
     const onlineUsers = await User.findAll({
-      where: {
-        isOnline: true,
-        lastActivity: {
-          [Op.gte]: new Date(Date.now() - lastMinutes * 60 * 1000), // Filtro de tempo
-        },
+      where: { 
+        isOnline: true // Filtro correto para usuários online
       },
       attributes: ['id', 'username', 'email', 'lastActivity'],
+      include: [{
+        model: Role,
+        attributes: ['name'],
+        through: { attributes: [] } // Oculta a tabela junction
+      }],
+      order: [['lastActivity', 'DESC']]
     });
-    res.status(200).json({ success: true, data: onlineUsers });
+
+    res.status(200).json(onlineUsers);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error('Erro ao buscar usuários online:', error);
+    res.status(500).json({ 
+      error: 'Erro interno no servidor',
+      details: error.message 
+    });
   }
 };

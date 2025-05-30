@@ -4,7 +4,6 @@ npm install --save-dev nodemon
 npx sequelize-cli model:generate --name User --attributes username:string,email:string,password:string,isActive:boolean
 npx sequelize-cli model:generate --name Role --attributes name:string,description:string
 npx sequelize-cli model:generate --name Permission --attributes name:string,description:string
-
 execurar as seeds
 npx sequelize-cli db:seed:all
 
