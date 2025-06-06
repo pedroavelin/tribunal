@@ -108,7 +108,20 @@ router.post('/:userId/assign-role', [verifyToken, isAdmin], userController.assig
  *         description: Não removido
  */
 router.delete('/:userId/remove-role', [verifyToken, isAdmin], userController.removeRole);
-
+/**
+ * @swagger
+ * /api/users/online:
+ *   get:
+ *     summary: Listar usuários online
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Não removido
+ */
 router.get('/online',[verifyToken, isAdmin], userController.getOnlineUsers);
 
 module.exports = router;

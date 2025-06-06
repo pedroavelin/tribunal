@@ -7,10 +7,25 @@ npx sequelize-cli model:generate --name Permission --attributes name:string,desc
 execurar as seeds
 npx sequelize-cli db:seed:all
 
-Acessos:
-senha da kenny: Senha039@kkk
-senha do Pedro: teste2040@kkk
-
 http://localhost:3000/api-docs/#/
 
 GET /api/audit-logs?page=1&limit=10&action=LOGIN&resource=Auth&startDate=2024-01-01&endDate=2025-01-01
+
+tribunal(id, nome, idMunicipio)
+seccao(id, numero, idTribunal, idMunicipio)
+processo(id, numero, ano, idTribunal, idSeccao, idEstadoProcesso, idLetra)
+processoArguido(idProcesso, idArguido, idEstadoArguido, pena, crime, dataDeJulgamento)
+processoDeclarante(idProcesso, idDeclarante)
+estadoArguido(id, descricao)
+estadoProcesso(id, estado)
+arguido(id, nome, idade, sexo, profissao, dataDeNascimento, idEndereco)
+declarante(id, nome, idade, profissao, sexo, idEndereco, email, telf1, telf2)
+endereco(id, idMunicipio, bairro, rua, casa)
+provincia(id, nome)
+municipio(id, nome, idProvincia)
+users(id, username, email, password, isActive, isOnline, idRole, idLetra)
+roles(id, nome, descricao)
+permission(id, name, description)
+userRoles(idUser, idRole)
+rolePermissions(idPermission, idRole)
+letra(id, letra)
