@@ -25,3 +25,173 @@ INSERT INTO siglas (codigo) VALUES
 ('CX'),
 ('CY'),
 ('CZ');
+
+INSERT INTO provincias (nome) VALUES
+('Bengo'),
+('Benguela'),
+('Bié'),
+('Cabinda'),
+('Cuando Cubango'),
+('Cuanza Norte'),
+('Cuanza Sul'),
+('Cunene'),
+('Huambo'),
+('Huíla'),
+('Luanda'),
+('Lunda Norte'),
+('Lunda Sul'),
+('Malanje'),
+('Moxico'),
+('Namibe'),
+('Uíge'),
+('Zaire');
+
+INSERT INTO estados_processo (estado) VALUES
+('Em análise'),
+('Em instrução'),
+('Em julgamento'),
+('Concluído'),
+('Arquivado'),
+('Suspenso'),
+('Cancelado');
+
+-- Província: Bengo
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(1, 'Ambriz', 1),
+(2, 'Bula Atumba', 1),
+(3, 'Dande', 1),
+(4, 'Dembos', 1),
+(5, 'Nambuangongo', 1),
+(6, 'Pango Aluquém', 1);
+
+-- Província: Benguela
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(7, 'Balombo', 2),
+(8, 'Baía Farta', 2),
+(9, 'Benguela', 2),
+(10, 'Bocoio', 2),
+(11, 'Caimbambo', 2),
+(12, 'Catumbela', 2),
+(13, 'Chongorói', 2),
+(14, 'Cubal', 2),
+(15, 'Ganda', 2),
+(16, 'Lobito', 2);
+
+-- Província: Bié
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(17, 'Andulo', 3),
+(18, 'Camacupa', 3),
+(19, 'Catabola', 3),
+(20, 'Chinguar', 3),
+(21, 'Chitembo', 3),
+(22, 'Cuemba', 3),
+(23, 'Cunhinga', 3),
+(24, 'Cuíto', 3),
+(25, 'Nharea', 3);
+
+-- Província: Cabinda
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(26, 'Belize', 4),
+(27, 'Buco-Zau', 4),
+(28, 'Cabinda', 4),
+(29, 'Cacongo', 4);
+
+-- Província: Cuando Cubango
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(30, 'Calai', 5),
+(31, 'Cuangar', 5),
+(32, 'Cuchi', 5),
+(33, 'Cuito Cuanavale', 5),
+(34, 'Dirico', 5),
+(35, 'Mavinga', 5),
+(36, 'Menongue', 5),
+(37, 'Nancova', 5),
+(38, 'Rivungo', 5);
+
+-- Província: Cuanza Norte
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(39, 'Ambaca', 6),
+(40, 'Banga', 6),
+(41, 'Bolongongo', 6),
+(42, 'Cambambe', 6),
+(43, 'Cazengo', 6),
+(44, 'Golungo Alto', 6),
+(45, 'Gonguembo', 6),
+(46, 'Lucala', 6),
+(47, 'Quiculungo', 6),
+(48, 'Samba Caju', 6);
+
+-- Província: Cuanza Sul
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(49, 'Amboim', 7),
+(50, 'Cassongue', 7),
+(51, 'Cela', 7),
+(52, 'Conda', 7),
+(53, 'Ebo', 7),
+(54, 'Libolo', 7),
+(55, 'Mussende', 7),
+(56, 'Porto Amboim', 7),
+(57, 'Quibala', 7),
+(58, 'Quilenda', 7),
+(59, 'Seles', 7),
+(60, 'Sumbe', 7);
+
+-- Província: Cunene
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(61, 'Cahama', 8),
+(62, 'Cuanhama', 8),
+(63, 'Curoca', 8),
+(64, 'Cuvelai', 8),
+(65, 'Namacunde', 8),
+(66, 'Ombadja', 8);
+
+-- Província: Huambo
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(67, 'Bailundo', 9),
+(68, 'Cachiungo', 9),
+(69, 'Caála', 9),
+(70, 'Ecunha', 9),
+(71, 'Huambo', 9),
+(72, 'Londuimbali', 9),
+(73, 'Longonjo', 9),
+(74, 'Mungo', 9),
+(75, 'Chicala-Choloanga', 9),
+(76, 'Chinjenje', 9),
+(77, 'Ucuma', 9);
+
+-- Província: Huíla
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(78, 'Caconda', 10),
+(79, 'Cacula', 10),
+(80, 'Caluquembe', 10),
+(81, 'Chiange', 10),
+(82, 'Chibia', 10),
+(83, 'Chicomba', 10),
+(84, 'Chipindo', 10),
+(85, 'Cuvango', 10),
+(86, 'Humpata', 10),
+(87, 'Jamba', 10),
+(88, 'Lubango', 10),
+(89, 'Matala', 10),
+(90, 'Quilengues', 10),
+(91, 'Quipungo', 10);
+
+-- Província: Luanda
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(92, 'Belas', 11),
+(93, 'Cacuaco', 11),
+(94, 'Cazenga', 11),
+(95, 'Ícolo e Bengo', 11),
+(96, 'Luanda', 11),
+(97, 'Quilamba Quiaxi', 11),
+(98, 'Quissama', 11),
+(99, 'Talatona', 11),
+(100, 'Viana', 11);
+
+-- Província: Lunda Norte
+INSERT INTO municipios (id, nome, idProvincia) VALUES
+(101, 'Cambulo', 12),
+(102, 'Capenda-Camulemba', 12),
+(103, 'Caungula', 12),
+(104, 'Chitato', 12),
+(105, 'Cuango', 12),

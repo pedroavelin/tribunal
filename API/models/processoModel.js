@@ -1,20 +1,19 @@
-// models/processo.js
 'use strict';
 const { Model, DataTypes } = require('sequelize');
 
-class Processo extends Model {
-  static associate(models) {
-    this.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'tribunal' });
-    this.belongsTo(models.Seccao, { foreignKey: 'idSeccao', as: 'seccao' });
-    this.belongsTo(models.EstadoProcesso, { foreignKey: 'idEstadoProcesso', as: 'estado' });
-    this.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra' });
-    this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos' });
-    this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes' });
-  }
-}
-
 module.exports = (sequelize) => {
-  Processo.init({
+  class ProcessoModel extends Model {
+    static associate(models) {
+      this.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'tribunal' });
+      this.belongsTo(models.Seccao, { foreignKey: 'idSeccao', as: 'seccao' });
+      this.belongsTo(models.EstadoProcesso, { foreignKey: 'idEstadoProcesso', as: 'estado' });
+      this.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra' });
+      this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos' });
+      this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes' });
+    }
+  }
+
+  ProcessoModel.init({
     numero: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -22,6 +21,10 @@ module.exports = (sequelize) => {
     },
     ano: {
       type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    crime: {
+      type: DataTypes.STRING,
       allowNull: false
     },
     idTribunal: {
@@ -47,6 +50,5 @@ module.exports = (sequelize) => {
     freezeTableName: true,
     timestamps: false
   });
-
-  return Processo;
+  return ProcessoModel;
 };

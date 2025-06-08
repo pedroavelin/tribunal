@@ -9,6 +9,9 @@ const roleRoutes = require('./routes/roleRoutes');
 const auditLoRoutes = require('./routes/auditLogRoutes');
 const permissionRoutes = require('./routes/permissionRoutes');
 const tribunalRoutes = require('./routes/tribunalRoutes');
+const processoRoutes = require('./routes/processoRoutes');
+
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 require('./jobs/tokenCleaner');
@@ -33,7 +36,7 @@ db.sequelize.authenticate()
   });
 
 // Sync database (remove force: true in production)
-db.sequelize.sync({force: false })
+db.sequelize.sync({ force: false})
   .then(() => {
     console.log('Banco de dados sincronizado');
   })
@@ -51,6 +54,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/logs', auditLoRoutes);
 app.use('/api/tribunais', tribunalRoutes);
+app.use('/api/processos', processoRoutes);
 // app.use('/api/seccoes', seccaoRoutes);
 // app.use('/api/processos', processoRoutes);
 
