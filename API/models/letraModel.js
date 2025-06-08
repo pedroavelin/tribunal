@@ -15,7 +15,7 @@ class Letra extends Model {
         allowNull: false,
         validate: {
           notEmpty: true,
-          len: [1, 1] // Garante que seja exatamente 1 caractere
+          len: [2, 2]
         }
       }
     }, {
@@ -39,24 +39,15 @@ class Letra extends Model {
       foreignKey: 'idLetra',
       as: 'processos'
     });
-    this.hasMany(models.User, {
-      foreignKey: 'idLetra',
-      as: 'usuarios'
-    });
-  }
-
-  // Método de instância para formatar a letra
-  getLetraFormatada() {
-    return `Letra: ${this.letra.toUpperCase()}`;
-  }
-
-  // Método estático para buscar por letra
-  static async findByLetra(letra) {
-    return await this.findOne({ 
-      where: { 
-        letra: letra.toUpperCase() 
-      } 
-    });
+  // Removida a relação com User
+    // this.hasMany(models.User, {
+    //   foreignKey: 'idLetra',
+    //   as: 'usuarios'
+    // });
+    Letra.hasMany(models.User, {
+    foreignKey: 'idLetra',
+    as: 'usuarios'
+  });
   }
 }
 

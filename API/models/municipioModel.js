@@ -12,6 +12,10 @@ class Municipio extends Model {
       foreignKey: 'idMunicipio',
       as: 'tribunais'
     });
+    this.belongsTo(models.Provincia, {
+      foreignKey: 'idProvincia',
+      as: 'provincia'
+    });
   }
 }
 

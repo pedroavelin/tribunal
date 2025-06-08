@@ -6,35 +6,51 @@ const logAudit = require('../utils/auditLogger');
 
 const AuthController = {
   signup: async (req, res) => {
-    try {
-      const user = await db.User.create({
-        username: req.body.username,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8)
+  try {
+    const existingUser = await db.User.findOne({ where: { email: req.body.email } });
+
+    if (existingUser) {
+      return res.status(400).json({ message: 'Este e-mail já está em uso.' });
+    }
+
+    const user = await db.User.create({
+      username: req.body.username,
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password, 8),
+    });
+
+    if (req.body.roles && req.body.roles.length > 0) {
+      const roles = await db.Role.findAll({
+        where: {
+          name: {
+            [db.Sequelize.Op.or]: req.body.roles
+          }
+        }
       });
 
-      if (req.body.roles) {
-        const roles = await db.Role.findAll({
-          where: {
-            name: {
-              [db.Sequelize.Op.or]: req.body.roles
-            }
-          }
-        });
-        await user.setRoles(roles);
-      } else {
-        await user.setRoles([1]);
+      if (!roles || roles.length === 0) {
+        return res.status(400).json({ message: 'Funções informadas não encontradas.' });
       }
 
-      return res.status(201).json({
-        message: 'User registered successfully!'
-      });
-    } catch (error) {
-      return res.status(500).json({
-        message: error.message
-      });
+      await user.setRoles(roles);
+    } else {
+      const defaultRole = await db.Role.findOne({ where: { name: 'user' } });
+
+      if (!defaultRole) {
+        return res.status(500).json({ message: "Função padrão 'user' não encontrada." });
+      }
+
+      await user.setRoles([defaultRole]);
     }
-  },
+
+    return res.status(201).json({ message: 'Usuário registrado com sucesso!' });
+
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    return res.status(500).json({ message: error.message || 'Erro interno.' });
+  }
+},
+
 
   generateRefreshToken(userId) {
     const expiry = new Date();
@@ -63,19 +79,21 @@ const AuthController = {
 
       if (!user) {
         return res.status(404).json({
-          message: 'User not found.'
+          message: 'Usuário não encontrado.'
         });
       }
       if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
-            await logAudit({
-              userId: null,
-              action: 'LOGIN_FAILED',
-              resource: 'Auth',
-              description: `Tentativa de login falhou para o e-mail ${req.body.email}`,
-              req
-            });
-            return res.status(401).json({ message: 'Email ou senha inválidos.' });
-          }
+        await logAudit({
+          userId: null,
+          action: 'LOGIN_FAILED',
+          resource: 'Auth',
+          description: `Tentativa de login falhou para o e-mail ${req.body.email}`,
+          req
+        });
+        return res.status(401).json({
+          message: 'Email ou senha inválidos.'
+        });
+      }
       const passwordIsValid = bcrypt.compareSync(
         req.body.password,
         user.password
@@ -96,13 +114,13 @@ const AuthController = {
           expiresIn: jwtConfig.expiresIn
         }
       );
-    await logAudit({
-          userId: user.id,
-          action: 'LOGIN_SUCCESS',
-          resource: 'Auth',
-          description: `Usuário ${user.email} fez login com sucesso`,
-          req
-        });
+      await logAudit({
+        userId: user.id,
+        action: 'LOGIN_SUCCESS',
+        resource: 'Auth',
+        description: `Usuário ${user.email} fez login com sucesso`,
+        req
+      });
       // Gera refresh token + salva no banco
       const {
         token: refreshToken,

@@ -7,6 +7,10 @@ class Arguido extends Model {
       foreignKey: 'idEndereco',
       as: 'endereco'
     });
+    this.belongsTo(models.EstadoArguido, {
+        foreignKey: 'idEstado',
+        as: 'estado'
+      });
   }
 }
 
@@ -44,7 +48,7 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'Arguido',
-    tableName: 'arguidos',  // plural no banco, ajustar se seu banco for diferente
+    tableName: 'arguidos',
     freezeTableName: true,
     timestamps: false
   });

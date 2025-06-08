@@ -22,7 +22,7 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'EstadoProcesso',
-    tableName: 'estados_processo',  // plural e underscore conforme padrão comum
+    tableName: 'estado_processos',  
     freezeTableName: true,
     timestamps: false
   });

@@ -195,3 +195,39 @@ INSERT INTO municipios (id, nome, idProvincia) VALUES
 (103, 'Caungula', 12),
 (104, 'Chitato', 12),
 (105, 'Cuango', 12),
+
+INSERT INTO arguidos (id, nome, idade, sexo, profissao, dataDeNascimento, idEndereco) VALUES
+(1, 'Arguido1', 19, 'M', 'Estudante', '2006-05-12', 1),
+(2, 'Arguido2', 32, 'F', 'Professora', '1993-08-23', 1),
+(3, 'Arguido3', 27, 'M', 'Engenheiro', '1997-01-10', 1),
+(4, 'Arguido4', 45, 'F', 'Comerciante', '1979-12-02', 1),
+(5, 'Arguido5', 22, 'M', 'Motorista', '2002-03-15', 1),
+(6, 'Arguido6', 29, 'F', 'Advogada', '1995-09-28', 1),
+(7, 'Arguido7', 35, 'M', 'Policial', '1989-07-09', 1),
+(8, 'Arguido8', 41, 'F', 'Médica', '1983-11-19', 1),
+(9, 'Arguido9', 24, 'M', 'Técnico de TI', '2000-06-08', 1),
+(10, 'Arguido10', 30, 'F', 'Jornalista', '1994-02-05', 1);
+
+INSERT INTO declarantes (id, nome, idade, profissao, sexo, idEndereco, email, telf1, telf2) VALUES
+(1, 'Declarante1', 28, 'Professor', 'M', 1,  'declarante1@email.com', '923000001', '923100001'),
+(2, 'Declarante2', 34, 'Enfermeira', 'F', 1,  'declarante2@email.com', '923000002', '923100002'),
+(3, 'Declarante3', 25, 'Analista de Dados', 'M', 1,  'declarante3@email.com', '923000003', '923100003'),
+(4, 'Declarante4', 40, 'Empresária', 'F', 1,  'declarante4@email.com', '923000004', '923100004'),
+(5, 'Declarante5', 31, 'Mecânico', 'M', 1,  'declarante5@email.com', '923000005', '923100005'),
+(6, 'Declarante6', 27, 'Designer Gráfico', 'F', 1,  'declarante6@email.com', '923000006', '923100006'),
+(7, 'Declarante7', 38, 'Contabilista', 'M', 1, 'declarante7@email.com', '923000007', '923100007'),
+(8, 'Declarante8', 29, 'Advogada', 'F', 1, 'declarante8@email.com', '923000008', '923100008'),
+(9, 'Declarante9', 33, 'Engenheiro Civil', 'M', 1,  'declarante9@email.com', '923000009', '923100009'),
+(10, 'Declarante10', 26, 'Recepcionista', 'F', 1, 'declarante10@email.com', '923000010', '923100010');
+
+INSERT INTO processos (id, numero, ano, crime, idTribunal, idSeccao, idEstadoProcesso, idLetra) VALUES
+(1, '11', 2025, 'Furto', 1, 1, 1, 1),
+(2, '12', 2025, 'Roubo', 1, 1, 1, 1),
+(3, '13', 2025, 'Homicídio', 1, 1, 1, 1),
+(4, '14', 2025, 'Corrupção', 1, 1, 1, 1),
+(5, '15', 2025, 'Agressão', 1, 1, 1, 1),
+(6, '16', 2025, 'Tráfico de drogas', 1, 1, 1, 1),
+(7, '17', 2025, 'Lavagem de dinheiro', 1, 1, 1, 1),
+(8, '18', 2025, 'Falsificação', 1, 1, 1, 1),
+(9, '19', 2025, 'Desobediência', 1, 1, 1, 1),
+(10, '20', 2025, 'Extorsão', 1, 1, 1, 1);

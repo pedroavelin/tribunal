@@ -1,4 +1,6 @@
-const { DataTypes } = require('sequelize');
+const {
+  DataTypes
+} = require('sequelize');
 
 module.exports = (sequelize) => {
   const User = sequelize.define('User', {
@@ -10,7 +12,7 @@ module.exports = (sequelize) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: false
     },
     email: {
       type: DataTypes.STRING,
@@ -27,7 +29,11 @@ module.exports = (sequelize) => {
     isActive: {
       type: DataTypes.BOOLEAN,
       defaultValue: true
-    }
+    },
+    isOnline: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   }, {
     timestamps: true,
     paranoid: true
@@ -38,6 +44,10 @@ module.exports = (sequelize) => {
       through: 'UserRoles',
       foreignKey: 'userId',
       otherKey: 'roleId'
+    });
+    User.belongsTo(models.Letra, { 
+      foreignKey: 'idLetra', 
+      as: 'letra' 
     });
   };
 

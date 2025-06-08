@@ -10,8 +10,10 @@ module.exports = (sequelize) => {
       this.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra' });
       this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos' });
       this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes' });
+      this.belongsToMany(models.Arguido, {through: models.ProcessoArguido,foreignKey: 'idProcesso', otherKey: 'idArguido', as: 'arguido'});
+
     }
-  }
+  } 
 
   ProcessoModel.init({
     numero: {

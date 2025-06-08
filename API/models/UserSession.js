@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       UserSession.belongsTo(models.User, { 
         foreignKey: 'userId',
-        as: 'user' // Adicione um alias
+        as: 'user'
       });
     }
   }
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'users', // Note: lowercase para MySQL
+        model: 'users',
         key: 'id',
       }
     },
@@ -30,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'UserSession',
     tableName: 'user_sessions',
-    timestamps: true, // Adiciona createdAt e updatedAt
-    underscored: true // Converte camelCase para snake_case
+    timestamps: true,
+    underscored: true
   });
   return UserSession;
 };
