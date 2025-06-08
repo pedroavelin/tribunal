@@ -39,15 +39,7 @@ class Letra extends Model {
       foreignKey: 'idLetra',
       as: 'processos'
     });
-  // Removida a relação com User
-    // this.hasMany(models.User, {
-    //   foreignKey: 'idLetra',
-    //   as: 'usuarios'
-    // });
-    Letra.hasMany(models.User, {
-    foreignKey: 'idLetra',
-    as: 'usuarios'
-  });
+    this.hasMany(models.User, { foreignKey: 'idLetra', as: 'usuarios' });
   }
 }
 

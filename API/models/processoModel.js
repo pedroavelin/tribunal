@@ -11,7 +11,6 @@ module.exports = (sequelize) => {
       this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos' });
       this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes' });
       this.belongsToMany(models.Arguido, {through: models.ProcessoArguido,foreignKey: 'idProcesso', otherKey: 'idArguido', as: 'arguido'});
-
     }
   } 
 

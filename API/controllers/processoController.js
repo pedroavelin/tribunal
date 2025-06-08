@@ -44,33 +44,48 @@ exports.listar = async (req, res) => {
     });
   }
 };
+
 exports.listarPorLetraDoUsuario = async (req, res) => {
+
   try {
-    // 1. Buscar o usuário logado (assumindo que o ID está no token decodificado)
-    const userId = req.userId; // ← do token JWT
+    const userId = req.userId;
     const user = await db.User.findByPk(userId);
 
     if (!user || !user.idLetra) {
-      return res.status(404).json({ message: 'Usuário ou letra não encontrada.' });
+      return res.status(404).json({
+        message: 'Usuário ou letra não encontrada.'
+      });
     }
 
     // 2. Buscar processos com a mesma letra
     const processos = await db.Processo.findAll({
-    include: [
-      { model: db.Tribunal, as: 'tribunal' },
-      { model: db.Seccao, as: 'seccao' },
-      { model: db.EstadoProcesso, as: 'estado' },
-      { model: db.Letra, as: 'letra' }, 
-      {
-        model: db.ProcessoArguido,
-        as: 'arguidos',
-        include: [
-          {
+      where: {
+        idLetra: user.idLetra
+      },
+      include: [{
+          model: db.Tribunal,
+          as: 'tribunal'
+        },
+        {
+          model: db.Seccao,
+          as: 'seccao'
+        },
+        {
+          model: db.EstadoProcesso,
+          as: 'estado'
+        },
+        {
+          model: db.Letra,
+          as: 'letra'
+        },
+        {
+          model: db.ProcessoArguido,
+          as: 'arguidos',
+          include: [{
             model: db.Arguido,
             as: 'arguido',
             attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'dataDeNascimento', 'idEndereco'],
-            include: [
-              {
+            include: [{
                 model: db.EstadoArguido,
                 as: 'estado',
                 attributes: ['descricao']
@@ -78,67 +93,59 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
               {
                 model: db.Endereco,
                 as: 'endereco',
-                include: [
-                  {
-                    model: db.Municipio,
-                    as: 'municipio',
-                    attributes: ['nome'],
-                    include: [
-                      {
-                        model: db.Provincia,
-                        as: 'provincia',
-                        attributes: ['nome']
-                      }
-                    ]
-                  }
-                ],
-                attributes: ['bairro', 'rua', 'casa']
-              }
-            ]
-          }
-        ]
-      },
-    {
-      model: db.ProcessoDeclarante,
-      as: 'declarantes',
-      include: [
-        {
-          model: db.Declarante,
-          as: 'declarante',
-          attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'email', 'telf1', 'telf2', 'idEndereco'],
-          include: [
-            {
-              model: db.Endereco,
-              as: 'endereco',
-              attributes: ['bairro', 'rua', 'casa'],
-              include: [
-                {
+                include: [{
                   model: db.Municipio,
                   as: 'municipio',
                   attributes: ['nome'],
-                  include: [
-                    {
-                      model: db.Provincia,
-                      as: 'provincia',
-                      attributes: ['nome']
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+                  include: [{
+                    model: db.Provincia,
+                    as: 'provincia',
+                    attributes: ['nome']
+                  }]
+                }],
+                attributes: ['bairro', 'rua', 'casa']
+              }
+            ]
+          }]
         },
-        
+        {
+          model: db.ProcessoDeclarante,
+          as: 'declarantes',
+          include: [{
+            model: db.Declarante,
+            as: 'declarante',
+            attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'email', 'telf1', 'telf2', 'idEndereco'],
+            include: [{
+              model: db.Endereco,
+              as: 'endereco',
+              attributes: ['bairro', 'rua', 'casa'],
+              include: [{
+                model: db.Municipio,
+                as: 'municipio',
+                attributes: ['nome'],
+                include: [{
+                  model: db.Provincia,
+                  as: 'provincia',
+                  attributes: ['nome']
+                }]
+              }]
+            }]
+          }, ]
+        }
       ]
+    });
+    if (processos.length === 0) {
+      return res.status(200).json({
+        message: 'Você não tem processo(s) associado(s) à sua letra.'
+      });
     }
-  ]
-});
-
 
     return res.status(200).json(processos);
   } catch (error) {
     console.error('Erro ao listar por letra:', error);
-    return res.status(500).json({ message: 'Erro interno no servidor.' });
+    return res.status(500).json({
+      message: 'Erro interno no servidor.'
+    });
   }
 };
 
