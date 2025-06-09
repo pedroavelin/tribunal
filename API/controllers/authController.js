@@ -3,9 +3,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const jwtConfig = require('../config/jwt');
 const logAudit = require('../utils/auditLogger');
-const db = require('../models');
-const { User, Tribunal } = db;
-
 
 const AuthController = {
   signup: async (req, res) => {
@@ -89,110 +86,21 @@ const AuthController = {
     };
   },
 
-  // signin: async (req, res) => {
-  //   try {
-  //     const user = await db.User.findOne({
-  //       where: {
-  //         email: req.body.email
-  //       },
-  //       include: [db.Role]
-  //     });
-
-  //     if (!user) {
-  //       return res.status(404).json({
-  //         message: 'Usuário não encontrado.'
-  //       });
-  //     }
-  //     if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
-  //       await logAudit({
-  //         userId: null,
-  //         action: 'LOGIN_FAILED',
-  //         resource: 'Auth',
-  //         description: `Tentativa de login falhou para o e-mail ${req.body.email}`,
-  //         req
-  //       });
-  //       return res.status(401).json({
-  //         message: 'Email ou senha inválidos.'
-  //       });
-  //     }
-  //     const passwordIsValid = bcrypt.compareSync(
-  //       req.body.password,
-  //       user.password
-  //     );
-
-  //     if (!passwordIsValid) {
-  //       return res.status(401).json({
-  //         accessToken: null,
-  //         message: 'Invalid password!'
-  //       });
-  //     }
-
-  //     // Gera access token
-  //     const accessToken = jwt.sign({
-  //         id: user.id
-  //       },
-  //       jwtConfig.secret, {
-  //         expiresIn: jwtConfig.expiresIn
-  //       }
-  //     );
-  //     await logAudit({
-  //       userId: user.id,
-  //       action: 'LOGIN_SUCCESS',
-  //       resource: 'Auth',
-  //       description: `Usuário ${user.email} fez login com sucesso`,
-  //       req
-  //     });
-  //     // Gera refresh token + salva no banco
-  //     const {
-  //       token: refreshToken,
-  //       expiry
-  //     } = AuthController.generateRefreshToken(user.id);
-
-  //     await db.RefreshToken.create({
-  //       token: refreshToken,
-  //       userId: user.id,
-  //       expiryDate: expiry
-  //     });
-
-  //     const authorities = user.Roles.map(role => `ROLE_${role.name.toUpperCase()}`);
-
-  //     return res.status(200).json({
-  //       id: user.id,
-  //       username: user.username,
-  //       email: user.email,
-  //       roles: authorities,
-  //       accessToken: accessToken,
-  //       refreshToken: refreshToken
-  //     });
-
-  //   } catch (error) {
-  //     console.error('Erro no signin:', error);
-  //     return res.status(500).json({
-  //       message: 'Erro interno no servidor.'
-  //     });
-  //   }
-  // },
   signin: async (req, res) => {
     try {
-      // Buscar usuário com roles + tribunal, seccao, letra (assumindo que o modelo User tem associações)
       const user = await db.User.findOne({
         where: {
           email: req.body.email
         },
-        include: [
-          db.Role,
-          { model: db.Tribunal, as: 'tribunal', attributes: ['id'] },
-          {
-            model: db.Seccao,
-            as: 'seccao',
-            attributes: ['id']
-          },
-          {
-            model: db.Letra,
-            as: 'letra',
-            attributes: ['id']
-          }
-        ]
+          include: [
+                  { model: db.Role, as: 'roles' },
+                //   { model: db.Seccao, as: 'seccao',
+                //     include: [
+                //       { model: db.Tribunal, as: 'tribunais' }
+                //     ]
+                //   },
+                //   { model: db.Letra, as: 'letra' },
+                ]
       });
 
       if (!user) {
@@ -200,9 +108,7 @@ const AuthController = {
           message: 'Usuário não encontrado.'
         });
       }
-
-      const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
-      if (!passwordIsValid) {
+      if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
         await logAudit({
           userId: null,
           action: 'LOGIN_FAILED',
@@ -214,14 +120,26 @@ const AuthController = {
           message: 'Email ou senha inválidos.'
         });
       }
+      const passwordIsValid = bcrypt.compareSync(
+        req.body.password,
+        user.password
+      );
 
-      // Gerar access token
+      if (!passwordIsValid) {
+        return res.status(401).json({
+          accessToken: null,
+          message: 'Invalid password!'
+        });
+      }
+
+      // Gera access token
       const accessToken = jwt.sign({
-        id: user.id
-      }, jwtConfig.secret, {
-        expiresIn: jwtConfig.expiresIn
-      });
-
+          id: user.id
+        },
+        jwtConfig.secret, {
+          expiresIn: jwtConfig.expiresIn
+        }
+      );
       await logAudit({
         userId: user.id,
         action: 'LOGIN_SUCCESS',
@@ -229,49 +147,31 @@ const AuthController = {
         description: `Usuário ${user.email} fez login com sucesso`,
         req
       });
-
-      // Gerar refresh token + salvar no banco
+      // Gera refresh token + salva no banco
       const {
         token: refreshToken,
         expiry
       } = AuthController.generateRefreshToken(user.id);
+
       await db.RefreshToken.create({
         token: refreshToken,
         userId: user.id,
         expiryDate: expiry
       });
 
-      // Montar lista de roles
-      const authorities = user.Roles.map(role => `ROLE_${role.name.toUpperCase()}`);
+      const authorities = user.roles.map(role => `ROLE_${role.name.toUpperCase()}`);
 
-      // ARMAZENAR NO SESSION apenas os dados essenciais
-      req.session.userData = {
-        idUser: user.id,
-        idTribunal: user.tribunal ? user.tribunal.id : null,
-        idSeccao: user.seccao ? user.seccao.id : null,
-        idLetra: user.letra ? user.letra.id : null,
-      };
-      
       return res.status(200).json({
         id: user.id,
         username: user.username,
         email: user.email,
-        tribunal: user.tribunal ? user.tribunal.nome : null,
-        seccao: user.seccao ? user.seccao.nome : null,
-        letra: user.letra ? user.letra.nome : null,
         roles: authorities,
-        accessToken,
-        refreshToken
+        tribunal: user.seccao?.tribunal?.nome,
+        seccao: user.seccao?.numero,
+        letra: user.letra?.letra,
+        accessToken: accessToken,
+        refreshToken: refreshToken
       });
-
-      // return res.status(200).json({
-      //   id: user.id,
-      //   username: user.username,
-      //   email: user.email,
-      //   roles: authorities,
-      //   accessToken,
-      //   refreshToken
-      // });
 
     } catch (error) {
       console.error('Erro no signin:', error);
@@ -280,6 +180,7 @@ const AuthController = {
       });
     }
   },
+
   refreshToken: async (req, res) => {
     const {
       refreshToken

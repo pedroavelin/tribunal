@@ -2,14 +2,11 @@
 const { Model, DataTypes } = require('sequelize');
 
 class Seccao extends Model {
-  getDescricaoCompleta() {
-    return `Seção ${this.numero} - ${this.tribunal?.nome || ''}`;
-  }
 
   static associate(models) {
     this.belongsTo(models.Tribunal, {
       foreignKey: 'idTribunal',
-      as: 'tribunal'
+      as: 'tribunais'
     });
 
     this.belongsTo(models.Municipio, {

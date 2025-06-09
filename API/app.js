@@ -36,7 +36,7 @@ db.sequelize.authenticate()
   });
 
 // Sync database (remove force: true in production)
-db.sequelize.sync({ force: false })
+db.sequelize.sync()
   .then(() => {
     console.log('Banco de dados sincronizado');
   })

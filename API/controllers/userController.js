@@ -10,7 +10,7 @@ exports.getAllUsers = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-      include: [db.Role]
+     include: [{ model: Role, as: 'roles' }]
     });
     res.status(200).send(users);
   } catch (error) {
@@ -26,7 +26,7 @@ exports.getUser = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-      include: [db.Role]
+     include: [{ model: Role, as: 'roles' }]
     });
 
     if (!user) {
@@ -131,7 +131,7 @@ exports.createUser = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-      include: [db.Role]
+     include: [{ model: Role, as: 'roles' }]
     });
     await logAudit({
       userId: req.userId,
@@ -188,7 +188,7 @@ exports.updateUser = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-      include: [db.Role]
+     include: [{ model: Role, as: 'roles' }]
     });
 
     res.status(200).send(updatedUser);
@@ -221,12 +221,8 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.assignRole = async (req, res) => {
-  const {
-    userId
-  } = req.params;
-  const {
-    roleId
-  } = req.body;
+  const { userId } = req.params;
+  const { roleId } = req.body;
 
   try {
     const user = await User.findByPk(userId);
@@ -290,7 +286,7 @@ exports.getOnlineUsers = async (req, res) => {
       },
       attributes: ['id', 'username', 'email', 'lastActivity'],
       include: [{
-        model: Role,
+        model: Role, as: 'roles', 
         attributes: ['name'],
         through: { attributes: [] } // Oculta a tabela junction
       }],

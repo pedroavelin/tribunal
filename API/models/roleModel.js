@@ -23,7 +23,8 @@ module.exports = (sequelize) => {
     Role.belongsToMany(models.User, {
       through: 'UserRoles',
       foreignKey: 'roleId',
-      otherKey: 'userId'
+      otherKey: 'userId',
+      as: 'roles' 
     });
     Role.belongsToMany(models.Permission, {
       through: 'RolePermissions',

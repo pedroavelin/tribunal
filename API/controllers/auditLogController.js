@@ -3,15 +3,7 @@ const { Op } = require('sequelize');
 
 module.exports = {
   async index(req, res) {
-    const {
-      userId,
-      action,
-      resource,
-      startDate,
-      endDate,
-      page = 1,
-      limit = 10
-    } = req.query;
+    const { userId, action, resource, startDate, endDate, page = 1, limit = 10  } = req.query;
 
     const where = {};
 
@@ -33,7 +25,7 @@ module.exports = {
         limit: parseInt(limit),
         offset: parseInt(offset),
         order: [['createdAt', 'DESC']],
-        include: [{ model: db.User, attributes: ['id', 'email', 'username'] }]
+        include: [{ model: db.User, as: 'users', attributes: ['id', 'email', 'username'] }]
       });
 
       return res.status(200).json({

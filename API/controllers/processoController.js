@@ -46,7 +46,6 @@ exports.listar = async (req, res) => {
 };
 
 exports.listarPorLetraDoUsuario = async (req, res) => {
-
   try {
     const userId = req.userId;
     const user = await db.User.findByPk(userId);
@@ -60,23 +59,12 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
     // 2. Buscar processos com a mesma letra
     const processos = await db.Processo.findAll({
       where: {
-        idLetra: user.idLetra
+        idLetra: user.idLetra, as: 'letra', attributes: ['letra'],
       },
-      include: [{
-          model: db.Tribunal,
-          as: 'tribunal'
-        },
-        {
-          model: db.Seccao,
-          as: 'seccao'
-        },
+      include: [
         {
           model: db.EstadoProcesso,
           as: 'estado'
-        },
-        {
-          model: db.Letra,
-          as: 'letra'
         },
         {
           model: db.ProcessoArguido,
