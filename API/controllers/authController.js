@@ -3,6 +3,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const jwtConfig = require('../config/jwt');
 const logAudit = require('../utils/auditLogger');
+const db = require('../models');
+const { User, Tribunal } = db;
+
 
 const AuthController = {
   signup: async (req, res) => {
@@ -178,11 +181,7 @@ const AuthController = {
         },
         include: [
           db.Role,
-          {
-            model: db.Tribunal,
-            as: 'tribunal',
-            attributes: ['id']
-          },
+          { model: db.Tribunal, as: 'tribunal', attributes: ['id'] },
           {
             model: db.Seccao,
             as: 'seccao',
