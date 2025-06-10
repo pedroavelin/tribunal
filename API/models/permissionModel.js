@@ -1,7 +1,18 @@
-const { DataTypes } = require('sequelize');
+'use strict';
+const { Model, DataTypes } = require('sequelize');
+
+class Permission extends Model {
+  static associate(models) {
+    this.belongsToMany(models.Role, {
+      through: 'RolePermissions',
+      foreignKey: 'permissionId',
+      otherKey: 'roleId'
+    });
+  }
+}
 
 module.exports = (sequelize) => {
-  const Permission = sequelize.define('Permission', {
+  Permission.init({
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -16,16 +27,12 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING
     }
   }, {
+    sequelize,
+    modelName: 'Permission',
+    tableName: 'permissions',
+    freezeTableName: true,
     timestamps: true
   });
-
-  Permission.associate = (models) => {
-    Permission.belongsToMany(models.Role, {
-      through: 'RolePermissions',
-      foreignKey: 'permissionId',
-      otherKey: 'roleId'
-    });
-  };
 
   return Permission;
 };

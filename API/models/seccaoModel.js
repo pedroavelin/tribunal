@@ -2,11 +2,10 @@
 const { Model, DataTypes } = require('sequelize');
 
 class Seccao extends Model {
-
   static associate(models) {
     this.belongsTo(models.Tribunal, {
       foreignKey: 'idTribunal',
-      as: 'tribunais'
+      as: 'tribunal'
     });
 
     this.belongsTo(models.Municipio, {
@@ -32,7 +31,10 @@ module.exports = (sequelize) => {
     numero: {
       type: DataTypes.STRING,
       allowNull: false,
-      validate: { notEmpty: true }
+      validate: {
+        notEmpty: true
+        // Adicione mais validações se quiser padronizar o número
+      }
     },
     idTribunal: {
       type: DataTypes.INTEGER,

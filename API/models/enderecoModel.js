@@ -1,16 +1,16 @@
 'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-class Endereco extends Model {
-  static associate(models) {
-    this.belongsTo(models.Municipio, {
-      foreignKey: 'idMunicipio',
-      as: 'municipio'
-    });
+module.exports = (sequelize, DataTypes) => {
+  class Endereco extends Model {
+    static associate(models) {
+      this.belongsTo(models.Municipio, {
+        foreignKey: 'idMunicipio',
+        as: 'municipio'
+      });
+    }
   }
-}
 
-module.exports = (sequelize) => {
   Endereco.init({
     id: {
       type: DataTypes.INTEGER,
@@ -21,7 +21,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'municipios', // nome correto da tabela, ajuste conforme seu BD
+        model: 'municipios', // nome da tabela referenciada
         key: 'id'
       }
     },
@@ -40,7 +40,7 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'Endereco',
-    tableName: 'enderecos',  // plural padrão, ajuste conforme BD
+    tableName: 'enderecos',
     freezeTableName: true,
     timestamps: false
   });

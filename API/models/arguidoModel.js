@@ -1,20 +1,20 @@
 'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-class Arguido extends Model {
-  static associate(models) {
-    this.belongsTo(models.Endereco, {
-      foreignKey: 'idEndereco',
-      as: 'endereco'
-    });
-    this.belongsTo(models.EstadoArguido, {
+module.exports = (sequelize, DataTypes) => {
+  class Arguido extends Model {
+    static associate(models) {
+      this.belongsTo(models.Endereco, {
+        foreignKey: 'idEndereco',
+        as: 'endereco'
+      });
+      this.belongsTo(models.EstadoArguido, {
         foreignKey: 'idEstado',
         as: 'estado'
       });
+    }
   }
-}
 
-module.exports = (sequelize) => {
   Arguido.init({
     id: {
       type: DataTypes.INTEGER,

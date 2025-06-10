@@ -1,15 +1,21 @@
-// models/UserSession.js
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class UserSession extends Model {
     static associate(models) {
-      UserSession.belongsTo(models.User, { 
+      UserSession.belongsTo(models.User, {
         foreignKey: 'userId',
         as: 'user'
       });
     }
   }
+
   UserSession.init({
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -20,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     loginTime: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW
+      defaultValue: DataTypes.NOW,
+      allowNull: false
     },
     logoutTime: {
       type: DataTypes.DATE,
@@ -33,5 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true,
     underscored: true
   });
+
   return UserSession;
 };

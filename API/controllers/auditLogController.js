@@ -25,7 +25,7 @@ module.exports = {
         limit: parseInt(limit),
         offset: parseInt(offset),
         order: [['createdAt', 'DESC']],
-        include: [{ model: db.User, as: 'users', attributes: ['id', 'email', 'username'] }]
+        include: [{ model: db.User, as: 'user', attributes: ['id', 'email', 'username'] }]
       });
 
       return res.status(200).json({

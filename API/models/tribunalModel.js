@@ -9,6 +9,11 @@ class Tribunal extends Model {
 
 module.exports = (sequelize) => {
   Tribunal.init({
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     nome: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -27,7 +32,14 @@ module.exports = (sequelize) => {
     modelName: 'Tribunal',
     tableName: 'tribunais',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
+    indexes: [
+      {
+        unique: true,
+        fields: ['nome', 'idMunicipio'],
+        name: 'unique_nome_municipio'
+      }
+    ]
   });
 
   return Tribunal;

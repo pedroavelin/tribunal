@@ -13,7 +13,9 @@ class Provincia extends Model {
   static associate(models) {
     this.hasMany(models.Municipio, {
       foreignKey: 'idProvincia',
-      as: 'municipios'
+      as: 'municipios',
+      onDelete: 'RESTRICT',
+      onUpdate: 'CASCADE'
     });
   }
 }
@@ -23,8 +25,7 @@ module.exports = (sequelize) => {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
-      unique: true
+      autoIncrement: true
     },
     nome: {
       type: DataTypes.STRING,

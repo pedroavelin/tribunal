@@ -1,2 +1,3 @@
 [2025-06-08 11:20:00] ERROR: Erro ao remover tokens expirados: Table 'teste2021.refreshtokens' doesn't exist
 [2025-06-09 13:40:00] ERROR: Erro ao remover tokens expirados: Table 'teste2023.refreshtokens' doesn't exist
+[2025-06-10 13:20:00] ERROR: Erro ao remover tokens expirados: Table 'teste2022.refresh_tokens' doesn't exist

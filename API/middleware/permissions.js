@@ -5,7 +5,7 @@ const checkPermission = (permissionName) => {
     try {
       const user = await db.User.findByPk(req.userId, {
         include: [{
-          model: db.Role,
+          model: db.Role, as: 'roles',
           include: [{
             model: db.Permission,
             where: { name: permissionName }

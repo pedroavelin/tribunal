@@ -1,4 +1,5 @@
-const { Role, Permission, db } = require('../models');
+const db = require('../models');
+const { Role, Permission, Sequelize } = db;
 
 exports.getAllRoles = async (req, res) => {
   try {

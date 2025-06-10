@@ -1,6 +1,14 @@
-// models/AuditLog.js
+'use strict';
+const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  const AuditLog = sequelize.define('AuditLog', {
+  class AuditLog extends Model {
+    static associate(models) {
+      AuditLog.belongsTo(models.User, { foreignKey: 'userId', as: 'user' });
+    }
+  }
+
+  AuditLog.init({
     userId: {
       type: DataTypes.INTEGER,
       allowNull: true // pode ser null para ações públicas
@@ -29,11 +37,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true
     }
+  }, {
+    sequelize,
+    modelName: 'AuditLog',
+    tableName: 'audit_logs',
+    timestamps: true
   });
-
-  AuditLog.associate = (models) => {
-    AuditLog.belongsTo(models.User, { foreignKey: 'userId' });
-  };
 
   return AuditLog;
 };

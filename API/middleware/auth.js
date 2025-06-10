@@ -43,7 +43,7 @@ const isAdmin = async (req, res, next) => {
   try {
     const user = await db.User.findByPk(req.userId, {
       include: [{
-        model: db.Role,
+        model: db.Role, as: 'roles',
         where: { name: 'admin' }
       }]
     });

@@ -1,13 +1,13 @@
 'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-class EstadoArguido extends Model {
-  static associate(models) {
-    // associações aqui, se houver ok
+module.exports = (sequelize, DataTypes) => {
+  class EstadoArguido extends Model {
+    static associate(models) {
+      // Associações podem ser definidas aqui, se necessário
+    }
   }
-}
 
-module.exports = (sequelize) => {
   EstadoArguido.init({
     id: {
       type: DataTypes.INTEGER,
@@ -20,9 +20,10 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
-    modelName: 'EstadoArguido',   
+    modelName: 'EstadoArguido',
     tableName: 'estado_arguidos',
     timestamps: false
   });
+
   return EstadoArguido;
 };

@@ -1,8 +1,7 @@
 const db = require('../models');
 const bcrypt = require('bcryptjs');
 const logAudit = require('../utils/auditLogger');
-const User = db.User;
-const Role = db.Role;
+const { User, Role } = db;
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -10,7 +9,7 @@ exports.getAllUsers = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-     include: [{ model: Role, as: 'roles' }]
+     include: [{ model: db.Role, as: 'roles' }]
     });
     res.status(200).send(users);
   } catch (error) {
@@ -20,13 +19,14 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
+
 exports.getUser = async (req, res) => {
   try {
     const user = await db.User.findByPk(req.params.id, {
       attributes: {
         exclude: ['password']
       },
-     include: [{ model: Role, as: 'roles' }]
+     include: [{ model: db.Role, as: 'roles' }]
     });
 
     if (!user) {
@@ -107,6 +107,7 @@ exports.createUser = async (req, res) => {
       email: email.trim().toLowerCase(),
       password: bcrypt.hashSync(password, 8)
     });
+  console.log(user instanceof sequelize.models.User);
 
     if (roles && Array.isArray(roles)) {
       const roleRecords = await db.Role.findAll({
@@ -125,13 +126,13 @@ exports.createUser = async (req, res) => {
 
       await user.setRoles(roleRecords);
     } else {
-      await user.setRoles([1]); // Default role
+      await user.setRoles([1]);
     }
     const newUser = await db.User.findByPk(user.id, {
       attributes: {
         exclude: ['password']
       },
-     include: [{ model: Role, as: 'roles' }]
+     include: [{ model: db.Role, as: 'roles' }]
     });
     await logAudit({
       userId: req.userId,
@@ -188,7 +189,7 @@ exports.updateUser = async (req, res) => {
       attributes: {
         exclude: ['password']
       },
-     include: [{ model: Role, as: 'roles' }]
+     include: [{ model: db.Role, as: 'roles' }]
     });
 
     res.status(200).send(updatedUser);
@@ -234,7 +235,7 @@ exports.assignRole = async (req, res) => {
       });
     }
 
-    await user.addRole(role); // ou setRoles(role) se for substituição
+    await user.addRole(role);
 
     res.status(200).json({
       message: 'Papel atribuído com sucesso'
@@ -265,7 +266,7 @@ exports.removeRole = async (req, res) => {
       });
     }
 
-    await user.removeRole(role); // remove o relacionamento
+    await user.removeRole(role);
 
     res.status(200).json({
       message: 'Papel removido com sucesso'

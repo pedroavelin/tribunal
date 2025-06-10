@@ -1,7 +1,6 @@
 'use strict'
 const db = require('../models');
-const User = db.User;
-
+// const { User } = db;
 exports.listar = async (req, res) => {
   try {
     const processos = await db.Processo.findAll({
@@ -55,11 +54,11 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
         message: 'Usuário ou letra não encontrada.'
       });
     }
-
     // 2. Buscar processos com a mesma letra
     const processos = await db.Processo.findAll({
       where: {
-        idLetra: user.idLetra, as: 'letra', attributes: ['letra'],
+        idLetra: user.idLetra,
+        idSeccao: user.idSeccao,
       },
       include: [
         {
@@ -74,17 +73,17 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
             as: 'arguido',
             attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'dataDeNascimento', 'idEndereco'],
             include: [{
-                model: db.EstadoArguido,
-                as: 'estado',
-                attributes: ['descricao']
-              },
-              {
-                model: db.Endereco,
-                as: 'endereco',
-                include: [{
-                  model: db.Municipio,
-                  as: 'municipio',
-                  attributes: ['nome'],
+              model: db.EstadoArguido,
+              as: 'estado',
+              attributes: ['descricao']
+            },
+            {
+              model: db.Endereco,
+              as: 'endereco',
+              include: [{
+                model: db.Municipio,
+                as: 'municipio',
+                attributes: ['nome'],
                   include: [{
                     model: db.Provincia,
                     as: 'provincia',
@@ -124,13 +123,12 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
     });
     if (processos.length === 0) {
       return res.status(200).json({
-        message: 'Você não tem processo(s) associado(s) à sua letra.'
+        message: 'Actualmente não há processo(s) disponíveis para você.'
       });
     }
-
     return res.status(200).json(processos);
   } catch (error) {
-    console.error('Erro ao listar por letra:', error);
+    console.error('Erro ao buscar processos:', error);
     return res.status(500).json({
       message: 'Erro interno no servidor.'
     });

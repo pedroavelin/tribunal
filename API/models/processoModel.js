@@ -4,13 +4,13 @@ const { Model, DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   class ProcessoModel extends Model {
     static associate(models) {
-      this.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'tribunal' });
-      this.belongsTo(models.Seccao, { foreignKey: 'idSeccao', as: 'seccao' });
-      this.belongsTo(models.EstadoProcesso, { foreignKey: 'idEstadoProcesso', as: 'estado' });
-      this.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra' });
-      this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos' });
-      this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes' });
-      this.belongsToMany(models.Arguido, {through: models.ProcessoArguido,foreignKey: 'idProcesso', otherKey: 'idArguido', as: 'arguido'});
+      this.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'tribunal',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.belongsTo(models.Seccao, { foreignKey: 'idSeccao', as: 'seccao',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.belongsTo(models.EstadoProcesso, { foreignKey: 'idEstadoProcesso', as: 'estado',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.hasMany(models.ProcessoArguido, { foreignKey: 'idProcesso', as: 'arguidos',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.hasMany(models.ProcessoDeclarante, { foreignKey: 'idProcesso', as: 'declarantes',   onDelete: 'RESTRICT', onUpdate: 'CASCADE' });
+      this.belongsToMany(models.Arguido, {through: models.ProcessoArguido,foreignKey: 'idProcesso', otherKey: 'idArguido', as: 'arguido',   onDelete: 'RESTRICT', onUpdate: 'CASCADE'});
     }
   } 
 

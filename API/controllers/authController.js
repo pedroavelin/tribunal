@@ -1,8 +1,12 @@
 const db = require('../models');
+const { User } = db;
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const jwtConfig = require('../config/jwt');
 const logAudit = require('../utils/auditLogger');
+
+// console.log('Resultado:', typeof User.setRoles);
 
 const AuthController = {
   signup: async (req, res) => {
@@ -92,15 +96,16 @@ const AuthController = {
         where: {
           email: req.body.email
         },
-          include: [
-                  { model: db.Role, as: 'roles' },
-                //   { model: db.Seccao, as: 'seccao',
-                //     include: [
-                //       { model: db.Tribunal, as: 'tribunais' }
-                //     ]
-                //   },
-                //   { model: db.Letra, as: 'letra' },
-                ]
+        include: [
+          { model: db.Role, as: 'roles' },
+          {
+            model: db.Seccao, as: 'seccao',
+            include: [
+              { model: db.Tribunal, as: 'tribunal' }
+            ]
+          },
+          { model: db.Letra, as: 'letra' },
+        ]
       });
 
       if (!user) {
@@ -134,11 +139,11 @@ const AuthController = {
 
       // Gera access token
       const accessToken = jwt.sign({
-          id: user.id
-        },
+        id: user.id
+      },
         jwtConfig.secret, {
-          expiresIn: jwtConfig.expiresIn
-        }
+        expiresIn: jwtConfig.expiresIn
+      }
       );
       await logAudit({
         userId: user.id,
@@ -241,11 +246,11 @@ const AuthController = {
 
       // Gera novo access token
       const newAccessToken = jwt.sign({
-          id: user.id
-        },
+        id: user.id
+      },
         jwtConfig.secret, {
-          expiresIn: jwtConfig.expiresIn || '15m'
-        }
+        expiresIn: jwtConfig.expiresIn || '15m'
+      }
       );
 
       return res.status(200).json({
@@ -265,6 +270,9 @@ const AuthController = {
       });
     }
   },
+  recoverPassWord: async (req, res) => {
+   
+  },
 
   logout: async (req, res) => {
     await db.RefreshToken.destroy({
@@ -276,7 +284,6 @@ const AuthController = {
       message: 'Logout successful'
     });
   }
-
 };
 
 module.exports = AuthController;

@@ -1,6 +1,5 @@
 const db = require("../models");
-const Tribunal = db.Tribunal;
-
+const {Tribunal} = db;
 // Criar tribunal
 exports.create = async (req, res) => {
   try {

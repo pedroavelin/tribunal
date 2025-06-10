@@ -1,25 +1,26 @@
 'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-class Municipio extends Model {
-  static associate(models) {
-    this.hasMany(models.Seccao, {
-      foreignKey: 'idMunicipio',
-      as: 'seccoes'
-    });
+module.exports = (sequelize, DataTypes) => {
+  class Municipio extends Model {
+    static associate(models) {
+      this.hasMany(models.Seccao, {
+        foreignKey: 'idMunicipio',
+        as: 'seccoes'
+      });
 
-    this.hasMany(models.Tribunal, {
-      foreignKey: 'idMunicipio',
-      as: 'tribunais'
-    });
-    this.belongsTo(models.Provincia, {
-      foreignKey: 'idProvincia',
-      as: 'provincia'
-    });
+      this.hasMany(models.Tribunal, {
+        foreignKey: 'idMunicipio',
+        as: 'tribunal'
+      });
+
+      this.belongsTo(models.Provincia, {
+        foreignKey: 'idProvincia',
+        as: 'provincia'
+      });
+    }
   }
-}
 
-module.exports = (sequelize) => {
   Municipio.init({
     nome: {
       type: DataTypes.STRING,
@@ -41,5 +42,6 @@ module.exports = (sequelize) => {
     freezeTableName: true,
     timestamps: false
   });
+
   return Municipio;
 };

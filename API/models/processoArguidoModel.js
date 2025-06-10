@@ -63,7 +63,7 @@ module.exports = (sequelize) => {
     modelName: 'ProcessoArguido',
     tableName: 'processo_arguidos',
     freezeTableName: true,
-    timestamps: false
+    timestamps: false,
   });
 
   return ProcessoArguido;

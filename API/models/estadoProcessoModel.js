@@ -1,14 +1,14 @@
 'use strict';
-const { Model, DataTypes } = require('sequelize');
+const { Model } = require('sequelize');
 
-class EstadoProcesso extends Model {
-  static associate(models) {
-    // Exemplo de associação futura:
-    // this.hasMany(models.Processo, { foreignKey: 'idEstadoProcesso', as: 'processos' });
+module.exports = (sequelize, DataTypes) => {
+  class EstadoProcesso extends Model {
+    static associate(models) {
+      // Exemplo de associação futura:
+      // this.hasMany(models.Processo, { foreignKey: 'idEstadoProcesso', as: 'processos' });
+    }
   }
-}
 
-module.exports = (sequelize) => {
   EstadoProcesso.init({
     id: {
       type: DataTypes.INTEGER,

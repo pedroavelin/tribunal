@@ -36,7 +36,7 @@ db.sequelize.authenticate()
   });
 
 // Sync database (remove force: true in production)
-db.sequelize.sync()
+db.sequelize.sync( { force: false} )
   .then(() => {
     console.log('Banco de dados sincronizado');
   })
@@ -53,10 +53,8 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/permissions', permissionRoutes);
 app.use('/api/logs', auditLoRoutes);
-app.use('/api/tribunais', tribunalRoutes);
+app.use('/api/tribunal', tribunalRoutes);
 app.use('/api/processos', processoRoutes);
-// app.use('/api/seccoes', seccaoRoutes);
-// app.use('/api/processos', processoRoutes);
 
 // Montar as rotas de autenticação sob o prefixo /api/auth
 app.use('/api/auth', authRoutes); 
