@@ -1,4 +1,6 @@
 <script setup>
+import Dashboard from '../layout/Dashboard.vue';
+
 </script>
 
 <template>
@@ -42,12 +44,12 @@
       <!-- Login -->
       <div class="d-flex col-12 col-xl-4 align-items-center authentication-bg p-sm-12 p-6">
         <div class="w-px-400 mx-auto mt-12 pt-5">
-          <h4 class="mb-1">Welcome to Vuexy! 👋</h4>
+          <h4 class="mb-1">Seja Bem vindo à Secção! 👋</h4>
           <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
           <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
             <div class="mb-6 form-control-validation">
-              <label for="email" class="form-label">Email or Username</label>
+              <label for="email" class="form-label">Email</label>
               <input type="text" class="form-control" id="email" name="email-username"
                 placeholder="Enter your email or username" autofocus="">
             </div>
@@ -71,7 +73,7 @@
                 </a>
               </div>
             </div>
-            <button class="btn btn-primary d-grid w-100">Sign in</button>
+            <router-link to="Dashboard" class="btn btn-primary d-grid w-100">Entrar</router-link>
           </form>
 
           <p class="text-center">
@@ -80,28 +82,6 @@
               <span>Create an account</span>
             </a>
           </p>
-
-          <div class="divider my-6">
-            <div class="divider-text">or</div>
-          </div>
-
-          <div class="d-flex justify-content-center">
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-facebook me-1_5">
-              <i class="icon-base ti tabler-brand-facebook-filled icon-20px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-twitter me-1_5">
-              <i class="icon-base ti tabler-brand-twitter-filled icon-20px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-github me-1_5">
-              <i class="icon-base ti tabler-brand-github-filled icon-20px"></i>
-            </a>
-
-            <a href="javascript:;" class="btn btn-icon rounded-circle btn-text-google-plus">
-              <i class="icon-base ti tabler-brand-google-filled icon-20px"></i>
-            </a>
-          </div>
         </div>
       </div>
       <!-- /Login -->
