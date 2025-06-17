@@ -4,7 +4,7 @@ const { Role, Permission, Sequelize } = db;
 exports.getAllRoles = async (req, res) => {
   try {
     const roles = await db.Role.findAll({
-      include: [db.Permission]
+      include: [{ model: Permission, as: 'permissions' }]
     });
     res.status(200).send(roles);
   } catch (error) {
@@ -15,13 +15,13 @@ exports.getAllRoles = async (req, res) => {
 exports.getRole = async (req, res) => {
   try {
     const role = await db.Role.findByPk(req.params.id, {
-      include: [db.Permission]
+      include: [{ model: Permission, as: 'permissions' }]
     });
-    
+
     if (!role) {
       return res.status(404).send({ message: 'Role not found' });
     }
-    
+
     res.status(200).send(role);
   } catch (error) {
     res.status(500).send({ message: error.message });
@@ -43,12 +43,12 @@ exports.createRole = async (req, res) => {
           }
         }
       });
-      
+
       await role.setPermissions(permissions);
     }
 
     const newRole = await db.Role.findByPk(role.id, {
-      include: [db.Permission]
+      include: [{ model: Permission, as: 'permissions' }]
     });
 
     res.status(201).send(newRole);
@@ -60,7 +60,7 @@ exports.createRole = async (req, res) => {
 exports.updateRole = async (req, res) => {
   try {
     const role = await db.Role.findByPk(req.params.id);
-    
+
     if (!role) {
       return res.status(404).send({ message: 'Role not found' });
     }
@@ -78,12 +78,12 @@ exports.updateRole = async (req, res) => {
           }
         }
       });
-      
+
       await role.setPermissions(permissions);
     }
 
     const updatedRole = await db.Role.findByPk(role.id, {
-      include: [db.Permission]
+      include: [{ model: Permission, as: 'permissions' }]
     });
 
     res.status(200).send(updatedRole);
@@ -95,7 +95,7 @@ exports.updateRole = async (req, res) => {
 exports.deleteRole = async (req, res) => {
   try {
     const role = await db.Role.findByPk(req.params.id);
-    
+
     if (!role) {
       return res.status(404).send({ message: 'Role not found' });
     }

@@ -11,7 +11,6 @@ const permissionRoutes = require('./routes/permissionRoutes');
 const tribunalRoutes = require('./routes/tribunalRoutes');
 const processoRoutes = require('./routes/processoRoutes');
 
-
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 require('./jobs/tokenCleaner');

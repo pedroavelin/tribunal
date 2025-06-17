@@ -28,6 +28,11 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
+console.log('Associações de Role:');
+console.log(db.Role.associations);
+
+console.log('Associações de Permission:');
+console.log(db.Permission.associations);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

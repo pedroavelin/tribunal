@@ -19,7 +19,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-
 exports.getUser = async (req, res) => {
   try {
     const user = await db.User.findByPk(req.params.id, {

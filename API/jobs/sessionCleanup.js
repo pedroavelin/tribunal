@@ -21,4 +21,4 @@ const cleanupInactiveUsers = async () => {
 };
 
 // Executa a cada 5 minutos
-setInterval(cleanupInactiveUsers, 5 * 60 * 1000);
+setInterval(cleanupInactiveUsers, 1 * 60 * 1000);
