@@ -114,7 +114,8 @@ exports.createUser = async (req, res) => {
           name: {
             [db.Sequelize.Op.or]: roles
           }
-        }
+        },
+        include: [{ model: Permission, as: 'permissions' }]
       });
 
       if (roleRecords.length === 0) {
@@ -178,7 +179,8 @@ exports.updateUser = async (req, res) => {
           name: {
             [db.Sequelize.Op.or]: req.body.roles
           }
-        }
+        },
+        include: [{ model: Permission, as: 'permissions' }]
       });
 
       await user.setRoles(roles);

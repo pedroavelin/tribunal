@@ -1,6 +1,5 @@
 'use strict'
 const db = require('../models');
-// const { User } = db;
 exports.listar = async (req, res) => {
   try {
     const processos = await db.Processo.findAll({

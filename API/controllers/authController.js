@@ -35,7 +35,8 @@ const AuthController = {
             name: {
               [db.Sequelize.Op.or]: req.body.roles
             }
-          }
+          },
+          include: [{ model: Permission, as: 'permissions' }]
         });
 
         if (!roles || roles.length === 0) {

@@ -1,6 +1,33 @@
 <script setup>
-import Dashboard from '../layout/Dashboard.vue';
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
+const email = ref('')
+const password = ref('')
+const isLoading = ref(false)
+const error = ref(null)
+const authStore = useAuthStore()
+const router = useRouter()
+
+const handleSubmit = async () => {
+  isLoading.value = true
+  error.value = null
+  
+  try {
+    const credentials = {
+      email: email.value,
+      password: password.value
+    }
+    
+    await authStore.signIn(credentials)
+    router.push('/dashboard') // Redireciona após login
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Login failed. Please try again.'
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -47,16 +74,16 @@ import Dashboard from '../layout/Dashboard.vue';
           <h4 class="mb-1">Seja Bem vindo à Secção! 👋</h4>
           <p class="mb-6">Please sign-in to your account and start the adventure</p>
 
-          <form id="formAuthentication" class="mb-6" action="index.html" method="GET">
+          <form @submit.prevent="handleSubmit" id="formAuthentication" class="mb-6">
             <div class="mb-6 form-control-validation">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email-username"
+              <input v-model="email" type="text" class="form-control" id="email" name="email-username"
                 placeholder="Enter your email or username" autofocus="">
             </div>
             <div class="mb-6 form-password-toggle form-control-validation">
               <label class="form-label" for="password">Password</label>
               <div class="input-group input-group-merge">
-                <input type="password" id="password" class="form-control" name="password"
+                <input v-model="password" type="password" id="password" class="form-control" name="password"
                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                   aria-describedby="password">
                 <span class="input-group-text cursor-pointer"><i class="icon-base ti tabler-eye-off"></i></span>
@@ -73,13 +100,13 @@ import Dashboard from '../layout/Dashboard.vue';
                 </a>
               </div>
             </div>
-            <router-link to="Dashboard" class="btn btn-primary d-grid w-100">Entrar</router-link>
+            <button class="btn btn-primary d-grid w-100" type="submit" :disabled="isLoading">{{ isLoading ? 'Processando...' : 'Entrar' }}</button>
+            <p v-if="error" class="error">Falha no login. Tente novamente.</p>
           </form>
-
           <p class="text-center">
             <span>New on our platform?</span>
             <a href="auth-register-cover.html">
-              <span>Create an account</span>
+              <span> Create an account</span>
             </a>
           </p>
         </div>

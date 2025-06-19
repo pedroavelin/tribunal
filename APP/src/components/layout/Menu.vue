@@ -52,13 +52,13 @@ import router from '@/router';
             <span class="menu-header-text" data-i18n="Apps & Pages">Gestão </span>
           </li>
           <li class="menu-item">
-            <a href="app-email.html" class="menu-link">
+            <a href="!#" class="menu-link">
               <i class="menu-icon icon-base ti tabler-mail"></i>
               <div data-i18n="Email">Tribunais</div>
             </a>
           </li>
           <li class="menu-item">
-            <a href="app-chat.html" class="menu-link">
+            <a href="!#" class="menu-link">
               <i class="menu-icon icon-base ti tabler-messages"></i>
               <div data-i18n="Chat">Secções</div>
             </a>
@@ -70,161 +70,24 @@ import router from '@/router';
             </router-link>
           </li>
           <!-- e-commerce-app menu start -->
-          <li class="menu-item">
-            <ul class="menu-sub">
-              <li class="menu-item">
-                <a href="app-ecommerce-dashboard.html" class="menu-link">
-                  <div data-i18n="Dashboard">Dashboard</div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <div data-i18n="Products">Products</div>
-                </a>
-                <ul class="menu-sub">
-                  <li class="menu-item">
-                    <a href="app-ecommerce-product-list.html" class="menu-link">
-                      <div data-i18n="Product List">Product List</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-product-add.html" class="menu-link">
-                      <div data-i18n="Add Product">Add Product</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-category-list.html" class="menu-link">
-                      <div data-i18n="Category List">Category List</div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <div data-i18n="Order">Order</div>
-                </a>
-                <ul class="menu-sub">
-                  <li class="menu-item">
-                    <a href="app-ecommerce-order-list.html" class="menu-link">
-                      <div data-i18n="Order List">Order List</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-order-details.html" class="menu-link">
-                      <div data-i18n="Order Details">Order Details</div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <div data-i18n="Customer">Customer</div>
-                </a>
-                <ul class="menu-sub">
-                  <li class="menu-item">
-                    <a href="app-ecommerce-customer-all.html" class="menu-link">
-                      <div data-i18n="All Customers">All Customers</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="javascript:void(0);" class="menu-link menu-toggle">
-                      <div data-i18n="Customer Details">Customer Details</div>
-                    </a>
-                    <ul class="menu-sub">
-                      <li class="menu-item">
-                        <a href="app-ecommerce-customer-details-overview.html" class="menu-link">
-                          <div data-i18n="Overview">Overview</div>
-                        </a>
-                      </li>
-                      <li class="menu-item">
-                        <a href="app-ecommerce-customer-details-security.html" class="menu-link">
-                          <div data-i18n="Security">Security</div>
-                        </a>
-                      </li>
-                      <li class="menu-item">
-                        <a href="app-ecommerce-customer-details-billing.html" class="menu-link">
-                          <div data-i18n="Address & Billing">Address & Billing</div>
-                        </a>
-                      </li>
-                      <li class="menu-item">
-                        <a href="app-ecommerce-customer-details-notifications.html" class="menu-link">
-                          <div data-i18n="Notifications">Notifications</div>
-                        </a>
-                      </li>
-                    </ul>
-                  </li>
-                </ul>
-              </li>
-              <li class="menu-item">
-                <a href="app-ecommerce-manage-reviews.html" class="menu-link">
-                  <div data-i18n="Manage Reviews">Manage Reviews</div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="app-ecommerce-referral.html" class="menu-link">
-                  <div data-i18n="Referrals">Referrals</div>
-                </a>
-              </li>
-              <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                  <div data-i18n="Settings">Settings</div>
-                </a>
-                <ul class="menu-sub">
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-detail.html" class="menu-link">
-                      <div data-i18n="Store Details">Store Details</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-payments.html" class="menu-link">
-                      <div data-i18n="Payments">Payments</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-checkout.html" class="menu-link">
-                      <div data-i18n="Checkout">Checkout</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-shipping.html" class="menu-link">
-                      <div data-i18n="Shipping & Delivery">Shipping & Delivery</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-locations.html" class="menu-link">
-                      <div data-i18n="Locations">Locations</div>
-                    </a>
-                  </li>
-                  <li class="menu-item">
-                    <a href="app-ecommerce-settings-notifications.html" class="menu-link">
-                      <div data-i18n="Notifications">Notifications</div>
-                    </a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <!-- e-commerce-app menu end -->
           <!-- Misc -->
           <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Misc">Controlo de acesso</span>
           </li>
           <li class="menu-item">
-            <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
+            <router-link to="/papeis" class="menu-link">
               <i class="menu-icon icon-base ti tabler-lifebuoy"></i>
               <div data-i18n="Support">Papeis</div>
-            </a>
+            </router-link>
           </li>
           <li class="menu-item">
-            <a href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/" target="_blank"
-              class="menu-link">
+          <a href="!#" class="menu-link">
               <i class="menu-icon icon-base ti tabler-file-description"></i>
               <div data-i18n="Documentation">Permissões</div>
             </a>
           </li>
           <li class="menu-item">
-            <a href="https://demos.pixinvent.com/vuexy-html-admin-template/documentation/" target="_blank"
-              class="menu-link">
+            <a href="!#" class="menu-link">
               <i class="menu-icon icon-base ti tabler-file-description"></i>
               <div data-i18n="Documentation">Auditoria</div>
             </a>

@@ -1,6 +1,19 @@
 <script setup>
+import { onMounted } from 'vue'
+import { useProcessoStore } from '@/stores/processo'
+import { storeToRefs } from 'pinia'
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
+
+const processoStore = useProcessoStore()
+const { processos, loading, error } = storeToRefs(processoStore)
+
+// Carrega os processos quando o componente é montado
+onMounted(async () => {
+  if (processos.value.length === 0) {
+    await processoStore.listarProcessos()
+  }
+})
 </script>
 
 <template>
@@ -111,20 +124,21 @@ import Navbar from '@/components/layout/Navbar.vue'
                   <thead class="border-bottom">
                     <tr>
                       <th>Processo(s)</th>
-                      <th>Estado do processo</th>
+                      <th>Estado</th>
                       <th>Arguido(s) preso(s)</th>
                       <th>Arguido(s) solto(s)</th>
                     </tr>
                   </thead>
+                  <!-- {{ processos }} -->
                   <tbody>
-                    <tr v-for="i in 7" :key="i">
+                    <tr  v-for="processo in processos" :key="processo.id">
                       <td class="pt-1">
                         <div class="d-flex justify-content-start align-items-center">
                           <div class="me-4">
                             <img src="../../assets/img/icons/payments/visa-img.png" alt="Visa" height="30">
                           </div>
                           <div class="d-flex flex-column text-center">
-                            <p class="mb-0 text-heading">{{ i + 30 }}/2025</p>
+                            <p class="mb-0 text-heading">{{ processo.numero }}/{{ processo.ano }}</p>
                           </div>
                         </div>
                       </td>
@@ -180,7 +194,7 @@ import Navbar from '@/components/layout/Navbar.vue'
               aria-label="john.doe@example.com" name="userContact">
           </div>
           <div class="mb-6">
-            <label class="form-label" for="country">Estado do processo</label>
+            <label class="form-label" for="country">Estado</label>
             <select id="country" class="select2 form-select">
               <option value="">Seleccione o estado</option>
               <option value="United Kingdom">Em análise</option>
@@ -199,3 +213,8 @@ import Navbar from '@/components/layout/Navbar.vue'
   </div>
   <!-- / Layout wrapper -->
 </template>
+<style scoped>
+div.card .card-body {
+  padding: 9px!important;
+}
+</style>

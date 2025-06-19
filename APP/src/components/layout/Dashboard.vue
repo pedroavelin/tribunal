@@ -1,16 +1,22 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
+import { storeToRefs } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
+import { useProcessoStore } from '@/stores/processo'
 
 import Menu from '@/components/layout/Menu.vue'
 import Footer from '@/components/layout/Footer.vue'
 import Navbar from '@/components/layout/Navbar.vue'
 
+const authStore = useAuthStore()
 const barChart = ref(null)
 
-onMounted(() => {
-  const ctx = barChart.value.getContext('2d')
+const processoStore = useProcessoStore()
+const {processos, totalProcessosComArguidosPresos, totalProcessosComArguidosSoltos } = storeToRefs(processoStore)
 
+onMounted(async () => {
+  const ctx = barChart.value.getContext('2d')
   // Cria um gradiente
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(54, 162, 235, 0.7)')
@@ -86,10 +92,12 @@ onMounted(() => {
     }
   })
 })
+
 </script>
 <template>
   <!-- Layout wrapper -->
-  <div class="layout-wrapper layout-content-navbar  ">
+   
+  <div class="layout-wrapper layout-content-navbar" v-if="authStore.isAuthenticated">
     <div class="layout-container">
       <!-- Menu -->
       <Menu />
@@ -107,9 +115,10 @@ onMounted(() => {
             <div class="card bg-transparent shadow-none my-0 border-0">
               <div class="card-body row p-0 pb-6 g-6">
                 <div class="col-12 col-lg-8 card-separator">
-                  <h5 class="mb-2">Olá! Seja bem vindo(a)<span class="h4"> Pedro Epalanga 👋🏻</span></h5>
+                  <h5 class="mb-2">Olá! Seja bem vindo(a) <span class="h4"> {{ authStore.user.username }} 👋🏻</span>
+                  </h5>
                   <div class="col-12 col-lg-5">
-                    <p>Juíz(a): Zenaida da Consta Mendes</p>
+                    <p>Juíz(a):</p>
                   </div>
                   <div class="d-flex justify-content-between flex-wrap gap-4 me-12">
                     <div class="d-flex align-items-center gap-4 me-6 me-sm-0">
@@ -133,7 +142,12 @@ onMounted(() => {
                       </div>
                       <div class="content-right">
                         <p class="mb-0 fw-medium">Processos</p>
-                        <h4 class="text-primary mb-0">134</h4>
+                        <h4 class="text-primary mb-0">
+                          <div class="">
+                            <span v-if="processos.lenght != 0">{{ processos.length }}</span>
+                            <span v-else>0</span>
+                          </div>
+                        </h4>
                       </div>
                     </div>
                     <div class="d-flex align-items-center gap-4">
@@ -156,7 +170,7 @@ onMounted(() => {
                       </div>
                       <div class="content-right">
                         <p class="mb-0 fw-medium text-danger">Arguido(s) Preso(s)</p>
-                        <h4 class="text-danger mb-0">12</h4>
+                        <h4 class="text-danger mb-0">{{ totalProcessosComArguidosPresos }}</h4>
                       </div>
                     </div>
                     <div class="d-flex align-items-center gap-4">
@@ -180,7 +194,7 @@ onMounted(() => {
                       </div>
                       <div class="content-right">
                         <p class="mb-0 fw-medium text-success">Arguido(s) Solto(s)</p>
-                        <h4 class="text-success mb-0">14</h4>
+                        <h4 class="text-success mb-0">{{  totalProcessosComArguidosSoltos   }}</h4>
                       </div>
                     </div>
                   </div>
@@ -190,9 +204,9 @@ onMounted(() => {
                     <div class="d-flex align-items-end row">
                       <div class="col-7">
                         <div class="card-body text-nowrap">
-                          <h6 class="card-title mb-0">🏛 Tribunal da Comarca de Luanda</h6>
-                          <p class="mb-2">🏦 15ª Secção da Sala Criminal</p>
-                          <h5 class="text-primary mb-1">Letra: CF</h5>
+                          <h6 class="card-title mb-0">🏛 {{ authStore.user.tribunal }}</h6>
+                          <p class="mb-2">🏦 {{ authStore.user.seccao }}</p>
+                          <h5 class="text-primary mb-1">Letra: {{ authStore.user.letra }}</h5>
                           <router-link to="/processos" class="btn btn-primary waves-effect waves-light">Ver
                             processos</router-link>
                         </div>
