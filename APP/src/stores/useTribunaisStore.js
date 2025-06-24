@@ -42,7 +42,6 @@ export const useTribunaisStore = defineStore('tribunais', () => {
     }
   }
 
-
   async function getAllTribunais() {
     loading.value = true
     error.value = null
@@ -60,6 +59,7 @@ export const useTribunaisStore = defineStore('tribunais', () => {
       loading.value = false
     }
   }
+
   async function fetchTribunais() {
     loading.value = true
     error.value = null

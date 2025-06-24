@@ -19,7 +19,6 @@ require('./jobs/tokenCleaner');
 const activityTracker = require('./middleware/activityTracker');
 const app = express();
 
-// Middlewares
 app.use(cors());
 app.use(helmet());
 app.use(morgan('combined'));
@@ -27,7 +26,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Rota da documentação Swagger
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Test database connection
+
 db.sequelize.authenticate()
   .then(() => {
     console.log('A conexão com o banco de dados foi estabelecida com sucesso.');

@@ -28,6 +28,39 @@ export const useProcessoStore = defineStore('processo', () => {
       loading.value = false
     }
   }
+  async function adicionarProcesso(dadosProcesso) {
+    loading.value = true
+    error.value = null
+    
+    try {
+      // Verifica campos obrigatórios
+      if (!dadosProcesso.numero || !dadosProcesso.ano || !dadosProcesso.crime ||
+          !dadosProcesso.idTribunal || !dadosProcesso.idSeccao || 
+          !dadosProcesso.idEstadoProcesso) {
+        throw new Error('Todos os campos obrigatórios devem ser preenchidos')
+      }
+
+      const response = await api.post('/processos', {
+        ...dadosProcesso,
+        idLetra: authStore.user?.idLetra // Usa a letra do usuário logado
+      }, {
+        headers: {
+          Authorization: `Bearer ${authStore.accessToken}`
+        }
+      })
+
+      // Adiciona o novo processo no início da lista
+      processos.value = [response.data, ...processos.value]
+      return response.data
+      
+    } catch (err) {
+      error.value = err.response?.data?.message || err.message || 'Erro ao adicionar processo'
+      console.error('Erro ao adicionar processo:', err)
+      throw error.value // Permite tratamento no componente
+    } finally {
+      loading.value = false
+    }
+  }
 // Computed property que retorna estatísticas completas
   const estatisticasProcessos = computed(() => {
     return processos.value.map(processo => {
@@ -85,6 +118,7 @@ export const useProcessoStore = defineStore('processo', () => {
     
     // Métodos
     listarProcessos,
+    adicionarProcesso,
     init
   }
 })

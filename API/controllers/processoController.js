@@ -1,5 +1,6 @@
 'use strict'
 const db = require('../models');
+
 exports.listar = async (req, res) => {
   try {
     const processos = await db.Processo.findAll({
@@ -21,7 +22,6 @@ exports.listar = async (req, res) => {
         },
       ]
     });
-
     res.status(200).json(processos);
   } catch (error) {
     console.error('Erro detalhado:', error);
@@ -125,7 +125,22 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
 
 exports.adicionar = async (req, res) => {
   try {
-    if (!req.body.numero || !req.body.ano || !req.body.crime ||
+    const userId = req.userId;
+    const user = await db.User.findByPk(userId);
+
+    if (!user || !user.idLetra) {
+      return res.status(403).json({
+        message: "Você não tem permissão para criar processos."
+      });
+    }
+
+    if (req.body.idLetra !== user.idLetra) {
+      return res.status(403).json({
+        message: "Você só pode criar processos para sua própria letra."
+      });
+    }
+
+    if(!req.body.numero || !req.body.ano || !req.body.crime ||
       !req.body.idTribunal || !req.body.idSeccao ||
       !req.body.idEstadoProcesso || !req.body.idLetra) {
       return res.status(400).send({
@@ -140,18 +155,17 @@ exports.adicionar = async (req, res) => {
       idTribunal: req.body.idTribunal,
       idSeccao: req.body.idSeccao,
       idEstadoProcesso: req.body.idEstadoProcesso,
-      idLetra: req.body.idLetra
+      idLetra: user.idLetra 
     };
 
-    const processoCriado = await Processo.create(processo);
-    res.send(processoCriado);
+    const processoCriado = await db.Processo.create(processo);
+    res.status(201).json(processoCriado);
   } catch (error) {
-    res.status(500).send({
+    res.status(500).json({
       message: error.message || "Erro ao criar processo."
     });
   }
 };
-
 exports.atualizar = async (req, res) => {
   const id = req.params.id;
 
