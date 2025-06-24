@@ -62,6 +62,7 @@ export const useProcessoStore = defineStore('processo', () => {
       p => p.arguidosSoltos > 0
     ).length
   });
+  
   // Função de inicialização
   function init() {
     if (processos.value.length === 0) {

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import router from '@/router';
 
 </script>
 
@@ -35,13 +34,13 @@ import router from '@/router';
         <div class="menu-inner-shadow"></div>
         <ul class="menu-inner py-1">
           <!-- Dashboards -->
-          <li class="menu-item">
+          <li class="menu-item" :class="{ 'active': $route.path === '/dashboard' }">
             <router-link class="menu-link" to="/dashboard">
                   <i class="menu-icon icon-base ti tabler-smart-home"></i>
                   <div data-i18n="Dashboards">Dashboard</div>
             </router-link>
           </li>
-          <li class="menu-item active">
+          <li class="menu-item" :class="{ 'active': $route.path === '/processos' }">
             <router-link class="menu-link" to="/processos">
                   <i class="menu-icon icon-base ti tabler-smart-home"></i>
                   <div data-i18n="Dashboards">Processo(s)</div>
@@ -51,19 +50,19 @@ import router from '@/router';
           <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Apps & Pages">Gestão </span>
           </li>
-          <li class="menu-item">
-            <a href="!#" class="menu-link">
+          <li class="menu-item" :class="{ 'active': $route.path === '/tribunais' }">
+            <router-link to="/tribunais" class="menu-link">
               <i class="menu-icon icon-base ti tabler-mail"></i>
               <div data-i18n="Email">Tribunais</div>
-            </a>
+            </router-link>
           </li>
-          <li class="menu-item">
-            <a href="!#" class="menu-link">
+          <li class="menu-item" :class="{ 'active': $route.path === '/seccoes' }">
+            <router-link to="/seccoes" class="menu-link">
               <i class="menu-icon icon-base ti tabler-messages"></i>
               <div data-i18n="Chat">Secções</div>
-            </a>
+            </router-link>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" :class="{ 'active': $route.path === '/documentos' }">
             <router-link to="/documentos" class="menu-link">
               <i class="menu-icon icon-base ti tabler-calendar"></i>
               <div data-i18n="Calendar">Documentos</div>
@@ -74,20 +73,26 @@ import router from '@/router';
           <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Misc">Controlo de acesso</span>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" :class="{ 'active': $route.path === '/utilizadores' }">
+            <router-link to="/utilizadores" class="menu-link">
+              <i class="menu-icon icon-base ti tabler-user"></i>
+              <div data-i18n="Support">Utilizador(s)</div>
+            </router-link>
+          </li>
+          <li class="menu-item" :class="{ 'active': $route.path === '/papeis' }">
             <router-link to="/papeis" class="menu-link">
               <i class="menu-icon icon-base ti tabler-lifebuoy"></i>
               <div data-i18n="Support">Papeis</div>
             </router-link>
           </li>
-          <li class="menu-item">
-          <a href="!#" class="menu-link">
+          <li class="menu-item" :class="{ 'active': $route.path === '/' }">
+          <a href="" class="menu-link">
               <i class="menu-icon icon-base ti tabler-file-description"></i>
               <div data-i18n="Documentation">Permissões</div>
             </a>
           </li>
           <li class="menu-item">
-            <a href="!#" class="menu-link">
+            <a href="" class="menu-link">
               <i class="menu-icon icon-base ti tabler-file-description"></i>
               <div data-i18n="Documentation">Auditoria</div>
             </a>

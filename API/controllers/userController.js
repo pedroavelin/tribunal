@@ -106,7 +106,6 @@ exports.createUser = async (req, res) => {
       email: email.trim().toLowerCase(),
       password: bcrypt.hashSync(password, 8)
     });
-  console.log(user instanceof sequelize.models.User);
 
     if (roles && Array.isArray(roles)) {
       const roleRecords = await db.Role.findAll({
@@ -301,6 +300,77 @@ exports.getOnlineUsers = async (req, res) => {
     res.status(500).json({ 
       error: 'Erro interno no servidor',
       details: error.message 
+    });
+  }
+};
+
+exports.getUsersByLetter = async (req, res) => {
+  try {
+    const { letra } = req.params;
+
+    // Verifica se a letra tem exatamente 1 caractere
+    if (!letra || typeof letra !== 'string' || letra.length !== 2) {
+      return res.status(400).send({
+        message: 'Por favor, forneça uma letra válida (um único caractere)'
+      });
+    }
+
+    // Busca a letra no banco de dados (case insensitive)
+    const letraRecord = await db.Letra.findOne({
+      where: db.Sequelize.where(
+        db.Sequelize.fn('lower', db.Sequelize.col('letra')),
+        db.Sequelize.Op.eq,
+        letra.toLowerCase()
+      )
+    });
+
+    if (!letraRecord) {
+      return res.status(404).send({
+        message: `Letra ${letra.toUpperCase()} não encontrada no sistema`
+      });
+    }
+
+    // Busca todos os usuários associados a essa letra
+    const users = await db.User.findAll({
+      where: { idLetra: letraRecord.id },
+      attributes: {
+        exclude: ['password']
+      },
+      include: [
+        { 
+          model: db.Role, 
+          as: 'roles',
+          attributes: ['id', 'name'],
+          through: { attributes: [] }
+        },
+        {
+          model: db.Letra,
+          as: 'letra',
+          attributes: ['id', 'letra']
+        }
+      ],
+      order: [['username', 'ASC']]
+    });
+
+    // Formata a resposta
+    const response = {
+      letra: letraRecord.letra.toUpperCase(),
+      count: users.length,
+      users: users.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        isOnline: user.isOnline,
+        roles: user.roles.map(role => role.name),
+        createdAt: user.createdAt
+      }))
+    };
+    res.status(200).send(response);
+  } catch (error) {
+    console.error(`Erro ao buscar usuários da letra ${req.params.letra}:`, error);
+    res.status(500).send({
+      message: 'Ocorreu um erro ao buscar os usuários',
+      error: error.message
     });
   }
 };

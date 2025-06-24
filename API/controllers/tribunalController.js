@@ -1,18 +1,39 @@
 const db = require("../models");
 const {Tribunal} = db;
-// Criar tribunal
+
 exports.create = async (req, res) => {
   try {
-    const tribunal = await Tribunal.create(req.body);
-    res.status(201).send(tribunal);
+    const { nome, idMunicipio } = req.body
+
+    // Validação básica
+    if (!nome || !idMunicipio) {
+      return res.status(400).send({ message: "Nome e idMunicipio são obrigatórios." })
+    }
+
+    // Criação do tribunal
+    const tribunal = await Tribunal.create({ nome, idMunicipio })
+
+    // Opcional: incluir município e província na resposta
+    const tribunalCompleto = await Tribunal.findByPk(tribunal.id, {
+      include: {
+        model: db.Municipio,
+        as: 'municipio',
+        include: {
+          model: db.Provincia,
+          as: 'provincia'
+        }
+      }
+    })
+
+    res.status(201).send(tribunalCompleto)
   } catch (error) {
     res.status(500).send({
       message: error.message || "Erro ao criar tribunal."
-    });
+    })
   }
-};
+}
 
-// Buscar todos tribunais
+
 exports.findAll = async (req, res) => {
   try {
     const tribunais = await Tribunal.findAll();
@@ -24,7 +45,6 @@ exports.findAll = async (req, res) => {
   }
 };
 
-// Buscar tribunal por ID
 exports.findOne = (req, res) => {
   const id = req.params.id;
   Tribunal.findByPk(id, {
@@ -36,7 +56,6 @@ exports.findOne = (req, res) => {
     }));
 };
 
-// Atualizar tribunal
 exports.update = (req, res) => {
   const id = req.params.id;
   Tribunal.update(req.body, {
@@ -60,7 +79,6 @@ exports.update = (req, res) => {
     }));
 };
 
-// Deletar tribunal
 exports.delete = (req, res) => {
   const id = req.params.id;
   Tribunal.destroy({
@@ -87,7 +105,16 @@ exports.delete = (req, res) => {
 exports.findAllWithMunicipio = async (req, res) => {
   try {
     const tribunais = await Tribunal.findAll({
-      include: ["Municipio"]
+      include: [
+        { 
+          model: db.Municipio, as: 'municipio' ,
+          include:[
+            {
+              model: db.Provincia, as: 'provincia'
+            }
+          ]
+        }
+      ]
     });
     res.json(tribunais);
   } catch (error) {

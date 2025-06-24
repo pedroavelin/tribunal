@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    apelido: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     idade: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -39,6 +43,14 @@ module.exports = (sequelize, DataTypes) => {
     },
     dataDeNascimento: {
       type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    pai: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    mae: {
+      type: DataTypes.STRING,
       allowNull: false
     },
     idEndereco: {

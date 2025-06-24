@@ -3,20 +3,9 @@ const { Model, DataTypes } = require('sequelize');
 
 class Seccao extends Model {
   static associate(models) {
-    this.belongsTo(models.Tribunal, {
-      foreignKey: 'idTribunal',
-      as: 'tribunal'
-    });
-
-    this.belongsTo(models.Municipio, {
-      foreignKey: 'idMunicipio',
-      as: 'municipio'
-    });
-
-    this.hasMany(models.Processo, {
-      foreignKey: 'idSeccao',
-      as: 'processos'
-    });
+    this.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'tribunal'});
+    this.belongsTo(models.Municipio, { foreignKey: 'idMunicipio', as: 'municipio'});
+    this.hasMany(models.Processo, { foreignKey: 'idSeccao', as: 'processos'});
   }
 }
 

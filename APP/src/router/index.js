@@ -25,6 +25,24 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/tribunais',
+    name: 'tribunais',
+    component: () => import('../components/pages/Tribunais.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/seccoes',
+    name: 'seccoes',
+    component: () => import('../components/pages/Seccoes.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/utilizadores',
+    name: 'utilizadores',
+    component: () => import('../components/pages/Utilizadores.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/papeis',
     name: 'papeis',
     component: () => import('../components/pages/Papeis.vue'),

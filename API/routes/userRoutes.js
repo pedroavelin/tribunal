@@ -123,5 +123,19 @@ router.delete('/:userId/remove-role', [verifyToken, isAdmin], userController.rem
  *         description: Não removido
  */
 router.get('/online',[verifyToken, isAdmin], userController.getOnlineUsers);
-
+/**
+ * @swagger
+ * /api/users/by-letter/:letra:
+ *   get:
+ *     summary: Listar usuários online
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Não removido
+ */
+router.get('/by-letter/:letra', userController.getUsersByLetter);
 module.exports = router;

@@ -179,12 +179,20 @@ const AuthController = {
         refreshToken: refreshToken
       });
 
-    } catch (error) {
-      console.error('Erro no signin:', error);
-      return res.status(500).json({
-        message: 'Erro interno no servidor.'
-      });
-    }
+    } 
+    catch (error) {
+  console.error('Erro no login:', error)
+  res.status(500).send({
+    message: error.message || "Erro interno no servidor."
+  })
+}
+
+    // catch (error) {
+    //   console.error('Erro no signin:', error);
+    //   return res.status(500).json({
+    //     message: 'Erro interno no servidor.'
+    //   });
+    // }
   },
 
   refreshToken: async (req, res) => {

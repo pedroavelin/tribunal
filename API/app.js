@@ -10,6 +10,8 @@ const auditLoRoutes = require('./routes/auditLogRoutes');
 const permissionRoutes = require('./routes/permissionRoutes');
 const tribunalRoutes = require('./routes/tribunalRoutes');
 const processoRoutes = require('./routes/processoRoutes');
+const provinciaRoutes = require('./routes/provinciaRoutes');
+const seccoesRoutes = require('./routes/seccoesRoutes');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
@@ -54,6 +56,8 @@ app.use('/api/permissions', permissionRoutes);
 app.use('/api/logs', auditLoRoutes);
 app.use('/api/tribunal', tribunalRoutes);
 app.use('/api/processos', processoRoutes);
+app.use('/api/provincias', provinciaRoutes);
+app.use('/api/seccoes', seccoesRoutes);
 
 // Montar as rotas de autenticação sob o prefixo /api/auth
 app.use('/api/auth', authRoutes); 

@@ -11,7 +11,6 @@ export const useAuthStore = defineStore('auth', () => {
   async function signIn(credentials) {
     try {
       const response = await api.post('/auth/signin', credentials)
-
       if (response.data) {
         accessToken.value = response.data.accessToken
         refreshToken.value = response.data.refreshToken

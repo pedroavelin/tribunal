@@ -1,12 +1,25 @@
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useProcessoStore } from '@/stores/processo'
 import { storeToRefs } from 'pinia'
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
+import ModalDetalhesDoProcesso from '@/components/dialog/ModalDetalhesDoProcesso.vue'
+import ModalAddProcesso from '@/components/dialog/ModalAddProcesso.vue'
 
 const processoStore = useProcessoStore()
-const { processos, loading, error } = storeToRefs(processoStore)
+const { processos } = storeToRefs(processoStore)
+const modalOpen = ref(false)
+const modalAddProcesso = ref(false)
+const processoSelecionado = ref(null)
+
+function openModal(processo) {
+  processoSelecionado.value = processo
+  modalOpen.value = true
+}
+function OpenModalAddProcesso() {
+  modalAddProcesso.value = true
+}
 
 // Carrega os processos quando o componente é montado
 onMounted(async () => {
@@ -33,7 +46,7 @@ onMounted(async () => {
         <div class="content-wrapper">
           <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="row g-3 mb-5">
+            <div class="row g-3 mb-2">
               <div class="col-sm-6 col-xl-3">
                 <div class="card">
                   <div class="card-body">
@@ -116,47 +129,78 @@ onMounted(async () => {
               </div>
             </div>
             <!-- Lista de processos  -->
-            <div class="card h-50">
-
-              <!-- <div class="card-header d-flex justify-content-between align-items-center"></div> -->
-              <div class="table-responsive">
-                <table class="table table-borderless border-top">
-                  <thead class="border-bottom">
-                    <tr>
-                      <th>Processo(s)</th>
-                      <th>Estado</th>
-                      <th>Arguido(s) preso(s)</th>
-                      <th>Arguido(s) solto(s)</th>
-                    </tr>
-                  </thead>
-                  <!-- {{ processos }} -->
-                  <tbody>
-                    <tr  v-for="processo in processos" :key="processo.id">
-                      <td class="pt-1">
-                        <div class="d-flex justify-content-start align-items-center">
-                          <div class="me-4">
-                            <img src="../../assets/img/icons/payments/visa-img.png" alt="Visa" height="30">
-                          </div>
-                          <div class="d-flex flex-column text-center">
-                            <p class="mb-0 text-heading">{{ processo.numero }}/{{ processo.ano }}</p>
+            <div class="my-scroll mb-5">
+              <div class="card-body">
+                <div class="row gy-2">
+                  <div class="col-sm-3 col-lg-3"v-for="processo in processoStore.estatisticasProcessos" :key="processo.id">
+                    <div class="card p-2 shadow-5 border-none" @click="openModal(processo)">
+                      <div class="rounded-2 text-center mb-4 position-relative">
+                        <a href="#!">
+                          <img class="img-fluid" src="../../assets/img/pages/app-academy-tutor-1.png"
+                            alt="tutor image 1">
+                        </a>
+                        <div class="position-absolute top-0 start-0 m-2">
+                          <div class="spinner-grow spinner-grow-sm text-danger" role="status" v-if="processo.arguidosPresos > 0">
+                            <span class="visually-hidden">Loading...</span>
                           </div>
                         </div>
-                      </td>
-
-                      <td class="pt-1"><span class="badge bg-label-warning">Em análise</span></td>
-                      <td class="pt-1">
-                        <p class="mb-0 text-heading">{{ i + 4 }}</p>
-                      </td>
-                      <td class="pt-1">
-                        <div class="d-flex flex-column text-center">
-                          <p class="mb-0 text-heading">{{ i + 3 }}</p>
+                        <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+                          <span class="bg-dark bg-opacity-75 text-white px-2 py-1 rounded fs-5 fw-bold">
+                            {{ processo.numero }}/{{ processo.ano }}
+                          </span>
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                      </div>
+                      <div class="card-body p-0 pt-0">
+                        <div class="d-flex justify-content-between align-items-center mb-0">
+                          <span class="badge bg-label-danger">Preso(s): {{ processo.arguidosPresos }}</span>
+                          <span class="badge bg-label-success">Solto(s): {{ processo.arguidosSoltos }}</span>
+                          <p class="d-flex align-items-center justify-content-center fw-medium gap-1 mb-0">
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+            <nav aria-label="Page navigation" class="d-flex align-items-center justify-content-center">
+              <ul class="pagination mb-0 pagination-rounded">
+                <li class="page-item first disabled">
+                  <a class="page-link waves-effect" href="javascript:void(0);"><i
+                      class="icon-base ti tabler-chevrons-left icon-sm scaleX-n1-rtl"></i></a>
+                </li>
+                <li class="page-item prev disabled">
+                  <a class="page-link waves-effect" href="javascript:void(0);"><i
+                      class="icon-base ti tabler-chevron-left icon-sm scaleX-n1-rtl"></i></a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link waves-effect" href="javascript:void(0);">1</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link waves-effect" href="javascript:void(0);">2</a>
+                </li>
+                <li class="page-item active">
+                  <a class="page-link waves-effect waves-light" href="javascript:void(0);">3</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link waves-effect" href="javascript:void(0);">4</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link waves-effect" href="javascript:void(0);">5</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link waves-effect" href="javascript:void(0);">6</a>
+                </li>
+                <li class="page-item next">
+                  <a class="page-link waves-effect" href="javascript:void(0);"><i
+                      class="icon-base ti tabler-chevron-right icon-xs scaleX-n1-rtl"></i></a>
+                </li>
+                <li class="page-item last">
+                  <a class="page-link waves-effect" href="javascript:void(0);"><i
+                      class="icon-base ti tabler-chevrons-right icon-sm scaleX-n1-rtl"></i></a>
+                </li>
+              </ul>
+            </nav>
             <!-- Lista de processos  -->
           </div>
           <!-- / Content -->
@@ -167,54 +211,18 @@ onMounted(async () => {
       <!-- / Layout page -->
     </div>
     <!-- Offcanvas to add new user -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddUser" aria-labelledby="offcanvasAddUserLabel">
-      <div class="offcanvas-header border-bottom">
-        <h5 id="offcanvasAddUserLabel" class="offcanvas-title">Novo processo</h5>
-        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body mx-0 flex-grow-0 p-6 h-100">
-        <form class="add-new-user pt-0" id="addNewUserForm" onsubmit="return false">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="mb-6 form-control-validation">
-                <label class="form-label" for="add-user-fullname">Número</label>
-                <input type="text" class="form-control" id="add-user-fullname" placeholder="Núm. do processo" name="userFullname" aria-label="John Doe">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="mb-6 form-control-validation">
-                <label class="form-label" for="add-user-email">Ano</label>
-                <input type="date" id="add-user-email" class="form-control" placeholder="Ano" name="userEmail">
-              </div>
-            </div>
-          </div>
-          <div class="mb-6">
-            <label class="form-label" for="add-user-contact">Crime</label>
-            <input type="text"  class="form-control phone-mask" placeholder="Informe o crime"
-              aria-label="john.doe@example.com" name="userContact">
-          </div>
-          <div class="mb-6">
-            <label class="form-label" for="country">Estado</label>
-            <select id="country" class="select2 form-select">
-              <option value="">Seleccione o estado</option>
-              <option value="United Kingdom">Em análise</option>
-            </select>
-          </div>
-          <button type="submit" class="btn btn-primary me-3 data-submit">Adionar</button>
-          <button type="reset" class="btn btn-label-danger" data-bs-dismiss="offcanvas">Cancelar</button>
-        </form>
-      </div>
-    </div>
-    <!-- Offcanvas to add new user -->
+    <ModalDetalhesDoProcesso v-model="modalOpen" :processo="processoSelecionado" />
+    <modalAddProcesso v-model="modalAddProcesso" />
     <div class="buy-now">
-      <a href="#!" class="btn btn-primary btn-buy-now">Novo processo</a>
+      <a href="#!" class="btn btn-primary btn-buy-now" @click="OpenModalAddProcesso()">Novo processo</a>
     </div>
-
   </div>
   <!-- / Layout wrapper -->
 </template>
 <style scoped>
 div.card .card-body {
-  padding: 9px!important;
+  padding: 9px !important;
 }
+
+
 </style>

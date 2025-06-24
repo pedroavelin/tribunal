@@ -19,17 +19,6 @@ exports.listar = async (req, res) => {
           model: db.Letra,
           as: 'letra'
         },
-        // {
-        //   model: db.Arguido,
-        //   as: 'arguido',
-        //   through: { attributes: [] }, // para não retornar dados da tabela intermediária
-        //   include: [db.Endereco]
-        // },
-        // {
-        //   model: db.Declarante,
-        //   as: 'declarantes',
-        //   through: { attributes: [] } // se tiver belongsToMany corretamente
-        // }
       ]
     });
 
@@ -70,7 +59,7 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
           include: [{
             model: db.Arguido,
             as: 'arguido',
-            attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'dataDeNascimento', 'idEndereco'],
+            attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'dataDeNascimento', 'idEndereco', 'pai', 'mae', 'apelido'],
             include: [{
               model: db.EstadoArguido,
               as: 'estado',
@@ -136,7 +125,6 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
 
 exports.adicionar = async (req, res) => {
   try {
-    // Validação simples dos campos obrigatórios
     if (!req.body.numero || !req.body.ano || !req.body.crime ||
       !req.body.idTribunal || !req.body.idSeccao ||
       !req.body.idEstadoProcesso || !req.body.idLetra) {
