@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import Chart from 'chart.js/auto'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
-import { useProcessoStore } from '@/stores/processo'
+import { useProcessoStore } from '@/stores/useProcessoStore'
 
 import Menu from '@/components/layout/Menu.vue'
 import Footer from '@/components/layout/Footer.vue'

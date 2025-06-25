@@ -19,6 +19,13 @@ export const useAuthStore = defineStore('auth', () => {
           username: response.data.username,
           email: response.data.email,
           roles: response.data.roles,
+
+          // ADICIONE ESTES:
+          idTribunal: response.data.idTribunal,
+          idSeccao: response.data.idSeccao,
+          idLetra: response.data.idLetra,
+
+          // Para exibição (opcional)
           tribunal: response.data.tribunal,
           seccao: response.data.seccao,
           letra: response.data.letra
@@ -70,18 +77,18 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('refreshToken')
   }
 
-// Função initialize
-function initialize() {
-  const storedAccessToken = localStorage.getItem('accessToken')
-  const storedRefreshToken = localStorage.getItem('refreshToken')
-  const storedUser = localStorage.getItem('user')
-  
-  if (storedAccessToken && storedRefreshToken && storedUser) {
-    accessToken.value = storedAccessToken
-    refreshToken.value = storedRefreshToken
-    user.value = JSON.parse(storedUser)
+  // Função initialize
+  function initialize() {
+    const storedAccessToken = localStorage.getItem('accessToken')
+    const storedRefreshToken = localStorage.getItem('refreshToken')
+    const storedUser = localStorage.getItem('user')
+
+    if (storedAccessToken && storedRefreshToken && storedUser) {
+      accessToken.value = storedAccessToken
+      refreshToken.value = storedRefreshToken
+      user.value = JSON.parse(storedUser)
+    }
   }
-}
   // Chama initialize quando o store é criado
   initialize()
 

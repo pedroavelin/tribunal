@@ -18,11 +18,13 @@ module.exports = (sequelize) => {
     numero: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: 'unique_processo_ano',
       validate: { notEmpty: true }
     },
     ano: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      unique: 'unique_processo_ano'
     },
     crime: {
       type: DataTypes.STRING,

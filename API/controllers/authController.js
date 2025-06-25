@@ -1,12 +1,9 @@
 const db = require('../models');
-const { User } = db;
 
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const jwtConfig = require('../config/jwt');
 const logAudit = require('../utils/auditLogger');
-
-// console.log('Resultado:', typeof User.setRoles);
 
 const AuthController = {
   signup: async (req, res) => {
@@ -91,109 +88,108 @@ const AuthController = {
     };
   },
 
-  signin: async (req, res) => {
-    try {
-      const user = await db.User.findOne({
-        where: {
-          email: req.body.email
+signin: async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Busca o usuário com todos os relacionamentos
+    const user = await db.User.findOne({
+      where: { email },
+      include: [
+        { model: db.Role, as: 'roles' },
+        { 
+          model: db.Seccao, 
+          as: 'seccao', 
+          attributes: ['id', 'numero', 'idTribunal'],
+          include: [{ 
+            model: db.Tribunal, 
+            as: 'tribunal', 
+            attributes: ['id', 'nome'] 
+          }]
         },
-        include: [
-          { model: db.Role, as: 'roles' },
-          {
-            model: db.Seccao, as: 'seccao',
-            include: [
-              { model: db.Tribunal, as: 'tribunal' }
-            ]
-          },
-          { model: db.Letra, as: 'letra' },
-        ]
-      });
+        { model: db.Letra, as: 'letra', attributes: ['id', 'letra'] }
+      ]
+    });
 
-      if (!user) {
-        return res.status(404).json({
-          message: 'Usuário não encontrado.'
-        });
-      }
-      if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
-        await logAudit({
-          userId: null,
-          action: 'LOGIN_FAILED',
-          resource: 'Auth',
-          description: `Tentativa de login falhou para o e-mail ${req.body.email}`,
-          req
-        });
-        return res.status(401).json({
-          message: 'Email ou senha inválidos.'
-        });
-      }
-      const passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
-
-      if (!passwordIsValid) {
-        return res.status(401).json({
-          accessToken: null,
-          message: 'Invalid password!'
-        });
-      }
-
-      // Gera access token
-      const accessToken = jwt.sign({
-        id: user.id
-      },
-        jwtConfig.secret, {
-        expiresIn: jwtConfig.expiresIn
-      }
-      );
+    // Verifica se o usuário existe
+    if (!user) {
       await logAudit({
-        userId: user.id,
-        action: 'LOGIN_SUCCESS',
+        userId: null,
+        action: 'LOGIN_FAILED',
         resource: 'Auth',
-        description: `Usuário ${user.email} fez login com sucesso`,
+        description: `Tentativa de login com e-mail não cadastrado: ${email}`,
         req
       });
-      // Gera refresh token + salva no banco
-      const {
-        token: refreshToken,
-        expiry
-      } = AuthController.generateRefreshToken(user.id);
-
-      await db.RefreshToken.create({
-        token: refreshToken,
-        userId: user.id,
-        expiryDate: expiry
+      return res.status(404).json({
+        message: 'Usuário não encontrado.'
       });
+    }
 
-      const authorities = user.roles.map(role => `ROLE_${role.name.toUpperCase()}`);
-
-      return res.status(200).json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        roles: authorities,
-        tribunal: user.seccao?.tribunal?.nome,
-        seccao: user.seccao?.numero,
-        letra: user.letra?.letra,
-        accessToken: accessToken,
-        refreshToken: refreshToken
+    // Verifica a senha
+    const passwordIsValid = bcrypt.compareSync(password, user.password);
+    if (!passwordIsValid) {
+      await logAudit({
+        userId: null,
+        action: 'LOGIN_FAILED',
+        resource: 'Auth',
+        description: `Tentativa de login com senha inválida para o e-mail: ${email}`,
+        req
       });
+      return res.status(401).json({
+        message: 'E-mail ou senha inválidos.'
+      });
+    }
 
-    } 
-    catch (error) {
-  console.error('Erro no login:', error)
-  res.status(500).send({
-    message: error.message || "Erro interno no servidor."
-  })
-}
+    // Gera access token
+    const accessToken = jwt.sign(
+      { id: user.id },
+      jwtConfig.secret,
+      { expiresIn: jwtConfig.expiresIn }
+    );
 
-    // catch (error) {
-    //   console.error('Erro no signin:', error);
-    //   return res.status(500).json({
-    //     message: 'Erro interno no servidor.'
-    //   });
-    // }
-  },
+    // Gera refresh token e salva no banco
+    const { token: refreshToken, expiry } = AuthController.generateRefreshToken(user.id);
+    await db.RefreshToken.create({
+      token: refreshToken,
+      userId: user.id,
+      expiryDate: expiry
+    });
+
+    // Registra login bem-sucedido
+    await logAudit({
+      userId: user.id,
+      action: 'LOGIN_SUCCESS',
+      resource: 'Auth',
+      description: `Usuário ${user.email} fez login com sucesso`,
+      req
+    });
+
+    // Mapeia as roles do usuário
+    const authorities = user.roles.map(role => `ROLE_${role.name.toUpperCase()}`);
+
+    // Retorna os dados do usuário e tokens
+    return res.status(200).json({
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      roles: authorities,
+      idLetra: user.letra?.id || null,
+      idSeccao: user.seccao?.id || null,
+      idTribunal: user.seccao?.tribunal?.id || null,
+      tribunal: user.seccao?.tribunal?.nome,
+      seccao: user.seccao?.numero,
+      letra: user.letra?.letra,
+      accessToken,
+      refreshToken
+    });
+
+  } catch (error) {
+    console.error('Erro no processo de login:', error);
+    return res.status(500).json({
+      message: 'Ocorreu um erro durante o processo de login. Por favor, tente novamente.'
+    });
+  }
+},
 
   refreshToken: async (req, res) => {
     const {
@@ -280,7 +276,7 @@ const AuthController = {
     }
   },
   recoverPassWord: async (req, res) => {
-   
+
   },
 
   logout: async (req, res) => {

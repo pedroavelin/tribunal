@@ -127,27 +127,35 @@ exports.adicionar = async (req, res) => {
   try {
     const userId = req.userId;
     const user = await db.User.findByPk(userId);
-
-    if (!user || !user.idLetra) {
-      return res.status(403).json({
-        message: "Você não tem permissão para criar processos."
-      });
+    
+    if (!user) {
+      return res.status(401).json({ message: "Usuário não encontrado." });
     }
 
-    if (req.body.idLetra !== user.idLetra) {
-      return res.status(403).json({
-        message: "Você só pode criar processos para sua própria letra."
-      });
-    }
-
-    if(!req.body.numero || !req.body.ano || !req.body.crime ||
-      !req.body.idTribunal || !req.body.idSeccao ||
-      !req.body.idEstadoProcesso || !req.body.idLetra) {
+    // Validação de campos obrigatórios
+    if (!req.body.numero || !req.body.ano || !req.body.crime ||
+        !req.body.idTribunal || !req.body.idSeccao ||
+        !req.body.idEstadoProcesso || !req.body.idLetra) {
       return res.status(400).send({
         message: "Todos os campos são obrigatórios."
       });
     }
 
+    // Verifica duplicidade de número e ano
+    const processoExistente = await db.Processo.findOne({
+      where: {
+        numero: req.body.numero,
+        ano: req.body.ano
+      }
+    });
+
+    if (processoExistente) {
+      return res.status(409).json({
+        message: "Já existe um processo com esse número e ano."
+      });
+    }
+
+    // Criação do processo
     const processo = {
       numero: req.body.numero,
       ano: req.body.ano,
@@ -155,7 +163,7 @@ exports.adicionar = async (req, res) => {
       idTribunal: req.body.idTribunal,
       idSeccao: req.body.idSeccao,
       idEstadoProcesso: req.body.idEstadoProcesso,
-      idLetra: user.idLetra 
+      idLetra: user.idLetra
     };
 
     const processoCriado = await db.Processo.create(processo);
@@ -166,6 +174,7 @@ exports.adicionar = async (req, res) => {
     });
   }
 };
+
 exports.atualizar = async (req, res) => {
   const id = req.params.id;
 

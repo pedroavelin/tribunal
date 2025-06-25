@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.UserSession, { foreignKey: 'userId', as: 'sessions' });
       User.belongsTo(models.Letra, { foreignKey: 'idLetra', as: 'letra' });
       User.belongsToMany(models.Role, { through: 'UserRoles', foreignKey: 'userId', otherKey: 'roleId', as: 'roles' });
+      
+      User.belongsTo(models.Tribunal, { foreignKey: 'idTribunal', as: 'Tribunal' });
+      User.belongsTo(models.Seccao, { foreignKey: 'idSeccao', as: 'Seccao' });
     }
 
     toJSON() {

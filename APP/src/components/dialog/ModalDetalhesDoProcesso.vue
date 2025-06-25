@@ -75,7 +75,19 @@
                         <label class="form-label form-label-sm" for="multicol-username">Casa</label>
                         <input type="text" id="multicol-username" class="form-control form-control-sm">
                       </div>
+                      <div class="col-md-4">
+                        <label class="form-label form-label-sm" for="multicol-username">Crime</label>
+                        <input type="text" id="multicol-username" class="form-control form-control-sm">
+                      </div>
                       <div class="col-md-3">
+                        <label class="form-label form-label-sm" for="multicol-username">Estado</label>
+                        <input type="text" id="multicol-username" class="form-control form-control-sm">
+                      </div>
+                      <div class="col-md-2">
+                        <label class="form-label form-label-sm" for="multicol-username">Pena</label>
+                        <input type="text" id="multicol-username" class="form-control form-control-sm">
+                      </div>
+                      <div class="col-md-4">
                         <div class="mt-6">
                           <button type="submit" class="btn btn-primary btn-sm waves-effect waves-light">Associar</button>
                         </div>
@@ -94,7 +106,7 @@
                           <i class="icon-base ti tabler-user me-2"></i>
                           <div class="mx-2"><input class="form-check-input form-input-sm" type="checkbox"></div>
                           <span class="badge bg-danger mb-4 mb-sm-0 me-2"> {{ arguido.arguido.nome }} </span>
-                          Estado: {{ arguido.arguido.estado.descricao }} | Crime: {{ arguido.crime }} | Julgamento: {{
+                           {{ arguido.arguido.estado.descricao }} | {{ arguido.crime }} | Julgamento: {{
                           arguido.dataDeJulgamento }}
                         </button>
                       </h2>

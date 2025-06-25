@@ -12,6 +12,7 @@ const tribunalRoutes = require('./routes/tribunalRoutes');
 const processoRoutes = require('./routes/processoRoutes');
 const provinciaRoutes = require('./routes/provinciaRoutes');
 const seccoesRoutes = require('./routes/seccoesRoutes');
+const estadoProcessoRouter = require('./routes/estadoProcessoRouter');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
@@ -59,6 +60,8 @@ app.use('/api/tribunal', tribunalRoutes);
 app.use('/api/processos', processoRoutes);
 app.use('/api/provincias', provinciaRoutes);
 app.use('/api/seccoes', seccoesRoutes);
+app.use('/api/estadosDoProcesso', estadoProcessoRouter);
+
 
 // Montar as rotas de autenticação sob o prefixo /api/auth
 app.use('/api/auth', authRoutes); 

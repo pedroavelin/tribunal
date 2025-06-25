@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useProcessoStore } from '@/stores/processo'
+import { useProcessoStore } from '@/stores/useProcessoStore'
 import { storeToRefs } from 'pinia'
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
 import ModalDetalhesDoProcesso from '@/components/dialog/ModalDetalhesDoProcesso.vue'
 import ModalAddProcesso from '@/components/dialog/ModalAddProcesso.vue'
+
 
 const processoStore = useProcessoStore()
 const { processos } = storeToRefs(processoStore)
@@ -17,6 +18,7 @@ function openModal(processo) {
   processoSelecionado.value = processo
   modalOpen.value = true
 }
+
 function OpenModalAddProcesso() {
   modalAddProcesso.value = true
 }

@@ -2,12 +2,15 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import api from '../../api'
 import { useAuthStore } from '@/stores/auth'
+import { useAlertStore } from '@/stores/useAlertStore'
 
 export const useProcessoStore = defineStore('processo', () => {
   // Estados da store
   const processos = ref([]) // Lista original sem ordenação
   const loading = ref(false)
   const error = ref(null)
+
+  const alertStore = useAlertStore()
   const authStore = useAuthStore()
 
   // Função para buscar processos (mantém ordem original da API)
@@ -28,52 +31,51 @@ export const useProcessoStore = defineStore('processo', () => {
       loading.value = false
     }
   }
+
   async function adicionarProcesso(dadosProcesso) {
-    loading.value = true
-    error.value = null
-    
+    loading.value = true;
+    error.value = null;
+
     try {
-      // Verifica campos obrigatórios
-      if (!dadosProcesso.numero || !dadosProcesso.ano || !dadosProcesso.crime ||
-          !dadosProcesso.idTribunal || !dadosProcesso.idSeccao || 
-          !dadosProcesso.idEstadoProcesso) {
-        throw new Error('Todos os campos obrigatórios devem ser preenchidos')
+      const authStore = useAuthStore();
+
+      // Verifica se o usuário tem os dados necessários
+      if (!authStore.user?.idTribunal || !authStore.user?.idSeccao || !authStore.user?.idLetra) {
+        throw new Error('Usuário não possui tribunal, seção ou letra associada');
       }
 
       const response = await api.post('/processos', {
         ...dadosProcesso,
-        idLetra: authStore.user?.idLetra // Usa a letra do usuário logado
-      }, {
-        headers: {
-          Authorization: `Bearer ${authStore.accessToken}`
-        }
-      })
+        idTribunal: authStore.user.idTribunal,
+        idSeccao: authStore.user.idSeccao,
+        idLetra: authStore.user.idLetra
+      });
 
-      // Adiciona o novo processo no início da lista
-      processos.value = [response.data, ...processos.value]
-      return response.data
-      
+      // Adiciona o novo processo no início da lista reativa
+      processos.value.unshift(response.data);
+
+      return response.data;
     } catch (err) {
-      error.value = err.response?.data?.message || err.message || 'Erro ao adicionar processo'
-      console.error('Erro ao adicionar processo:', err)
-      throw error.value // Permite tratamento no componente
+      error.value = err.response?.data?.message || err.message;
+      throw error.value;
     } finally {
-      loading.value = false
+      loading.value = false;
     }
   }
-// Computed property que retorna estatísticas completas
+
+  // Computed property que retorna estatísticas completas
   const estatisticasProcessos = computed(() => {
     return processos.value.map(processo => {
       const arguidos = processo.arguidos || []
-      
-      const presos = arguidos.filter(arguido => 
+
+      const presos = arguidos.filter(arguido =>
         arguido.arguido?.estado?.descricao === 'Preso'
       ).length
-      
-      const soltos = arguidos.filter(arguido => 
+
+      const soltos = arguidos.filter(arguido =>
         arguido.arguido?.estado?.descricao === 'Solto'
       ).length
-      
+
       return {
         ...processo,
         totalArguidos: arguidos.length,
@@ -95,7 +97,7 @@ export const useProcessoStore = defineStore('processo', () => {
       p => p.arguidosSoltos > 0
     ).length
   });
-  
+
   // Função de inicialização
   function init() {
     if (processos.value.length === 0) {
@@ -115,7 +117,7 @@ export const useProcessoStore = defineStore('processo', () => {
     estatisticasProcessos,
     totalProcessosComArguidosPresos,
     totalProcessosComArguidosSoltos,
-    
+
     // Métodos
     listarProcessos,
     adicionarProcesso,
