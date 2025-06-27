@@ -77,5 +77,6 @@ router.put('/:id', [verifyToken, isAdmin], ProcessoController.atualizar);
  *         description: Não autorizado
  */
 router.get('/listar-por-letra', [verifyToken, isAdmin], ProcessoController.listarPorLetraDoUsuario);
+router.get('/filtrar', [verifyToken, isAdmin], ProcessoController.filtrarProcessos);
 
 module.exports = router;

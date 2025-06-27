@@ -11,13 +11,15 @@ import AlertContainer from '@/components/alerts/AlertContainer.vue';
 </template>
 
 <style>
+.layout-menu {
+    position: relative;
+    flex: 0 auto!important;
+}
+
 .my-scroll {
-  max-height: 300px;
-  /* ou qualquer altura desejada */
+  max-height: 433px;
   overflow-y: auto;
-  /* habilita o scroll vertical */
   overflow-x: hidden;
-  /* esconde o scroll horizontal se necessário */
 }
 
 /* Estilo opcional para a barra de scroll */
@@ -31,16 +33,14 @@ import AlertContainer from '@/components/alerts/AlertContainer.vue';
 }
 
 .my-scroll::-webkit-scrollbar-thumb {
-  background: #888;
+   background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
   border-radius: 10px;
 }
 
 .my-scroll::-webkit-scrollbar-thumb:hover {
-  background: #555;
+   background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
 }
 
-/* estilo das alertas */
-/* Classes base para os alertas */
 .alert {
   border: 0;
   border-left: 4px solid transparent;

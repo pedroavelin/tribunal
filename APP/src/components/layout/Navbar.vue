@@ -1,5 +1,39 @@
-<template>
+<script setup>
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import 'vue-datepicker-next/locale/pt';
+import { useProcessoStore } from '@/stores/useProcessoStore'
+import { ref, watch } from 'vue'
 
+const intervaloData = ref([]);
+const filtro = ref('');
+const processoStore = useProcessoStore();
+let timeout;
+
+watch(filtro, (valor) => {
+  clearTimeout(timeout);
+  timeout = setTimeout(() => {
+    const termo = valor.trim();
+    console.log('🔍 Filtro digitado:', termo);
+
+    const numeroAnoRegex = /^(\d+)\/(\d+)$/;
+
+    if (!termo) {
+      console.log('🔄 Nenhum filtro. Listando todos...');
+      processoStore.filtrarProcessos({ numero: '', ano: '', numeroAno: '' });
+    } else if (numeroAnoRegex.test(termo)) {
+      const [numero, ano] = termo.split('/');
+      processoStore.filtrarProcessos({ numero, ano, numeroAno: termo });
+    } else if (!isNaN(termo)) {
+      processoStore.filtrarProcessos({ numero: termo, ano: '', numeroAno: '' });
+    } else {
+      processoStore.filtrarProcessos({ numero: '', ano: '', numeroAno: '' });
+    }
+  }, 300);
+});
+</script>
+
+<template>
   <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
     id="layout-navbar">
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0   d-xl-none ">
@@ -8,156 +42,30 @@
       </a>
     </div>
     <div class="navbar-nav-right d-flex align-items-center justify-content-end" id="navbar-collapse">
-      <!-- Search -->
-        <span class="badge bg-primary mb-4 mb-sm-0"> Dashboard </span>
-      <!-- /Search -->
+      <!-- Filtro de processos -->
+      <div class="filtro-processos-container">
+        <div class="input-group input-group-merge">
+          <span class="input-group-text" id="basic-addon-search31"><i class="icon-base ti tabler-search"></i></span>
+          <input v-model="filtro" type="text" class="form-control form-control-sm" placeholder="Pesquisar processo..."
+            aria-label="Search..." aria-describedby="basic-addon-search31">
+        </div>
+        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Preso</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Solto</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Condenado</button>
+        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Liberdade</button>
+        <date-picker type="daterange" format="DD-MM-YYYY" v-model:value="intervaloData" range-separator=" ~ "
+          value-type="format" range lang="pt" class="date-picker-p" placeholder="Seleccione a data" />
+      </div>
+      <!-- /Filtro de processos -->
 
       <ul class="navbar-nav flex-row align-items-center ms-md-auto">
 
-        <li class="nav-item dropdown-language dropdown">
-          <a class="nav-link dropdown-toggle hide-arrow btn btn-icon btn-text-secondary rounded-pill"
-            href="javascript:void(0);" data-bs-toggle="dropdown">
-            <i class="icon-base ti tabler-language icon-22px text-heading"></i>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li>
-              <a class="dropdown-item" href="javascript:void(0);" data-language="en" data-text-direction="ltr">
-                <span>English</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="javascript:void(0);" data-language="fr" data-text-direction="ltr">
-                <span>French</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="javascript:void(0);" data-language="ar" data-text-direction="rtl">
-                <span>Arabic</span>
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="javascript:void(0);" data-language="de" data-text-direction="ltr">
-                <span>German</span>
-              </a>
-            </li>
-          </ul>
-        </li>
         <!--/ Language -->
-
-
-        <!-- Style Switcher -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle hide-arrow btn btn-icon btn-text-secondary rounded-pill" id="nav-theme"
-            href="javascript:void(0);" data-bs-toggle="dropdown">
-            <i class="icon-base ti tabler-sun icon-22px theme-icon-active text-heading"></i>
-            <span class="d-none ms-2" id="nav-theme-text">Toggle theme</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="nav-theme-text">
-            <li>
-              <button type="button" class="dropdown-item align-items-center active" data-bs-theme-value="light"
-                aria-pressed="false">
-                <span><i class="icon-base ti tabler-sun icon-22px me-3" data-icon="sun"></i>Light</span>
-              </button>
-            </li>
-            <li>
-              <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="dark"
-                aria-pressed="true">
-                <span><i class="icon-base ti tabler-moon-stars icon-22px me-3" data-icon="moon-stars"></i>Dark</span>
-              </button>
-            </li>
-            <li>
-              <button type="button" class="dropdown-item align-items-center" data-bs-theme-value="system"
-                aria-pressed="false">
-                <span><i class="icon-base ti tabler-device-desktop-analytics icon-22px me-3"
-                    data-icon="device-desktop-analytics"></i>System</span>
-              </button>
-            </li>
-          </ul>
-        </li>
-        <!-- / Style Switcher-->
         <!-- Quick links  -->
-        <li class="nav-item dropdown-shortcuts navbar-dropdown dropdown">
-          <a class="nav-link dropdown-toggle hide-arrow btn btn-icon btn-text-secondary rounded-pill"
-            href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-            <i class="icon-base ti tabler-layout-grid-add icon-22px text-heading"></i>
-          </a>
-          <div class="dropdown-menu dropdown-menu-end p-0">
-            <div class="dropdown-menu-header border-bottom">
-              <div class="dropdown-header d-flex align-items-center py-3">
-                <h6 class="mb-0 me-auto">Shortcuts</h6>
-                <a href="javascript:void(0)"
-                  class="dropdown-shortcuts-add py-2 btn btn-text-secondary rounded-pill btn-icon"
-                  data-bs-toggle="tooltip" data-bs-placement="top" title="Add shortcuts"><i
-                    class="icon-base ti tabler-plus icon-20px text-heading"></i></a>
-              </div>
-            </div>
-            <div class="dropdown-shortcuts-list scrollable-container">
-              <div class="row row-bordered overflow-visible g-0">
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-calendar icon-26px text-heading"></i>
-                  </span>
-                  <a href="app-calendar.html" class="stretched-link">Calendar</a>
-                  <small>Appointments</small>
-                </div>
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-file-dollar icon-26px text-heading"></i>
-                  </span>
-                  <a href="app-invoice-list.html" class="stretched-link">Invoice App</a>
-                  <small>Manage Accounts</small>
-                </div>
-              </div>
-              <div class="row row-bordered overflow-visible g-0">
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-user icon-26px text-heading"></i>
-                  </span>
-                  <a href="app-user-list.html" class="stretched-link">User App</a>
-                  <small>Manage Users</small>
-                </div>
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-users icon-26px text-heading"></i>
-                  </span>
-                  <a href="app-access-roles.html" class="stretched-link">Role Management</a>
-                  <small>Permission</small>
-                </div>
-              </div>
-              <div class="row row-bordered overflow-visible g-0">
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-device-desktop-analytics icon-26px text-heading"></i>
-                  </span>
-                  <a href="index.html" class="stretched-link">Dashboard</a>
-                  <small>User Dashboard</small>
-                </div>
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-settings icon-26px text-heading"></i>
-                  </span>
-                  <a href="pages-account-settings-account.html" class="stretched-link">Setting</a>
-                  <small>Account Settings</small>
-                </div>
-              </div>
-              <div class="row row-bordered overflow-visible g-0">
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-help-circle icon-26px text-heading"></i>
-                  </span>
-                  <a href="pages-faq.html" class="stretched-link">FAQs</a>
-                  <small>FAQs & Articles</small>
-                </div>
-                <div class="dropdown-shortcuts-item col">
-                  <span class="dropdown-shortcuts-icon rounded-circle mb-3">
-                    <i class="icon-base ti tabler-square icon-26px text-heading"></i>
-                  </span>
-                  <a href="modal-examples.html" class="stretched-link">Modals</a>
-                  <small>Useful Popups</small>
-                </div>
-              </div>
-            </div>
-          </div>
+        <li class="nav-item dropdown-language dropdown">
+          <button type="button" class="btn rounded-pill btn-icon btn-danger waves-effect waves-light">
+            <span class="icon-base ti tabler-pdf icon-22px"></span>
+          </button>
         </li>
         <!-- Quick links -->
         <!-- Notification -->
@@ -461,3 +369,47 @@
     </div>
   </nav>
 </template>
+<style>
+.date-display {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+.date-picker-p {
+  width: 13rem;
+}
+
+.filtro-processos-container {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  flex-wrap: wrap;
+}
+
+.filtro-processos-container .btn {
+  width: 100px;
+  /* Largura fixa para ambos */
+}
+
+.filtro-processos-container .input-group {
+  flex: 1;
+  min-width: 150px;
+}
+
+.filtro-processos-container .btn {
+  white-space: nowrap;
+  border-radius: 0rem !important;
+}
+
+@media (max-width: 768px) {
+  .filtro-processos-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtro-processos-container .input-group,
+  .filtro-processos-container .btn {
+    width: 100%;
+  }
+}
+</style>

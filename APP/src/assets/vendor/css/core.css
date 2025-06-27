@@ -29708,17 +29708,16 @@ li:not(:first-child) .dropdown-item,
     --bs-menu-horizontal-active-bg: var(--bs-primary-bg-subtle);
     --bs-menu-box-shadow: 0 0.125rem 0.5rem 0 rgba(47, 43, 61, 0.12);
     --bs-menu-divider-color: var(--bs-white);
-    --bs-menu-width: 16.25rem;
+    --bs-menu-width: 11.25rem;
     --bs-menu-collapsed-width: 4.375rem;
     --bs-menu-item-spacer: 0.375rem;
     --bs-menu-vertical-link-padding-y: 0.5rem;
     --bs-menu-vertical-link-padding-x: 0.75rem;
     --bs-menu-vertical-menu-link-padding-y: 0.5rem;
     --bs-menu-vertical-menu-level-spacer: 0.5rem;
-    --bs-menu-horizontal-menu-box-shadow: 0 0.0625rem 0.25rem 0 rgba(47, 43, 61, 0.1);
+    /* --bs-menu-horizontal-menu-box-shadow: 0 0.0625rem 0.25rem 0 rgba(47, 43, 61, 0.1); */
     --bs-menu-horizontal-menu-sub-box-shadow: var(--bs-box-shadow-lg)
 }
-
 [data-semidark-menu=true],
 [data-bs-theme=dark] {
     --bs-menu-bg: #2f3349;
@@ -29969,7 +29968,8 @@ li:not(:first-child) .dropdown-item,
 }
 
 .menu-item.active>.menu-link:not(.menu-toggle) {
-    background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, var(--bs-primary) 100%);
+    background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
+    /* background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, var(--bs-primary) 100%); */
     box-shadow: 0 .125rem .375rem 0 rgba(var(--bs-primary-rgb), 0.3);
     color: var(--bs-menu-active-color)
 }
@@ -30430,6 +30430,7 @@ li:not(:first-child) .dropdown-item,
 .menu-horizontal .menu-item.active>.menu-link:not(.menu-toggle)::before {
     background-color: var(--bs-primary)
 }
+
 
 .menu-horizontal .menu-item .menu-toggle {
     padding-inline-end: calc(1rem + 1.65em)

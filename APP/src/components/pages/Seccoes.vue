@@ -6,7 +6,9 @@ import { useProvinciasStore } from '@/stores/useProvinciasStore'
 import { useMunicipiosStore } from '@/stores/useMunicipiosStore'
 import { useTribunaisStore } from '@/stores/useTribunaisStore'
 import { useSeccoesStore } from '@/stores/useSeccaoStore'
+import { useAlertStore } from '@/stores/useAlertStore';
 
+const alertStore = useAlertStore();
 const numero = ref('')
 const provinciaId = ref('')
 const municipioId = ref('')
@@ -33,26 +35,27 @@ watch(provinciaId, (id) => {
 
 async function submit() {
   if (!numero.value || !tribunalId.value || !provinciaId.value || !municipioId.value) {
-    alert('Preencha todos os campos')
+    alertStore.error('Preencha todos os campos');
     return
   }
-   // Objeto com os dados que serão enviados
+  // Objeto com os dados que serão enviados
   const payload = {
     numero: numero.value,
     idTribunal: tribunalId.value,
     idMunicipio: municipioId.value
   }
   console.log('Dados do formulário a serem enviados:', payload)
+
   try {
     await seccoesStore.adicionarSeccao(payload)
-    alert('Secção criada com sucesso!')
+    alertStore.error('Secção criada com sucesso!');
     numero.value = ''
     tribunalId.value = ''
     provinciaId.value = ''
     municipioId.value = ''
   } catch (err) {
     console.error('Erro ao enviar formulário:', err)
-    alert(seccoesStore.error || 'Erro ao adicionar secção.')
+    alertStore.error('Erro ao adicionar secção');
   }
 }
 </script>
@@ -84,7 +87,8 @@ async function submit() {
                         <div class="row">
                           <div class="mb-6 col-lg-6 col-xl-3 col-12 mb-0">
                             <label class="form-label" for="form-repeater-1-1">Descrição</label>
-                            <input v-model="numero" type="text" id="form-repeater-1-1" class="form-control" placeholder="Descrição da secção">
+                            <input v-model="numero" type="text" id="form-repeater-1-1" class="form-control"
+                              placeholder="Descrição da secção">
                           </div>
                           <div class="mb-6 col-lg-6 col-xl-3 col-12 mb-0">
                             <label class="form-label" for="form-repeater-1-4">Tribunal</label>
@@ -114,7 +118,8 @@ async function submit() {
                             </select>
                           </div>
                           <div class="mb-6 col-lg-12 col-xl-2 col-12 d-flex align-items-center mb-0 mt-5">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light align-items-center mb-0"
+                            <button type="submit"
+                              class="btn btn-primary waves-effect waves-light align-items-center mb-0"
                               data-repeater-create="">
                               <i class="icon-base ti tabler-plus me-1"></i>
                               <span class="align-middle">Adicionar</span>

@@ -21,7 +21,6 @@ onMounted(async () => {
   const gradient = ctx.createLinearGradient(0, 0, 0, 400)
   gradient.addColorStop(0, 'rgba(54, 162, 235, 0.7)')
   gradient.addColorStop(1, 'rgba(75, 192, 192, 0.3)')
-
   new Chart(ctx, {
     type: 'bar',
     data: {

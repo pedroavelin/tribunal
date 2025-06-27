@@ -5,7 +5,9 @@ import { ref, onMounted, watch } from 'vue'
 import { useProvinciasStore } from '@/stores/useProvinciasStore'
 import { useMunicipiosStore } from '@/stores/useMunicipiosStore'
 import { useTribunaisStore } from '@/stores/useTribunaisStore'
+import { useAlertStore } from '@/stores/useAlertStore';
 
+const alertStore = useAlertStore();
 const nome = ref('')
 const provinciaId = ref('')
 const municipioId = ref('')
@@ -28,7 +30,7 @@ watch(provinciaId, (id) => {
 
 async function submit() {
   if (!nome.value || !provinciaId.value || !municipioId.value) {
-    alert('Preencha todos os campos')
+    alertStore.error('Preencha todos os campos');
     return
   }
 
@@ -37,12 +39,12 @@ async function submit() {
       nome: nome.value,
       idMunicipio: municipioId.value
     })
-    alert('Tribunal criado com sucesso!')
+    alertStore.success('Tribunal criado com sucesso!');
     nome.value = ''
     provinciaId.value = ''
     municipioId.value = ''
   } catch (err) {
-    alert(tribunaisStore.error || 'Erro ao adicionar tribunal.')
+     alertStore.error('Erro ao adicionar tribunal.');
   }
 }
 </script>

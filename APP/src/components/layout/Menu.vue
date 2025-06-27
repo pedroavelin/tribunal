@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 </script>
-
 <template>
       <aside id="layout-menu" class="layout-menu menu-vertical menu">
         <div class="app-brand demo ">
@@ -24,11 +23,6 @@
             </span>
             <span class="app-brand-text demo menu-text fw-bold ms-3">Secção</span>
           </router-link>
-
-          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-            <i class="icon-base ti menu-toggle-icon d-none d-xl-block"></i>
-            <i class="icon-base ti tabler-x d-block d-xl-none"></i>
-          </a>
         </div>
 
         <div class="menu-inner-shadow"></div>
@@ -71,7 +65,7 @@
           <!-- e-commerce-app menu start -->
           <!-- Misc -->
           <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Misc">Controlo de acesso</span>
+            <span class="menu-header-text" data-i18n="Misc">Acessos</span>
           </li>
           <li class="menu-item" :class="{ 'active': $route.path === '/utilizadores' }">
             <router-link to="/utilizadores" class="menu-link">
@@ -109,3 +103,10 @@
         </a>
       </div>
 </template>
+
+<style scoped>
+aside{
+  border-top-right-radius: 2.5rem;
+  border-bottom-right-radius: 2.5rem;
+}
+</style>
