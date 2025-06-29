@@ -22,6 +22,12 @@ import AlertContainer from '@/components/alerts/AlertContainer.vue';
   overflow-x: hidden;
 }
 
+.my-scroll {
+  max-height: 433px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 /* Estilo opcional para a barra de scroll */
 .my-scroll::-webkit-scrollbar {
   width: 8px;

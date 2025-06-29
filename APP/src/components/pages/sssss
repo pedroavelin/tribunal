@@ -1,0 +1,229 @@
+<div class="logs-container" style="display: none!important;">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2>Registro de Atividades</h2>
+            <button class="btn btn-sm btn-outline-secondary" @click="refreshLogs">
+                <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card-body border-bottom">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Ação</label>
+                    <select v-model="logsStore.filters.action" class="form-select form-select-sm">
+                        <option value="">Todas</option>
+                        <option value="LOGIN_SUCCESS">Login bem-sucedido</option>
+                        <option value="LOGIN_FAILED">Falha no login</option>
+                        <option value="CREATE">Criação</option>
+                        <option value="UPDATE">Atualização</option>
+                        <option value="DELETE">Exclusão</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Recurso</label>
+                    <select v-model="logsStore.filters.resource" class="form-select form-select-sm">
+                        <option value="">Todos</option>
+                        <option value="Auth">Autenticação</option>
+                        <option value="User">Usuário</option>
+                        <option value="Process">Processo</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">De</label>
+                    <input type="date" v-model="logsStore.filters.dateFrom" class="form-control form-control-sm">
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Até</label>
+                    <input type="date" v-model="logsStore.filters.dateTo" class="form-control form-control-sm">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Buscar</label>
+                    <div class="input-group">
+                        <input type="text" v-model="logsStore.filters.search" class="form-control form-control-sm"
+                            placeholder="Pesquisar...">
+                        <button class="btn btn-sm btn-primary" @click="applyFilters">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" @click="resetFilters">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading e Erros -->
+        <div v-if="logsStore.loading" class="text-center p-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2">Carregando logs...</p>
+        </div>
+
+        <div v-if="logsStore.error" class="alert alert-danger m-3">
+            {{ logsStore.error }}
+        </div>
+
+        <!-- Tabela de Logs -->
+        <div class="table-responsive" v-if="!logsStore.loading">
+            <table class="table table-hover table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th width="80">ID</th>
+                        <th>Usuário</th>
+                        <th>Ação</th>
+                        <th>Recurso</th>
+                        <th>Descrição</th>
+                        <th width="160">Data/Hora</th>
+                        <th width="80"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="log in logsStore.logs" :key="log.id">
+                        <td>{{ log.id }}</td>
+                        <td>
+                            <span v-if="log.user">{{ log.user.username }}</span>
+                            <span v-else class="text-muted">N/A</span>
+                        </td>
+                        <td>
+                            <span class="badge" :class="actionBadgeClass(log.action)">
+                                {{ log.action }}
+                            </span>
+                        </td>
+                        <td>{{ log.resource }}</td>
+                        <td class="text-truncate" style="max-width: 300px;">{{ log.description }}</td>
+                        <td>{{ formatDateTime(log.createdAt) }}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary" @click="showLogDetails(log)">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        <div class="card-footer d-flex justify-content-between align-items-center">
+            <div>
+                Mostrando {{ (logsStore.pagination.page - 1) * logsStore.pagination.limit + 1 }} a
+                {{ Math.min(logsStore.pagination.page * logsStore.pagination.limit, logsStore.pagination.total) }} de
+                {{ logsStore.pagination.total }} registros
+            </div>
+
+            <div class="d-flex align-items-center">
+                <select v-model="logsStore.pagination.limit" @change="logsStore.setLimit(logsStore.pagination.limit)"
+                    class="form-select form-select-sm me-2" style="width: auto;">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" :class="{ disabled: !logsStore.hasPreviousPage }">
+                            <button class="page-link" @click="logsStore.setPage(logsStore.pagination.page - 1)">
+                                &laquo;
+                            </button>
+                        </li>
+
+                        <li class="page-item" v-for="page in visiblePages" :key="page"
+                            :class="{ active: page === logsStore.pagination.page }">
+                            <button class="page-link" @click="logsStore.setPage(page)">
+                                {{ page }}
+                            </button>
+                        </li>
+
+                        <li class="page-item" :class="{ disabled: !logsStore.hasNextPage }">
+                            <button class="page-link" @click="logsStore.setPage(logsStore.pagination.page + 1)">
+                                &raquo;
+                            </button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div class="modal fade" id="logDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalhes do Log #{{ logsStore.selectedLog?.id }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" v-if="logsStore.selectedLog">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Informações Básicas</h6>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th width="120">Usuário:</th>
+                                        <td>{{ logsStore.selectedLog.user?.username || 'N/A' }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Ação:</th>
+                                        <td>
+                                            <span class="badge" :class="actionBadgeClass(logsStore.selectedLog.action)">
+                                                {{ logsStore.selectedLog.action }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Recurso:</th>
+                                        <td>{{ logsStore.selectedLog.resource }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Data:</th>
+                                        <td>{{ formatDateTime(logsStore.selectedLog.createdAt, true) }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6>Detalhes Técnicos</h6>
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th width="120">IP:</th>
+                                        <td>{{ logsStore.selectedLog.ip }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>User Agent:</th>
+                                        <td>{{ logsStore.selectedLog.userAgent }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <h6>Descrição Completa</h6>
+                            <div class="card bg-light p-3">
+                                {{ logsStore.selectedLog.description }}
+                            </div>
+                        </div>
+
+                        <div class="col-12 mt-3" v-if="logsStore.selectedLog.metadata">
+                            <h6>Metadados</h6>
+                            <pre
+                                class="bg-dark text-light p-3 rounded">{{ JSON.stringify(logsStore.selectedLog.metadata, null, 2) }}</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

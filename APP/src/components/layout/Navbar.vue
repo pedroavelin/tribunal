@@ -46,15 +46,18 @@ watch(filtro, (valor) => {
       <div class="filtro-processos-container">
         <div class="input-group input-group-merge">
           <span class="input-group-text" id="basic-addon-search31"><i class="icon-base ti tabler-search"></i></span>
-          <input v-model="filtro" type="text" class="form-control form-control-sm" placeholder="Pesquisar processo..."
+          <input v-model="filtro" type="text" class="form-control form-control-sm rounded-0" placeholder="Pesquisar processo..."
             aria-label="Search..." aria-describedby="basic-addon-search31">
         </div>
-        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Preso</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Solto</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Condenado</button>
-        <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Liberdade</button>
+        <!-- <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Réu Preso</button> -->
+        <!-- <button type="button" class="btn btn-outline-secondary btn-sm waves-effect waves-light">Réu Solto</button> -->
         <date-picker type="daterange" format="DD-MM-YYYY" v-model:value="intervaloData" range-separator=" ~ "
           value-type="format" range lang="pt" class="date-picker-p" placeholder="Seleccione a data" />
+          <div class="mx-1">
+            <button type="button" class="btn rounded-pill btn-icon btn-danger btn-sm waves-effect waves-light">
+            <span class="icon-base ti tabler-pdf icon-22px"></span>
+          </button>
+          </div>
       </div>
       <!-- /Filtro de processos -->
 
@@ -63,9 +66,6 @@ watch(filtro, (valor) => {
         <!--/ Language -->
         <!-- Quick links  -->
         <li class="nav-item dropdown-language dropdown">
-          <button type="button" class="btn rounded-pill btn-icon btn-danger waves-effect waves-light">
-            <span class="icon-base ti tabler-pdf icon-22px"></span>
-          </button>
         </li>
         <!-- Quick links -->
         <!-- Notification -->

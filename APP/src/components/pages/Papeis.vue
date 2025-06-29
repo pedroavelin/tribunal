@@ -5,12 +5,11 @@ import Navbar from '@/components/layout/Navbar.vue'
 
 <template>
   <!-- Layout wrapper -->
-  <div class="layout-wrapper layout-content-navbar  ">
+  <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
       <!-- Menu -->
       <Menu />
       <!-- / Menu -->
-
       <!-- Layout container -->
       <div class="layout-page">
         <!-- Navbar -->

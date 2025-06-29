@@ -2,7 +2,7 @@ const cron = require('node-cron');
 const db = require('../models');
 const logger = require('../utils/logger');
 
-cron.schedule('*/10 * * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
   try {
     const expiredCount = await db.RefreshToken.destroy({
       where: {

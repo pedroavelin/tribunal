@@ -54,6 +54,10 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    cadeiaLocal: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
     dataDeJulgamento: {
       type: DataTypes.DATEONLY,
       allowNull: true
@@ -64,7 +68,7 @@ module.exports = (sequelize) => {
     tableName: 'processo_arguidos',
     freezeTableName: true,
     timestamps: false,
-  });
-
+  }
+);
   return ProcessoArguido;
 };

@@ -13,6 +13,7 @@ const processoRoutes = require('./routes/processoRoutes');
 const provinciaRoutes = require('./routes/provinciaRoutes');
 const seccoesRoutes = require('./routes/seccoesRoutes');
 const estadoProcessoRouter = require('./routes/estadoProcessoRouter');
+const estadoArguidoRouter = require('./routes/estadoArguidoRouter');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
@@ -46,7 +47,6 @@ db.sequelize.sync()
   .catch(err => {
     console.error('Erro ao sincronizar o banco:', err);
   });
-
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Welcome to the secure API.' });
@@ -61,6 +61,7 @@ app.use('/api/processos', processoRoutes);
 app.use('/api/provincias', provinciaRoutes);
 app.use('/api/seccoes', seccoesRoutes);
 app.use('/api/estadosDoProcesso', estadoProcessoRouter);
+app.use('/api/estadoDosArguidos', estadoArguidoRouter);
 
 
 // Montar as rotas de autenticação sob o prefixo /api/auth

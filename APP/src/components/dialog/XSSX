@@ -135,12 +135,12 @@ watch(tipoPessoa, (newVal) => {
 })
 
 onMounted( async () => {
+  provinciasStore.fetchProvincias()
+  municipiosStore.fetchMunicipios()
   window.addEventListener('keydown', handleKeydown)
   estadosArguidoStore.fetchEstados().catch(error => {
     alertStore.error('Erro ao carregar lista de estados');
   });
-  provinciasStore.fetchProvincias()
-  municipiosStore.fetchMunicipios()
 })
 // Fechar ao pressionar ESC
 const handleKeydown = (e) => {
@@ -175,12 +175,13 @@ watch(provinciaId, (id) => {
     <div class="modal fadex" :class="{ show: isOpen }" tabindex="-1">
       <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Processo {{ processo?.numero }}/{{ processo?.ano }} | Crime: {{ processo?.crime }}
+            </h5>
+            <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
+          </div>
           <div class="modal-body">
-            <div class="modal-header">
-              <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
-            </div>
             <div class="row">
-              <h5 class="modal-title">Processo {{ processo?.numero }}/{{ processo?.ano }} | Crime: {{ processo?.crime }}</h5>
               <div class="col-md-6">
                 <div class="info-container">
                   <form class="add-new-user pt-0" id="addNewUserForm" @submit.prevent="onSubmit">
@@ -200,7 +201,7 @@ watch(provinciaId, (id) => {
                           </div>
                         </div>
                       </li>
-                      <div class="row g-1">
+                      <div class="row">
                         <!-- Campos comuns -->
                         <div class="col-md-5">
                           <label class="form-label">Nome</label>
@@ -219,17 +220,17 @@ watch(provinciaId, (id) => {
                           <input type="number" class="form-control form-control-sm" placeholder="18 anos" v-model="idade" :class="{ 'is-invalid': idadeError }">
                           <!-- <div class="invalid-feedback">{{ idadeError }}</div> -->
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-2">
                           <label class="form-label">Sexo</label>
                           <input type="text" class="form-control form-control-sm" placeholder="M" v-model="sexo" :class="{ 'is-invalid': sexoError }">
                           <!-- <div class="invalid-feedback">{{ sexoError }}</div> -->
                         </div>
                         <div class="col-md-3">
                           <label class="form-label form-label-sm">Nascido aos</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="10/01/1999" v-model="nascimento" :class="{ 'is-invalid': nascimentoError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Ex: 10/01/1999" v-model="nascimento" :class="{ 'is-invalid': nascimentoError }">
                           <!-- <div class="invalid-feedback">{{ nascimentoError }}</div> -->
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                           <label class="form-label form-label-sm">Nome do pai</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Pai" v-model="pai" :class="{ 'is-invalid': paiError }">
                           <!-- <div class="invalid-feedback">{{ paiError }}</div> -->
@@ -279,7 +280,7 @@ watch(provinciaId, (id) => {
 
                         <!-- Campo específico de arguido -->
                         <div class="col-md-6" v-if="tipoPessoa === 'arguido'">
-                          <label class="form-label form-label-sm">Crime do arguido no processo</label>
+                          <label class="form-label form-label-sm">Crime</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Nome" v-model="crime" :class="{ 'is-invalid': crimeError }">
                           <!-- <div class="invalid-feedback">{{ crimeError }}</div> -->
                         </div>
@@ -288,8 +289,8 @@ watch(provinciaId, (id) => {
                           <input type="text" class="form-control form-control-sm" placeholder="Pena" v-model="pena" :class="{ 'is-invalid': penaError }">
                           <!-- <div class="invalid-feedback">{{ penaError }}</div> -->
                         </div>
-                        <div class="col-md-3"  v-if="tipoPessoa === 'arguido'">
-                          <label class="form-label form-label-sm" >Estado</label>
+                        <div class="col-md-3">
+                          <label class="form-label form-label-sm">Estado</label>
                           <select id="estado-processo" class="form-select form-select-sm" v-model="estado">
                               <option value="">Escolher</option>
                               <option v-for="estado in estadosArguidoStore.listaEstados" :key="estado.id" :value="estado.id">
@@ -299,9 +300,9 @@ watch(provinciaId, (id) => {
                           <!-- <input type="text" class="form-control form-control-sm" placeholder="Estado" v-model="estado" :class="{ 'is-invalid': estadoError }"> -->
                           <!-- <div class="invalid-feedback">{{ estadoError }}</div> -->
                         </div>
-                          <div class="col-md-7" v-if="tipoPessoa === 'arguido'">
+                          <div class="col-md-7">
                             <label class="form-label form-label-sm">Nome da cadeia</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Comarca de Viana, Província de Luanda">
+                          <input type="text" class="form-control form-control-sm" placeholder="Comarca de Viana, Província de Luanda" v-model="estado" :class="{ 'is-invalid': estadoError }">
                           <!-- <div class="invalid-feedback">{{ estadoError }}</div> -->
                           </div>
                           <div class="col-md-2">
@@ -344,7 +345,7 @@ watch(provinciaId, (id) => {
                           rua {{ arguido.arguido.endereco.rua }},
                           rua {{ arguido.arguido.endereco.casa }}.
                           Actualmente <span class="fw-bold">{{ arguido.arguido.estado.descricao }}</span>, 
-                          no estabelecimento prisional de(a) <span class="fw-bold">{{ arguido.cadeiaLocal }}</span>.
+                          no estabelecimento prisional de(a) <span class="fw-bold">Comarca de Viana, Província de Luanda</span>
                         </div>
                       </div>
                     </div>

@@ -356,8 +356,6 @@ exports.filtrarProcessos = async (req, res) => {
   }
 };
 
-
-
 exports.atualizar = async (req, res) => {
   const id = req.params.id;
 
@@ -402,3 +400,187 @@ exports.atualizar = async (req, res) => {
     });
   }
 };
+
+
+exports.associarArguido = async (req, res) => {
+  const transaction = await db.sequelize.transaction();
+  try {
+    const userId = req.userId;
+    const { numero, ano } = req.params;
+
+    // Verificação básica
+    if (!numero || !ano || isNaN(ano)) {
+      await transaction.rollback();
+      return res.status(400).json({
+        message: 'Parâmetros inválidos',
+        details: 'Número e ano do processo devem estar presentes e válidos',
+        recebidos: { numero, ano }
+      });
+    }
+
+    const { idArguido, arguido, idEstadoArguido, pena, crime, cadeiaLocal, dataDeJulgamento, observacoes } = req.body;
+
+    // Validação dos dados do arguido
+    if (!idArguido && !arguido) {
+      await transaction.rollback();
+      return res.status(400).json({
+        message: 'Dados insuficientes',
+        details: 'Forneça idArguido OU os dados completos do arguido'
+      });
+    }
+
+    if (idArguido && arguido) {
+      await transaction.rollback();
+      return res.status(400).json({
+        message: 'Dados conflitantes',
+        details: 'Forneça apenas idArguido OU dados do arguido, não ambos'
+      });
+    }
+
+    // Verifica permissão do usuário
+    const user = await db.User.findByPk(userId, { transaction });
+    if (!user?.idLetra) {
+      await transaction.rollback();
+      return res.status(403).json({
+        message: 'Permissão negada',
+        details: 'Usuário não está vinculado a nenhuma letra'
+      });
+    }
+
+    // Busca o processo com base em número, ano e letra
+    const processo = await db.Processo.findOne({
+      where: {
+        numero: numero,
+        ano: ano,
+        idLetra: user.idLetra
+      },
+      transaction
+    });
+
+    if (!processo) {
+      await transaction.rollback();
+      return res.status(404).json({
+        message: 'Processo não encontrado',
+        details: `Nenhum processo ${numero}/${ano} foi encontrado na sua jurisdição`
+      });
+    }
+    // Processamento do arguido
+    let arguidoId;
+
+    if (idArguido) {
+      const arguidoExistente = await db.Arguido.findByPk(idArguido, { transaction });
+      if (!arguidoExistente) {
+        await transaction.rollback();
+        return res.status(404).json({ message: 'Arguido não encontrado' });
+      }
+      arguidoId = idArguido;
+    } else {
+      if (!arguido.nome || !arguido.apelido) {
+        await transaction.rollback();
+        return res.status(400).json({ message: 'Nome e apelido do arguido são obrigatórios' });
+      }
+    const novoArguido = await db.Arguido.create({
+      nome: arguido.nome,
+      apelido: arguido.apelido,
+      idade: arguido.idade,
+      sexo: arguido.sexo,
+      dataDeNascimento: arguido.dataDeNascimento,
+      pai: arguido.pai,
+      mae: arguido.mae,
+      profissao: arguido.profissao,
+      idEstado: arguido.estado?.id || null,
+      idEndereco: arguido.endereco ? await criarEndereco(arguido.endereco, transaction) : null
+    }, { transaction });
+
+      arguidoId = novoArguido.id;
+    }
+    // Verifica duplicidade
+    const associacaoExistente = await db.ProcessoArguido.findOne({
+      where: {
+        idProcesso: processo.id,
+        idArguido: arguidoId
+      },
+      transaction
+    });
+
+    if (associacaoExistente) {
+      await transaction.rollback();
+      return res.status(409).json({
+        message: 'Este arguido já está associado a este processo'
+      });
+    }
+    // ✅ Valida se está ausente
+if (idEstadoArguido == null) {
+  await transaction.rollback();
+  return res.status(400).json({
+    message: 'Campo idEstadoArguido é obrigatório',
+    details: 'Este campo não pode ser nulo'
+  });
+}
+    if (idEstadoArguido && typeof idEstadoArguido === 'object') {
+      return res.status(400).json({
+        message: 'Campo idEstadoArguido inválido',
+        details: 'Envie apenas o ID (ex: 1, 2), e não um objeto completo'
+      });
+    }
+    const estadoId = idEstadoArguido;
+
+    // Cria associação
+    await db.ProcessoArguido.create({
+      idProcesso: processo.id,
+      idArguido: arguidoId,
+      idEstadoArguido: estadoId,
+      pena,
+      crime,
+      cadeiaLocal,
+      dataDeJulgamento,
+      observacoes
+    }, { transaction });
+
+    await transaction.commit();
+    return res.status(201).json({
+      message: 'Arguido associado com sucesso ao processo',
+      processoId: processo.id,
+      arguidoId
+    });
+
+  } catch (error) {
+    await transaction.rollback();
+    console.error('Erro na associação:', error);
+
+    if (error.name === 'SequelizeValidationError') {
+      const errors = error.errors.map(err => ({
+        campo: err.path,
+        mensagem: err.message,
+        valor: err.value
+      }));
+      return res.status(400).json({
+        message: 'Erro de validação dos dados',
+        errors,
+        tipo: 'VALIDATION_ERROR'
+      });
+    }
+
+    return res.status(500).json({
+      message: 'Erro interno no servidor',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+      code: 'SERVER_ERROR'
+    });
+  }
+};
+
+// Função auxiliar
+async function criarEndereco(dadosEndereco, transaction) {
+  if (!dadosEndereco.bairro || !dadosEndereco.rua) {
+    throw new Error('Bairro e rua são obrigatórios para o endereço');
+  }
+
+  const endereco = await db.Endereco.create({
+    bairro: dadosEndereco.bairro,
+    rua: dadosEndereco.rua,
+    casa: dadosEndereco.casa || null,
+    idMunicipio: dadosEndereco.municipio?.id || null
+  }, { transaction });
+
+  return endereco.id;
+}

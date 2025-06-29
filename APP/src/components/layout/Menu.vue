@@ -85,11 +85,11 @@
               <div data-i18n="Documentation">Permissões</div>
             </a>
           </li>
-          <li class="menu-item">
-            <a href="" class="menu-link">
+          <li class="menu-item" :class="{ 'active': $route.path === '/logs' }">
+            <router-link to="/logs" class="menu-link">
               <i class="menu-icon icon-base ti tabler-file-description"></i>
               <div data-i18n="Documentation">Auditoria</div>
-            </a>
+            </router-link>
           </li>
         </ul>
 

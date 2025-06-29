@@ -77,6 +77,51 @@ router.put('/:id', [verifyToken, isAdmin], ProcessoController.atualizar);
  *         description: Não autorizado
  */
 router.get('/listar-por-letra', [verifyToken, isAdmin], ProcessoController.listarPorLetraDoUsuario);
+/**
+ * @swagger
+ * /api/processos/filtrar:
+ *   get:
+ *     summary: Pesquisar processo
+ *     tags: [Processos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Não autorizado
+ */
 router.get('/filtrar', [verifyToken, isAdmin], ProcessoController.filtrarProcessos);
+/**
+ * @swagger
+ * /api/processos/{id}/arguidos:
+ *   post:
+ *     summary: Associar arguido a um processo
+ *     tags: [Processos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Não autorizado
+ */
+// router.post('/:id/:id/arguidos', [verifyToken, isAdmin], ProcessoController.associarArguido);
+router.post('/:numero/:ano/arguidos', [verifyToken, isAdmin], ProcessoController.associarArguido);
+/**
+ * @swagger
+ * /api/processos/{id}/declarantes:
+ *   post:
+ *     summary: Associar declarante a um processo
+ *     tags: [Processos]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Success
+ *       401:
+ *         description: Não autorizado
+ */
+// router.post('/associar-declarante', [verifyToken, isAdmin], ProcessoController.associarDeclarante);
 
 module.exports = router;

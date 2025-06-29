@@ -4,7 +4,7 @@ import { useProcessoStore } from '@/stores/useProcessoStore'
 import { storeToRefs } from 'pinia'
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
-import Footer from '@/components/layout/Footer.vue'
+// import Footer from '@/components/layout/Footer.vue'
 import ModalDetalhesDoProcesso from '@/components/dialog/ModalDetalhesDoProcesso.vue'
 import ModalAddProcesso from '@/components/dialog/ModalAddProcesso.vue'
 
@@ -34,7 +34,6 @@ watch(modalAddProcesso, async (newVal) => {
     await processoStore.listarProcessos()
   }
 })
-
 </script>
 
 <template>
@@ -82,7 +81,7 @@ watch(modalAddProcesso, async (newVal) => {
                             </div>
                             <div class="">
                               <span class="bg-dark bg-opacity-75 text-white px-2 py-1 rounded-0 fs-6 fw-bold">
-{{ processo.estado.estado }}
+                                {{ processo.estado.estado }}
                               </span>
                             </div>
                           </div>
@@ -102,14 +101,14 @@ watch(modalAddProcesso, async (newVal) => {
                     class="text-center text-muted my-0">
                     <div class="mt-12">
                       <h4 class="mb-2 mx-2">Processo não encontrado ⚠️</h4>
-                      <img src="../../assets/img/illustrations/page-misc-error.png"
+                      <img src="@/assets/img/illustrations/page-misc-error.png"
                         alt="page-misc-not-authorized" width="130" class="img-fluid">
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <!-- <Footer/> -->
+            <!-- <Footer/> -->            
             <!-- Paginação -->
             <nav aria-label="Page navigation" class="d-none">
               <ul class="pagination justify-content-center">
@@ -146,9 +145,10 @@ watch(modalAddProcesso, async (newVal) => {
       </div>
       <!-- / Layout page -->
     </div>
-    <!-- Offcanvas to add new user -->
     <ModalDetalhesDoProcesso v-model="modalOpen" :processo="processoSelecionado" />
+    <!-- Offcanvas to add new proc -->
     <modalAddProcesso v-model="modalAddProcesso" />
+    <!-- Offcanvas to add new proc -->
     <div class="buy-now">
       <a href="#!" class="btn btn-primary btn-buy-now" @click="OpenModalAddProcesso()">Novo processo</a>
     </div>
