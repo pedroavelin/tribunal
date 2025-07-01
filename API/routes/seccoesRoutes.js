@@ -17,7 +17,7 @@ const seccaoController = require('../controllers/seccaoController')
  *       401:
  *         description: Não autorizado
  */
-router.post('/', [verifyToken, isAdmin], seccaoController.create)
+router.post('/', [verifyToken], seccaoController.create)
 /**
  * @swagger
  * /api/seccao:
@@ -32,6 +32,6 @@ router.post('/', [verifyToken, isAdmin], seccaoController.create)
  *       401:
  *         description: Não autorizado
  */
-router.get('/', [verifyToken, isAdmin], seccaoController.findAllWithDetails)
+router.get('/', [verifyToken], seccaoController.findAllWithDetails)
 
 module.exports = router

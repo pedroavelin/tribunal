@@ -1,12 +1,35 @@
 const db = require('../models');
 const { Role, Permission, Sequelize } = db;
 
+// exports.getAllRoles = async (req, res) => {
+//   try {
+//     const roles = await db.Role.findAll({
+//       include: [{ model: Permission, as: 'permissions' }]
+//     });
+//     res.status(200).send(roles);
+//   } catch (error) {
+//     res.status(500).send({ message: error.message });
+//   }
+// };
+
 exports.getAllRoles = async (req, res) => {
   try {
-    const roles = await db.Role.findAll({
-      include: [{ model: Permission, as: 'permissions' }]
+    const { page = 1, limit = 10 } = req.query;
+    const offset = (page - 1) * limit;
+
+    const { rows, count } = await db.Role.findAndCountAll({
+      include: [{ model: Permission, as: 'permissions' }],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [['createdAt', 'DESC']]
     });
-    res.status(200).send(roles);
+
+    res.status(200).json({
+      total: count,
+      page: parseInt(page),
+      limit: parseInt(limit),
+      data: rows
+    });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }

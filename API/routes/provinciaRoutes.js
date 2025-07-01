@@ -1,5 +1,6 @@
 const express = require('express')
 const router = express.Router()
+const { verifyToken } = require('../middleware/auth');
 const provinciaController = require('../controllers/provinciaController')
 
 /**
@@ -16,7 +17,7 @@ const provinciaController = require('../controllers/provinciaController')
  *       401:
  *         description: Não autorizado
  */
-router.get('/', provinciaController.findAll)
+router.get('/',[verifyToken],  provinciaController.findAll)
 /**
  * @swagger
  * /api/provincias/:id/municipios:
@@ -31,6 +32,6 @@ router.get('/', provinciaController.findAll)
  *       401:
  *         description: Não autorizado
  */
-router.get('/:id/municipios', provinciaController.findMunicipiosByProvincia)
+router.get('/:id/municipios', [verifyToken], provinciaController.findMunicipiosByProvincia)
 
 module.exports = router

@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 const barChart = ref(null)
 
 const processoStore = useProcessoStore()
-const {processos, totalProcessosComArguidosPresos, totalProcessosComArguidosSoltos } = storeToRefs(processoStore)
+const { processos, totalProcessosComArguidosPresos, totalProcessosComArguidosSoltos } = storeToRefs(processoStore)
 
 onMounted(async () => {
   const ctx = barChart.value.getContext('2d')
@@ -95,7 +95,7 @@ onMounted(async () => {
 </script>
 <template>
   <!-- Layout wrapper -->
-   
+
   <div class="layout-wrapper layout-content-navbar" v-if="authStore.isAuthenticated">
     <div class="layout-container">
       <!-- Menu -->
@@ -193,7 +193,7 @@ onMounted(async () => {
                       </div>
                       <div class="content-right">
                         <p class="mb-0 fw-medium text-success">Arguido(s) Solto(s)</p>
-                        <h4 class="text-success mb-0">{{  totalProcessosComArguidosSoltos   }}</h4>
+                        <h4 class="text-success mb-0">{{ totalProcessosComArguidosSoltos }}</h4>
                       </div>
                     </div>
                   </div>
@@ -203,10 +203,27 @@ onMounted(async () => {
                     <div class="d-flex align-items-end row">
                       <div class="col-7">
                         <div class="card-body text-nowrap">
-                          <h6 class="card-title mb-0">🏛 {{ authStore.user.tribunal }}</h6>
-                          <p class="mb-2">🏦 {{ authStore.user.seccao }}</p>
-                          <h5 class="text-primary mb-1">Letra: {{ authStore.user.letra }}</h5>
-                          <router-link to="/processos" class="btn btn-primary waves-effect waves-light">Ver
+                          <h6 class="card-title mb-0" v-if="authStore.user.tribunal !== ''">🏛 {{
+                            authStore.user.tribunal }}</h6>
+                          <h6 class="card-title mb-0" v-else>🏛 Sem tribunal associado
+                            <div class="spinner-grow spinner-grow-sm text-danger" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          </h6>
+                          <p class="mb-2" v-if="authStore.user.seccao !== ''">🏦 {{ authStore.user.seccao }}</p>
+                          <p class="mb-2" v-else>🏦 Sem secção
+                          <div class="spinner-grow spinner-grow-sm text-danger" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                          </p>
+                          <h5 class="text-primary mb-1" v-if="authStore.user.letra !== ''">Letra: {{
+                            authStore.user.letra }}</h5>
+                          <h5 class="text-primary mb-1" v-else>Sem letra
+                            <div class="spinner-grow spinner-grow-sm text-danger" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                            </div>
+                          </h5>
+                          <router-link to="/processos" class="btn btn-primary btn-sm waves-effect waves-light">Meus
                             processos</router-link>
                         </div>
                       </div>

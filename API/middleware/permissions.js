@@ -18,7 +18,6 @@ const checkPermission = (permissionName) => {
           message: `Require ${permissionName} Permission!`
         });
       }
-      
       next();
     } catch (error) {
       return res.status(500).send({

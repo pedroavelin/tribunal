@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken, isAdmin } = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const estadoArguidoController = require('../controllers/estadoArguidoController');
 
 /**
@@ -17,5 +17,5 @@ const estadoArguidoController = require('../controllers/estadoArguidoController'
  *       401:
  *         description: Não autorizado
  */
-router.get('/', [verifyToken, isAdmin], estadoArguidoController.findAll);
+router.get('/', [verifyToken], estadoArguidoController.findAll);
 module.exports = router;

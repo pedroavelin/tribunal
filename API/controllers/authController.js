@@ -160,7 +160,7 @@ signin: async (req, res) => {
       userId: user.id,
       action: 'LOGIN_SUCCESS',
       resource: 'Auth',
-      description: `Usuário ${user.email} fez login com sucesso`,
+      description: `${user.email} fez login com sucesso`,
       req
     });
 
@@ -275,9 +275,7 @@ signin: async (req, res) => {
       });
     }
   },
-  recoverPassWord: async (req, res) => {
-
-  },
+  recoverPassWord: async (req, res) => {},
 
   logout: async (req, res) => {
     await db.RefreshToken.destroy({

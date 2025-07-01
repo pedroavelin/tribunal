@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const ProcessoController = require('../controllers/processoController');
-const { verifyToken, isAdmin } = require('../middleware/auth');
+const { verifyToken, isAdmin, allowAllRoles} = require('../middleware/auth');
 
 /**
  * @swagger
@@ -76,7 +76,7 @@ router.put('/:id', [verifyToken, isAdmin], ProcessoController.atualizar);
  *       401:
  *         description: Não autorizado
  */
-router.get('/listar-por-letra', [verifyToken, isAdmin], ProcessoController.listarPorLetraDoUsuario);
+router.get('/listar-por-letra',[ verifyToken, allowAllRoles], ProcessoController.listarPorLetraDoUsuario);
 /**
  * @swagger
  * /api/processos/filtrar:
@@ -91,7 +91,7 @@ router.get('/listar-por-letra', [verifyToken, isAdmin], ProcessoController.lista
  *       401:
  *         description: Não autorizado
  */
-router.get('/filtrar', [verifyToken, isAdmin], ProcessoController.filtrarProcessos);
+router.get('/filtrar', [verifyToken], ProcessoController.filtrarProcessos);
 /**
  * @swagger
  * /api/processos/{id}/arguidos:
@@ -107,7 +107,7 @@ router.get('/filtrar', [verifyToken, isAdmin], ProcessoController.filtrarProcess
  *         description: Não autorizado
  */
 // router.post('/:id/:id/arguidos', [verifyToken, isAdmin], ProcessoController.associarArguido);
-router.post('/:numero/:ano/arguidos', [verifyToken, isAdmin], ProcessoController.associarArguido);
+router.post('/:numero/:ano/arguidos', [verifyToken], ProcessoController.associarArguido);
 /**
  * @swagger
  * /api/processos/{id}/declarantes:

@@ -1,35 +1,58 @@
 <template>
-
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
-      <!-- Menu -->
       <Menu />
-      <!-- / Menu -->
-      <!-- Layout container -->
       <div class="layout-page">
-        <!-- Navbar -->
         <Navbar />
-        <!-- / Navbar -->
-        <!-- Content wrapper -->
         <div class="content-wrapper">
-          <!-- Content -->
           <div class="container-xxl flex-grow-1 container-p-y">
             <h4>Auditoria</h4>
             <div class="card">
-              <!-- Filtros -->
-
-              <!-- Filtros -->
-              <!-- Loading e Erros -->
-              <div v-if="logsStore.loading" class="text-center p-4">
-                <div class="spinner-border text-primary" role="status">
-                  <span class="visually-hidden">Carregando...</span>
-                </div>
-                <p class="mt-2">Carregando logs...</p>
+              <!-- Loading com Skeletons -->
+              <div v-if="logsStore.loading" class="table-responsive text-nowrap">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Usuário</th>
+                      <th>Acção</th>
+                      <th>Recurso</th>
+                      <th>Descrição</th>
+                      <th width="110">Data/Hora</th>
+                    </tr>
+                  </thead>
+                  <tbody class="table-border-bottom-0">
+                    <tr v-for="n in logsStore.pagination.limit" :key="n">
+                      <td>
+                        <div class="skeleton-loader" style="width: 30px; height: 20px;"></div>
+                      </td>
+                      <td>
+                        <div class="skeleton-loader" style="width: 80px; height: 20px;"></div>
+                      </td>
+                      <td>
+                        <div class="skeleton-loader" style="width: 70px; height: 20px;"></div>
+                      </td>
+                      <td>
+                        <div class="skeleton-loader" style="width: 100px; height: 20px;"></div>
+                      </td>
+                      <td>
+                        <div class="skeleton-loader" style="width: 200px; height: 20px;"></div>
+                      </td>
+                      <td>
+                        <div class="skeleton-loader" style="width: 100px; height: 20px;"></div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
+
+              <!-- Erros -->
               <div v-if="logsStore.error" class="alert alert-danger m-3">
                 {{ logsStore.error }}
               </div>
-              <div class="table-responsive text-nowrap" v-if="!logsStore.loading">
+
+              <!-- Tabela real -->
+             <div class="table-responsive text-nowrap" v-if="!logsStore.loading">
                 <table class="table table-hover">
                   <thead>
                     <tr>
@@ -65,8 +88,9 @@
                   </tbody>
                 </table>
               </div>
-              <!-- Paginação -->
-              <div class="card-footer d-flex justify-content-between align-items-center">
+
+              <!-- Paginação (mantida igual) -->
+               <div class="card-footer d-flex justify-content-between align-items-center">
                 <div>
                   Mostrando {{ (logsStore.pagination.page - 1) * logsStore.pagination.limit + 1 }} a
                   {{ Math.min(logsStore.pagination.page * logsStore.pagination.limit, logsStore.pagination.total) }} de
@@ -108,12 +132,8 @@
               </div>
             </div>
           </div>
-
-          <!-- / Content -->
         </div>
-        <!-- Content wrapper -->
       </div>
-      <!-- / Layout page -->
     </div>
   </div>
 </template>
@@ -122,14 +142,23 @@
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
 import { useLogsStore } from '@/stores/logsStore'
-import { onMounted, computed } from 'vue'
+import {ref, onMounted, computed } from 'vue'
 
 const logsStore = useLogsStore()
+const isLoading = ref(true)
+const error = ref(null)
 
 // Carregar logs ao montar o componente
-onMounted(() => {
-  logsStore.fetchLogs()
+onMounted(async () => {
+  try {
+    await logsStore.fetchLogs()
+  } catch (err) {
+    error.value = err.message || 'Erro ao carregar logs'
+  } finally {
+    isLoading.value = false
+  }
 })
+
 
 // Páginas visíveis na paginação
 const visiblePages = computed(() => {
@@ -207,30 +236,59 @@ const actionBadgeClass = (action) => {
 </script>
 
 <style scoped>
-.logs-container {
-  max-width: 99%;
-  margin: 0 auto;
+
+/* Estilos para os Skeletons */
+.skeleton-loader {
+  background-color: #e9ecef;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+  display: inline-block;
+}
+@media (forced-colors: active) {
+  .skeleton-loader {
+    background-color: CanvasText;
+    forced-color-adjust: none; /* If you need to override system colors */
+  }
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
-.badge {
-  font-size: 0.75em;
-  font-weight: 500;
-  text-transform: capitalize;
+/* Melhorias na tabela */
+.table-hover tbody tr:hover {
+  background-color: rgba(115, 103, 240, 0.04);
 }
 
-.table td,
 .table th {
-  vertical-align: middle;
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
 }
 
-.text-truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.modal pre {
-  max-height: 200px;
-  overflow-y: auto;
+/* Ajustes para responsividade */
+@media (max-width: 768px) {
+  .card-footer {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 </style>

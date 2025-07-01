@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { verifyToken, isAdmin } = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const tribunalController = require('../controllers/tribunalController');
 
 /**
@@ -17,7 +17,7 @@ const tribunalController = require('../controllers/tribunalController');
  *       401:
  *         description: Não removido
  */
-router.post('/', [verifyToken, isAdmin], tribunalController.create);
+router.post('/', [verifyToken], tribunalController.create);
 /**
  * @swagger
  * /api/tribunal:
@@ -32,7 +32,7 @@ router.post('/', [verifyToken, isAdmin], tribunalController.create);
  *       401:
  *         description: Não removido
  */
-router.get('/',  [verifyToken, isAdmin],tribunalController.findAll);
+router.get('/',  [verifyToken],tribunalController.findAll);
 /**
  * @swagger
 /**
@@ -49,7 +49,7 @@ router.get('/',  [verifyToken, isAdmin],tribunalController.findAll);
  *       401:
  *         description: Não removido
  */
-router.get('/with-municipio', [verifyToken, isAdmin], tribunalController.findAllWithMunicipio);
+router.get('/with-municipio', [verifyToken], tribunalController.findAllWithMunicipio);
 /**
  * @swagger
 * /api/tribunal/id:
@@ -64,7 +64,7 @@ router.get('/with-municipio', [verifyToken, isAdmin], tribunalController.findAll
  *       401:
  *         description: Não removido
  */
-router.get('/:id',  [verifyToken, isAdmin],tribunalController.findOne);
+router.get('/:id',  [verifyToken],tribunalController.findOne);
 /**
  * @swagger
  * /api/tribunal:
@@ -79,7 +79,7 @@ router.get('/:id',  [verifyToken, isAdmin],tribunalController.findOne);
  *       401:
  *         description: Não removido
  */
-router.put('/:id', [verifyToken, isAdmin], tribunalController.update);
+router.put('/:id', [verifyToken], tribunalController.update);
 /**
  * @swagger
  * /api/tribunal:
@@ -94,6 +94,6 @@ router.put('/:id', [verifyToken, isAdmin], tribunalController.update);
  *       401:
  *         description: Não removido
  */
-router.delete('/:id', [verifyToken, isAdmin], tribunalController.delete);
+router.delete('/:id', [verifyToken], tribunalController.delete);
 
 module.exports = router;

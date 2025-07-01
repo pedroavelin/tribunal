@@ -140,7 +140,7 @@ onMounted( async () => {
     alertStore.error('Erro ao carregar lista de estados');
   });
   provinciasStore.fetchProvincias()
-  municipiosStore.fetchMunicipios()
+  municipiosStore.fetchMunicipiosByProvincia()
 })
 // Fechar ao pressionar ESC
 const handleKeydown = (e) => {
