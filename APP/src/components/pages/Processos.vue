@@ -9,20 +9,71 @@ import ModalDetalhesDoProcesso from '@/components/dialog/ModalDetalhesDoProcesso
 import ModalAddProcesso from '@/components/dialog/ModalAddProcesso.vue'
 
 const processoStore = useProcessoStore()
-const { processos, estatisticasProcessos } = storeToRefs(processoStore)
+const { processos, estatisticasProcessos, pagination, loading } = storeToRefs(processoStore)
 const modalOpen = ref(false)
 const modalAddProcesso = ref(false)
 const processoSelecionado = ref(null)
+
+//  const store = useProcessoStore();
+const currentPage = ref(1);
+const pageSize = ref(12);
+
 
 function openModal(processo) {
   processoSelecionado.value = processo
   modalOpen.value = true
 }
 
+// verificar se pode ser eliminado
+const atualizarListaDeArguidos = async () => {
+  try {
+    // Forçar recarregamento completo do processo
+    await processoStore.carregarProcesso(processoSelecionado.value.id)
+    
+    // Atualizar o processo selecionado com os novos dados
+    processoSelecionado.value = { 
+      ...processoStore.processoAtual,
+      arguidos: [...processoStore.processoAtual.arguidos]
+    }
+    
+    // Atualizar também a lista de estatísticas
+    await processoStore.listarProcessos()
+  } catch (error) {
+    console.error('Erro ao atualizar lista de arguidos:', error)
+  }
+}
+
 function OpenModalAddProcesso() {
   modalAddProcesso.value = true
 }
+// Funções de paginação
+async function goToPage(page) {
+  if (page < 1 || page > pagination.value.totalPages) return
+  currentPage.value = page
+  await processoStore.listarProcessos(page, pageSize.value)
+}
 
+async function changePageSize(size) {
+  pageSize.value = size
+  currentPage.value = 1
+  await processoStore.listarProcessos(1, size)
+}
+// Gera array de páginas para exibição
+const pageRange = computed(() => {
+  const current = pagination.value.currentPage
+  const total = pagination.value.totalPages
+  const range = []
+  
+  // Mostra até 5 páginas ao redor da atual
+  for (let i = Math.max(1, current - 2); i <= Math.min(total, current + 2); i++) {
+    range.push(i)
+  }
+  
+  return range
+})
+onMounted(async () => {
+  await processoStore.listarProcessos(currentPage.value, pageSize.value)
+})
 onMounted(async () => {
   if (processos.value.length === 0) {
     await processoStore.listarProcessos()
@@ -32,6 +83,11 @@ onMounted(async () => {
 watch(modalAddProcesso, async (newVal) => {
   if (!newVal && !processoStore.filtroGeral) {
     await processoStore.listarProcessos()
+  }
+})
+watch(modalAddProcesso, async (newVal) => {
+  if (!newVal && !processoStore.filtroGeral) {
+    await processoStore.listarProcessos(currentPage.value, pageSize.value)
   }
 })
 </script>
@@ -97,10 +153,15 @@ watch(modalAddProcesso, async (newVal) => {
                       </div>
                     </div>
                   </div>
-                  <div v-if="estatisticasProcessos.length === 0 && !processoStore.loading"
+                   <div v-if="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+                  <div v-else-if="estatisticasProcessos.length === 0 && !processoStore.loading"
                     class="text-center text-muted my-0">
                     <div class="mt-12">
-                      <h4 class="mb-2 mx-2">Processo não encontrado ⚠️</h4>
+                      <h4 class="mb-2 mx-2">Nenhum processo encontrado ⚠️</h4>
                       <img src="@/assets/img/illustrations/page-misc-error.png"
                         alt="page-misc-not-authorized" width="130" class="img-fluid">
                     </div>
@@ -108,34 +169,63 @@ watch(modalAddProcesso, async (newVal) => {
                 </div>
               </div>
             </div>         
-            <!-- Paginação -->
-            <nav aria-label="Page navigation" class="d-none">
-              <ul class="pagination justify-content-center">
-                <li class="page-item prev">
-                  <a class="page-link waves-effect">
-                    <i class="icon-base ti tabler-chevrons-left icon-sm"></i></a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link waves-effect">1</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link waves-effect">2</a>
-                </li>
-                <li class="page-item active">
-                  <a class="page-link waves-effect waves-light">3</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link waves-effect">4</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link waves-effect">5</a>
-                </li>
-                <li class="page-item next">
-                  <a class="page-link waves-effect"><i class="icon-base ti tabler-chevrons-right icon-sm"></i></a>
-                </li>
-              </ul>
-            </nav>
-            <!-- Paginação -->
+                       <!-- Paginação -->
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-muted">Itens por página:</span>
+                <select 
+                  class="form-select form-select-sm w-auto" 
+                  v-model="pageSize"
+                  @change="changePageSize(pageSize)"
+                >
+                  <option value="12">12</option>
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+              
+              <nav aria-label="Page navigation">
+                <ul class="pagination pagination pagination-sm justify-content-center mb-0">
+                  <li class="page-item prev" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link waves-effect" @click="goToPage(1)">
+                      <i class="icon-base ti tabler-chevrons-left icon-xs"></i>
+                    </a>
+                  </li>
+                  <li class="page-item prev" :class="{ disabled: currentPage === 1 }">
+                    <a class="page-link waves-effect" @click="goToPage(currentPage - 1)">
+                      <i class="icon-base ti tabler-chevron-left icon-xs"></i>
+                    </a>
+                  </li>
+                  
+                  <li 
+                    class="page-item" 
+                    v-for="page in pageRange" 
+                    :key="page"
+                    :class="{ active: page === currentPage }"
+                  >
+                    <a class="page-link waves-effect" @click="goToPage(page)">{{ page }}</a>
+                  </li>
+                  
+                  <li class="page-item next" :class="{ disabled: currentPage === pagination.totalPages }">
+                    <a class="page-link waves-effect" @click="goToPage(currentPage + 1)">
+                      <i class="icon-base ti tabler-chevron-right icon-sm"></i>
+                    </a>
+                  </li>
+                  <li class="page-item next" :class="{ disabled: currentPage === pagination.totalPages }">
+                    <a class="page-link waves-effect" @click="goToPage(pagination.totalPages)">
+                      <i class="icon-base ti tabler-chevrons-right icon-sm"></i>
+                    </a>
+                  </li>
+                </ul>
+              </nav>
+              
+              <div class="text-muted">
+                Mostrando {{ (currentPage - 1) * pageSize + 1 }} a 
+                {{ Math.min(currentPage * pageSize, pagination.totalItems) }} de 
+                {{ pagination.totalItems }} itens
+              </div>
+            </div>
+            <!-- / Paginação -->
             <!-- Lista de processos  -->
           </div>
           <!-- / Content -->
@@ -147,7 +237,10 @@ watch(modalAddProcesso, async (newVal) => {
       </div>
       <!-- / Layout page -->
     </div>
-    <ModalDetalhesDoProcesso v-model="modalOpen" :processo="processoSelecionado" />
+    <ModalDetalhesDoProcesso v-show="processoSelecionado" v-model="modalOpen" :processo="processoSelecionado" 
+    @update:modelValue="showModal = $event"
+    @arguido-adicionado="atualizarListaDeArguidos"/>
+
     <!-- Offcanvas to add new proc -->
     <modalAddProcesso v-model="modalAddProcesso" />
     <!-- Offcanvas to add new proc -->

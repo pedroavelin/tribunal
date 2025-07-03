@@ -32,6 +32,97 @@ exports.listar = async (req, res) => {
   }
 };
 
+// exports.listarPorLetraDoUsuario = async (req, res) => {
+//   try {
+//     const userId = req.userId;
+//     const user = await db.User.findByPk(userId);
+
+//     if (!user || !user.idLetra) {
+//       return res.status(404).json({
+//         message: 'Usuário ou letra não encontrada.'
+//       });
+//     }
+//     // 2. Buscar processos com a mesma letra
+//     const processos = await db.Processo.findAll({
+//       where: {
+//         idLetra: user.idLetra,
+//         idSeccao: user.idSeccao,
+//       },
+//       include: [
+//         {
+//           model: db.EstadoProcesso,
+//           as: 'estado'
+//         },
+//         {
+//           model: db.ProcessoArguido,
+//           as: 'arguidos',
+//           include: [{
+//             model: db.Arguido,
+//             as: 'arguido',
+//             attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'dataDeNascimento', 'idEndereco', 'pai', 'mae', 'apelido'],
+//             include: [{
+//               model: db.EstadoArguido,
+//               as: 'estado',
+//               attributes: ['descricao']
+//             },
+//             {
+//               model: db.Endereco,
+//               as: 'endereco',
+//               include: [{
+//                 model: db.Municipio,
+//                 as: 'municipio',
+//                 attributes: ['nome'],
+//                 include: [{
+//                   model: db.Provincia,
+//                   as: 'provincia',
+//                   attributes: ['nome']
+//                 }]
+//               }],
+//               attributes: ['bairro', 'rua', 'casa']
+//             }
+//             ]
+//           }]
+//         },
+//         {
+//           model: db.ProcessoDeclarante,
+//           as: 'declarantes',
+//           include: [{
+//             model: db.Declarante,
+//             as: 'declarante',
+//             attributes: ['id', 'nome', 'idade', 'sexo', 'profissao', 'email', 'telf1', 'telf2', 'idEndereco'],
+//             include: [{
+//               model: db.Endereco,
+//               as: 'endereco',
+//               attributes: ['bairro', 'rua', 'casa'],
+//               include: [{
+//                 model: db.Municipio,
+//                 as: 'municipio',
+//                 attributes: ['nome'],
+//                 include: [{
+//                   model: db.Provincia,
+//                   as: 'provincia',
+//                   attributes: ['nome']
+//                 }]
+//               }]
+//             }]
+//           },]
+//         }
+//       ]
+//     });
+//     if (processos.length === 0) {
+//       return res.status(200).json({
+//         message: 'Actualmente não há processo(s) disponíveis para você.'
+//       });
+//     }
+//     return res.status(200).json(processos);
+//   } catch (error) {
+//     console.error('Erro ao buscar processos:', error);
+//     return res.status(500).json({
+//       message: 'Erro interno no servidor.'
+//     });
+//   }
+// };
+
 exports.listarPorLetraDoUsuario = async (req, res) => {
   try {
     const userId = req.userId;
@@ -42,8 +133,14 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
         message: 'Usuário ou letra não encontrada.'
       });
     }
-    // 2. Buscar processos com a mesma letra
-    const processos = await db.Processo.findAll({
+
+    // Obter parâmetros de paginação da query string (com valores padrão)
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 10;
+    const offset = (page - 1) * pageSize;
+
+    // 2. Buscar processos com a mesma letra (com paginação)
+    const { count, rows: processos } = await db.Processo.findAndCountAll({
       where: {
         idLetra: user.idLetra,
         idSeccao: user.idSeccao,
@@ -107,14 +204,31 @@ exports.listarPorLetraDoUsuario = async (req, res) => {
             }]
           },]
         }
-      ]
+      ],
+      limit: pageSize,
+      offset: offset
     });
+
     if (processos.length === 0) {
       return res.status(200).json({
         message: 'Actualmente não há processo(s) disponíveis para você.'
       });
     }
-    return res.status(200).json(processos);
+
+    // Calcular informações de paginação
+    const totalPages = Math.ceil(count / pageSize);
+
+    return res.status(200).json({
+      processos,
+      pagination: {
+        totalItems: count,
+        totalPages,
+        currentPage: page,
+        pageSize,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
+    });
   } catch (error) {
     console.error('Erro ao buscar processos:', error);
     return res.status(500).json({

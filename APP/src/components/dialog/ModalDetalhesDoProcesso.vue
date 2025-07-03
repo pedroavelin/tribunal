@@ -3,13 +3,17 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import { useEstadoDosArguidosStore } from '@/stores/useEstadoDosArguidosStore'
 import { useMunicipiosStore } from '@/stores/useMunicipiosStore'
 import { useProvinciasStore } from '@/stores/useProvinciasStore'
+import { useProcessoStore } from '@/stores/useProcessoStore'
+import { useAlertStore } from '@/stores/useAlertStore';
+
 
 import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 
-
-const provinciaId = ref('')
-const municipioId = ref('')
+const alertStore = useAlertStore();
+const processoStore = useProcessoStore()
+// const provinciaId = ref('')
+// const municipioId = ref('')
 
 const isOpen = ref(false)
 const tipoPessoa = ref('arguido')
@@ -25,12 +29,17 @@ const props = defineProps({
     default: () => ({})
   }
 })
+const processoLocal = ref({ ...props.processo })
 
 const emit = defineEmits([
   'update:modelValue',
   'save',
   'close'
 ])
+
+watch(() => props.processo, (val) => {
+  processoLocal.value = { ...val }
+}, { immediate: true })
 
 // Esquema de validação
 const validationSchema = yup.object({
@@ -50,16 +59,16 @@ const validationSchema = yup.object({
   bairro: yup.string().required('Obrigatório'),
   rua: yup.string().required('Obrigatório'),
   casa: yup.string().required('Obrigatório'),
-  crime: yup.string().when('tipoPessoa', (tipoPessoa, schema) => {
-    return tipoPessoa === 'arguido'
-      ? schema.required('Crime é obrigatório para arguidos')
-      : schema.notRequired()
+  crime: yup.string().when('tipoPessoa', {
+    is: 'arguido',
+    then: schema => schema.required('Crime é obrigatório para arguidos'),
+    otherwise: schema => schema.notRequired()
   }),
   estado: yup.string().required('Obrigatório'),
-  pena: yup.string().when('tipoPessoa', (tipoPessoa, schema) => {
-    return tipoPessoa === 'arguido'
-      ? schema.required('A pena é Obrigatório para arguidos')
-      : schema.notRequired()
+  pena: yup.string().when('tipoPessoa', {
+    is: 'arguido',
+    then: schema => schema.required('Pena é obrigatória para arguidos'),
+    otherwise: schema => schema.notRequired()
   })
 })
 
@@ -83,7 +92,8 @@ const { handleSubmit, resetForm, setFieldValue } = useForm({
     crime: '',
     estado: '',
     pena: '',
-    tipoPessoa: 'arguido'
+    tipoPessoa: 'arguido',
+    cadeiaLocal: '',
   }
 })
 
@@ -103,20 +113,53 @@ const { value: casa, errorMessage: casaError } = useField('casa')
 const { value: crime, errorMessage: crimeError } = useField('crime')
 const { value: estado, errorMessage: estadoError } = useField('estado')
 const { value: pena, errorMessage: penaError } = useField('pena')
+const { value: cadeiaLocal, errorMessage: cadeiaLocalError } = useField('cadeiaLocal')
+
 
 // Função para submeter o formulário
-const onSubmit = handleSubmit((values) => {
-  const dataToSend = { ...values }
+const onSubmitJoinArgInProcess = handleSubmit(async (values) => {
+  try {
+    const payload = {
+      idEstadoArguido: parseInt(values.estado),
+      arguido: {
+        nome: values.nome,
+        apelido: values.apelido,
+        idade: values.idade,
+        sexo: values.sexo,
+        dataDeNascimento: values.nascimento,
+        pai: values.pai,
+        mae: values.mae,
+        profissao: 'Indefinida',
+        estado: { id: parseInt(values.estado) },
+        municipio: values.municipio,
+        endereco: {
+          bairro: values.bairro,
+          rua: values.rua,
+          casa: values.casa,
+          municipio: { id: parseInt(values.municipio) }
+        }
+      }
+    }
 
-  // Se for declarante, remove os campos específicos de arguido
-  if (tipoPessoa.value === 'declarante') {
-    delete dataToSend.crime
-    delete dataToSend.pena
+    // Adicionar campos específicos para arguidos
+    if (tipoPessoa.value === 'arguido') {
+      payload.crime = values.crime
+      payload.pena = values.pena
+      payload.cadeiaLocal = values.cadeiaLocal
+    }
+
+    await processoStore.associarArguidoAoProcesso(
+      props.processo.numero,
+      props.processo.ano,
+      payload
+    )
+    emit('arguido-adicionado')
+    closeModal()
+    alertStore.success('Associação realizada com sucesso!')
+
+  } catch (err) {
+    alertStore.error('Erro ao associar: ' + (err.response?.data?.message || err.message))
   }
-
-  console.log('Dados enviados:', dataToSend)
-  emit('save', dataToSend)
-  closeModal()
 })
 
 // Observadores para controle do modal
@@ -133,13 +176,12 @@ watch(tipoPessoa, (newVal) => {
   setFieldValue('tipoPessoa', newVal)
 })
 
-onMounted( async () => {
+onMounted(async () => {
   window.addEventListener('keydown', handleKeydown)
   estadosArguidoStore.fetchEstados().catch(error => {
     alertStore.error('Erro ao carregar lista de estados');
   });
   provinciasStore.fetchProvincias()
-  municipiosStore.fetchMunicipiosByProvincia()
 })
 // Fechar ao pressionar ESC
 const handleKeydown = (e) => {
@@ -162,10 +204,10 @@ function closeModal() {
   isOpen.value = false
   emit('close')
 }
-watch(provinciaId, (id) => {
-  if (id) {
-    municipiosStore.fetchMunicipiosByProvincia(id)
-    municipioId.value = ''
+watch(provincia, async (newId) => {
+  if (newId) {
+    await municipiosStore.fetchMunicipiosByProvincia(newId)
+    municipio.value = ''
   }
 })
 </script>
@@ -179,10 +221,11 @@ watch(provinciaId, (id) => {
               <button type="button" class="btn-close" @click="closeModal" aria-label="Close"></button>
             </div>
             <div class="row">
-              <h5 class="modal-title">Processo {{ processo?.numero }}/{{ processo?.ano }} | Crime: {{ processo?.crime }}</h5>
+              <h5 class="modal-title">Processo {{ processo?.numero }}/{{ processo?.ano }} | Crime: {{ processo?.crime }}
+              </h5>
               <div class="col-md-6">
                 <div class="info-container">
-                  <form class="add-new-user pt-0" id="addNewUserForm" @submit.prevent="onSubmit">
+                  <form class="add-new-user pt-0" id="addNewUserForm" @submit.prevent="onSubmitJoinArgInProcess">
                     <ul class="list-unstyled">
                       <li>
                         <div class="col-md">
@@ -214,88 +257,101 @@ watch(provinciaId, (id) => {
                         </div>
                         <div class="col-md-3">
                           <label class="form-label">Idade</label>
-                          <input type="number" class="form-control form-control-sm" placeholder="18 anos" v-model="idade" :class="{ 'is-invalid': idadeError }">
+                          <input type="number" class="form-control form-control-sm" placeholder="18 anos"
+                            v-model="idade" :class="{ 'is-invalid': idadeError }">
                         </div>
                         <div class="col-md-1">
-                          <label class="form-label" >Sexo</label>
-                          <select class="form-select form-select-sm" v-model="sexo" :class="{ 'is-invalid': sexoError }">
-                          <option value="0">M</option>
-                          <option value="1">F</option>
-                        </select>
+                          <label class="form-label">Sexo</label>
+                          <select class="form-select form-select-sm" v-model="sexo"
+                            :class="{ 'is-invalid': sexoError }">
+                            <option value="0">M</option>
+                            <option value="1">F</option>
+                          </select>
                         </div>
                         <div class="col-md-3">
                           <label class="form-label form-label-sm mx-3">Nascido aos</label>
-                          <input type="text" class="form-control form-control-sm mx-3" placeholder="10/01/1999" v-model="nascimento" :class="{ 'is-invalid': nascimentoError }" style="width: 118px;">
+                          <input type="text" class="form-control form-control-sm mx-3" placeholder="10/01/1999"
+                            v-model="nascimento" :class="{ 'is-invalid': nascimentoError }" style="width: 118px;">
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Nome do pai</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Pai" v-model="pai" :class="{ 'is-invalid': paiError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Pai" v-model="pai"
+                            :class="{ 'is-invalid': paiError }">
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Nome da mãe</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Mãe" v-model="mae" :class="{ 'is-invalid': maeError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Mãe" v-model="mae"
+                            :class="{ 'is-invalid': maeError }">
                         </div>
                         <div class="col-md-5">
                           <label class="form-label form-label-sm">Província</label>
-                          <select v-model="provinciaId" class="form-select form-select-sm" :class="{ 'is-invalid': provinciaError }">
-                          <option value="">Província</option>
-                          <option v-for="p in provinciasStore.provincias" :key="p.id" :value="p.id">
-                            {{ p.nome }}
-                          </option>
-                        </select>
+                          <select v-model="provincia" class="form-select form-select-sm"
+                            :class="{ 'is-invalid': provinciaError }">
+                            <option value="">Província</option>
+                            <option v-for="p in provinciasStore.provincias" :key="p.id" :value="p.id">
+                              {{ p.nome }}
+                            </option>
+                          </select>
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Município</label>
-                          <select v-model="municipioId" class="form-select form-select-sm" :disabled="!provinciaId" :class="{ 'is-invalid': municipioError }">
-                          <option value="">Município</option>
-                          <option v-for="m in municipiosStore.municipios" :key="m.id" :value="m.id">
-                            {{ m.nome }}
-                          </option>
-                        </select>
+                          <select v-model="municipio" class="form-select form-select-sm" :disabled="!provincia"
+                            :class="{ 'is-invalid': municipioError }">
+                            <option value="">Município</option>
+                            <option v-for="m in municipiosStore.municipios" :key="m.id" :value="m.id">
+                              {{ m.nome }}
+                            </option>
+                          </select>
                         </div>
                         <div class="col-md-3">
                           <label class="form-label form-label-sm">Bairro</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Bairro" v-model="bairro" :class="{ 'is-invalid': bairroError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Bairro" v-model="bairro"
+                            :class="{ 'is-invalid': bairroError }">
                         </div>
                         <div class="col-md-2">
                           <label class="form-label form-label-sm">Rua nº</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="123" v-model="rua" :class="{ 'is-invalid': ruaError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="123" v-model="rua"
+                            :class="{ 'is-invalid': ruaError }">
                         </div>
                         <div class="col-md-2">
                           <label class="form-label form-label-sm">Casa nº</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Nº" v-model="casa" :class="{ 'is-invalid': casaError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Nº" v-model="casa"
+                            :class="{ 'is-invalid': casaError }">
                         </div>
 
                         <!-- Campo específico de arguido -->
                         <div class="col-md-6" v-if="tipoPessoa === 'arguido'">
                           <label class="form-label form-label-sm">Crime do arguido no processo</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Nome" v-model="crime" :class="{ 'is-invalid': crimeError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Nome" v-model="crime"
+                            :class="{ 'is-invalid': crimeError }">
                         </div>
                         <div class="col-md-2" v-if="tipoPessoa === 'arguido'">
                           <label class="form-label form-label-sm">Pena</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Pena" v-model="pena" :class="{ 'is-invalid': penaError }">
+                          <input type="text" class="form-control form-control-sm" placeholder="Pena" v-model="pena"
+                            :class="{ 'is-invalid': penaError }">
                         </div>
-                        <div class="col-md-3"  v-if="tipoPessoa === 'arguido'">
-                          <label class="form-label form-label-sm" >Estado</label>
-                          <select id="estado-processo" class="form-select form-select-sm" v-model="estado" :class="{ 'is-invalid': estadoError }">
-                              <option value="">Escolher</option>
-                              <option v-for="estado in estadosArguidoStore.listaEstados" :key="estado.id" :value="estado.id">
-                                {{ estado.descricao }}
-                              </option>
-                            </select>
+                        <div class="col-md-3" v-if="tipoPessoa === 'arguido'">
+                          <label class="form-label form-label-sm">Estado</label>
+                          <select id="estado-processo" class="form-select form-select-sm" v-model="estado"
+                            :class="{ 'is-invalid': estadoError }">
+                            <option value="">Escolher</option>
+                            <option v-for="estado in estadosArguidoStore.listaEstados" :key="estado.id"
+                              :value="estado.id">
+                              {{ estado.descricao }}
+                            </option>
+                          </select>
                         </div>
-                          <div class="col-md-7" v-if="tipoPessoa === 'arguido'">
-                            <label class="form-label form-label-sm">Nome da cadeia</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="Comarca de Viana, Província de Luanda">
-                          <!-- <div class="invalid-feedback">{{ estadoError }}</div> -->
+                        <div class="col-md-7" v-if="tipoPessoa === 'arguido'">
+                          <label class="form-label form-label-sm">Nome da cadeia</label>
+                          <input type="text" v-model="cadeiaLocal" class="form-control form-control-sm"
+                            placeholder="Comarca de Viana, Província de Luanda"
+                            :class="{ 'is-invalid': cadeiaLocalError }">
+                        </div>
+                        <div class="col-md-2">
+                          <div class="mt-6">
+                            <button type="submit"
+                              class="btn btn-success btn-sm waves-effect waves-light ">Associar</button>
                           </div>
-                          <div class="col-md-2">
-                            <div class="mt-6">
-                                <button type="submit" class="btn btn-success btn-sm waves-effect waves-light ">Associar</button>
-                            </div>
-                          </div>
-                        <div class="row d-flex justify-content-between">
-                        
                         </div>
                       </div>
                     </ul>
@@ -328,21 +384,20 @@ watch(provinciaId, (id) => {
                           bairro {{ arguido.arguido.endereco.bairro }},
                           rua {{ arguido.arguido.endereco.rua }},
                           rua {{ arguido.arguido.endereco.casa }}.
-                          Actualmente <span class="fw-bold">{{ arguido.arguido.estado.descricao }}</span>, 
+                          Actualmente <span class="fw-bold">{{ arguido.arguido.estado.descricao }}</span>,
                           no estabelecimento prisional de(a) <span class="fw-bold">{{ arguido.cadeiaLocal }}</span>.
                         </div>
                       </div>
                     </div>
                     <!-- Se não encontrar arguidos -->
-                   <div v-if="processo.arguidos.length === 0"
-                    class="text-center text-muted my-0">
-                    <div class="mt-12">
-                      <h4 class="mb-2 mx-2">Não há arguidos associados ao processo ⚠️</h4>
-                      <img src="@/assets/img/illustrations/page-misc-error.png"
-                        alt="page-misc-not-authorized" width="80" class="img-fluid">
+                    <div v-if="processo.arguidos.length === 0" class="text-center text-muted my-0">
+                      <div class="mt-12">
+                        <h4 class="mb-2 mx-2">Não há arguidos associados ao processo ⚠️</h4>
+                        <img src="@/assets/img/illustrations/page-misc-error.png" alt="page-misc-not-authorized"
+                          width="80" class="img-fluid">
+                      </div>
                     </div>
-                  </div>
-                  <!-- Se não encontrar arguidos -->
+                    <!-- Se não encontrar arguidos -->
                   </div>
                   <div class="accordion mt-2">
                     <div class="accordion-item" v-for="(declarante, index) in processo.declarantes"
@@ -446,12 +501,13 @@ watch(provinciaId, (id) => {
 }
 
 .my-scroll-list-arguido::-webkit-scrollbar-thumb {
-   background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
+  background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
   border-radius: 10px;
 }
 
 .my-scroll-list-arguido::-webkit-scrollbar-thumb:hover {
-   background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
+  background: linear-gradient(270deg, rgba(var(--bs-primary-rgb), 0.7) 0%, #02010c 100%);
 }
+
 /* Scroll */
 </style>
