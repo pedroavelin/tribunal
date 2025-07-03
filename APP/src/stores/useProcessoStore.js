@@ -11,7 +11,6 @@ export const useProcessoStore = defineStore('processo', () => {
   const authStore = useAuthStore()
   const filtroGeral = ref('')
 
-
   // Função para buscar processos (mantém ordem original da API)
   async function listarProcessos() {
     loading.value = true

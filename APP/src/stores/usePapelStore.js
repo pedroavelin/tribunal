@@ -12,7 +12,7 @@ export const usePapelStore = defineStore('papel', () => {
   
   const pagination = ref({
     page: 1,
-    limit: 6,
+    limit: 8,
     total: 1
   })
   

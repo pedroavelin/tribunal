@@ -107,8 +107,7 @@ watch(modalAddProcesso, async (newVal) => {
                   </div>
                 </div>
               </div>
-            </div>
-            <!-- <Footer/> -->            
+            </div>         
             <!-- Paginação -->
             <nav aria-label="Page navigation" class="d-none">
               <ul class="pagination justify-content-center">
@@ -143,15 +142,15 @@ watch(modalAddProcesso, async (newVal) => {
         </div>
         <!-- Content wrapper -->
       </div>
+      <div class="buy-now">
+        <a href="#!" class="btn btn-primary btn-buy-now" @click="OpenModalAddProcesso()">Novo processo</a>
+      </div>
       <!-- / Layout page -->
     </div>
     <ModalDetalhesDoProcesso v-model="modalOpen" :processo="processoSelecionado" />
     <!-- Offcanvas to add new proc -->
     <modalAddProcesso v-model="modalAddProcesso" />
     <!-- Offcanvas to add new proc -->
-    <div class="buy-now">
-      <a href="#!" class="btn btn-primary btn-buy-now" @click="OpenModalAddProcesso()">Novo processo</a>
-    </div>
   </div>
   <!-- / Layout wrapper -->
 </template>

@@ -18,7 +18,6 @@ const estadosArguidoStore = useEstadoDosArguidosStore()
 const provinciasStore = useProvinciasStore()
 const municipiosStore = useMunicipiosStore()
 
-
 const props = defineProps({
   modelValue: Boolean,
   processo: {
@@ -72,7 +71,7 @@ const { handleSubmit, resetForm, setFieldValue } = useForm({
     nome: '',
     apelido: '',
     idade: null,
-    sexo: '',
+    sexo: 'M',
     nascimento: '',
     pai: '',
     mae: '',
@@ -212,92 +211,78 @@ watch(provinciaId, (id) => {
                           <label class="form-label">Apelido</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Apelido"
                             v-model="apelido" :class="{ 'is-invalid': apelidoError }">
-                          <!-- <div class="invalid-feedback">{{ apelidoError }}</div> -->
                         </div>
                         <div class="col-md-3">
                           <label class="form-label">Idade</label>
                           <input type="number" class="form-control form-control-sm" placeholder="18 anos" v-model="idade" :class="{ 'is-invalid': idadeError }">
-                          <!-- <div class="invalid-feedback">{{ idadeError }}</div> -->
                         </div>
                         <div class="col-md-1">
-                          <label class="form-label">Sexo</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="M" v-model="sexo" :class="{ 'is-invalid': sexoError }">
-                          <!-- <div class="invalid-feedback">{{ sexoError }}</div> -->
+                          <label class="form-label" >Sexo</label>
+                          <select class="form-select form-select-sm" v-model="sexo" :class="{ 'is-invalid': sexoError }">
+                          <option value="0">M</option>
+                          <option value="1">F</option>
+                        </select>
                         </div>
                         <div class="col-md-3">
-                          <label class="form-label form-label-sm">Nascido aos</label>
-                          <input type="text" class="form-control form-control-sm" placeholder="10/01/1999" v-model="nascimento" :class="{ 'is-invalid': nascimentoError }">
-                          <!-- <div class="invalid-feedback">{{ nascimentoError }}</div> -->
+                          <label class="form-label form-label-sm mx-3">Nascido aos</label>
+                          <input type="text" class="form-control form-control-sm mx-3" placeholder="10/01/1999" v-model="nascimento" :class="{ 'is-invalid': nascimentoError }" style="width: 118px;">
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Nome do pai</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Pai" v-model="pai" :class="{ 'is-invalid': paiError }">
-                          <!-- <div class="invalid-feedback">{{ paiError }}</div> -->
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Nome da mãe</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Mãe" v-model="mae" :class="{ 'is-invalid': maeError }">
-                          <!-- <div class="invalid-feedback">{{ maeError }}</div> -->
                         </div>
                         <div class="col-md-5">
                           <label class="form-label form-label-sm">Província</label>
-                          <select v-model="provinciaId" class="form-select form-select-sm">
+                          <select v-model="provinciaId" class="form-select form-select-sm" :class="{ 'is-invalid': provinciaError }">
                           <option value="">Província</option>
                           <option v-for="p in provinciasStore.provincias" :key="p.id" :value="p.id">
                             {{ p.nome }}
                           </option>
                         </select>
-                          <!-- <input type="text" class="form-control form-control-sm" placeholder="Província" v-model="provincia" :class="{ 'is-invalid': provinciaError }"> -->
-                          <!-- <div class="invalid-feedback">{{ provinciaError }}</div> -->
                         </div>
                         <div class="col-md-4">
                           <label class="form-label form-label-sm">Município</label>
-                          <select v-model="municipioId" class="form-select form-select-sm" :disabled="!provinciaId">
+                          <select v-model="municipioId" class="form-select form-select-sm" :disabled="!provinciaId" :class="{ 'is-invalid': municipioError }">
                           <option value="">Município</option>
                           <option v-for="m in municipiosStore.municipios" :key="m.id" :value="m.id">
                             {{ m.nome }}
                           </option>
                         </select>
-                          <!-- <input type="text" class="form-control form-control-sm" placeholder="município" v-model="municipio" :class="{ 'is-invalid': municipioError }"> -->
-                          <!-- <div class="invalid-feedback">{{ municipioError }}</div> -->
                         </div>
                         <div class="col-md-3">
                           <label class="form-label form-label-sm">Bairro</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Bairro" v-model="bairro" :class="{ 'is-invalid': bairroError }">
-                          <!-- <div class="invalid-feedback">{{ bairroError }}</div> -->
                         </div>
                         <div class="col-md-2">
                           <label class="form-label form-label-sm">Rua nº</label>
                           <input type="text" class="form-control form-control-sm" placeholder="123" v-model="rua" :class="{ 'is-invalid': ruaError }">
-                          <!-- <div class="invalid-feedback">{{ ruaError }}</div> -->
                         </div>
                         <div class="col-md-2">
                           <label class="form-label form-label-sm">Casa nº</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Nº" v-model="casa" :class="{ 'is-invalid': casaError }">
-                          <!-- <div class="invalid-feedback">{{ casaError }}</div> -->
                         </div>
 
                         <!-- Campo específico de arguido -->
                         <div class="col-md-6" v-if="tipoPessoa === 'arguido'">
                           <label class="form-label form-label-sm">Crime do arguido no processo</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Nome" v-model="crime" :class="{ 'is-invalid': crimeError }">
-                          <!-- <div class="invalid-feedback">{{ crimeError }}</div> -->
                         </div>
                         <div class="col-md-2" v-if="tipoPessoa === 'arguido'">
                           <label class="form-label form-label-sm">Pena</label>
                           <input type="text" class="form-control form-control-sm" placeholder="Pena" v-model="pena" :class="{ 'is-invalid': penaError }">
-                          <!-- <div class="invalid-feedback">{{ penaError }}</div> -->
                         </div>
                         <div class="col-md-3"  v-if="tipoPessoa === 'arguido'">
                           <label class="form-label form-label-sm" >Estado</label>
-                          <select id="estado-processo" class="form-select form-select-sm" v-model="estado">
+                          <select id="estado-processo" class="form-select form-select-sm" v-model="estado" :class="{ 'is-invalid': estadoError }">
                               <option value="">Escolher</option>
                               <option v-for="estado in estadosArguidoStore.listaEstados" :key="estado.id" :value="estado.id">
                                 {{ estado.descricao }}
                               </option>
                             </select>
-                          <!-- <input type="text" class="form-control form-control-sm" placeholder="Estado" v-model="estado" :class="{ 'is-invalid': estadoError }"> -->
-                          <!-- <div class="invalid-feedback">{{ estadoError }}</div> -->
                         </div>
                           <div class="col-md-7" v-if="tipoPessoa === 'arguido'">
                             <label class="form-label form-label-sm">Nome da cadeia</label>

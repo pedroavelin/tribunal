@@ -6,7 +6,6 @@ import { useAuthStore } from '@/stores/auth'
 import { useProcessoStore } from '@/stores/useProcessoStore'
 
 import Menu from '@/components/layout/Menu.vue'
-import Footer from '@/components/layout/Footer.vue'
 import Navbar from '@/components/layout/Navbar.vue'
 
 const authStore = useAuthStore()
@@ -251,7 +250,6 @@ onMounted(async () => {
             <!-- Hour chart End  -->
           </div>
           <!-- / Content -->
-          <Footer />
           <div class="content-backdrop fade"></div>
         </div>
         <!-- Content wrapper -->

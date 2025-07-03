@@ -2,19 +2,25 @@
 import Menu from '@/components/layout/Menu.vue'
 import Navbar from '@/components/layout/Navbar.vue'
 import { usePapelStore } from '@/stores/usePapelStore'
-import { onMounted, computed } from 'vue'
+import modalAddRole from '@/components/dialog/ModalAddRole.vue'
+import ModalJoinPermissionToRole from '@/components/dialog/ModalAssignPermissionToRole.vue'
+import { ref, onMounted, computed } from 'vue'
 
 const papelStore = usePapelStore()
+const modalAddProcesso = ref(false)
+const modalJoinRoleToPermission = ref(false)
+
+function modalJoinRolesToPermission() {
+  modalJoinRoleToPermission.value = true
+}
+
+function openModal() {
+  modalAddProcesso.value = true
+}
 
 onMounted(() => {
-  papelStore.fetchPapeis().then(() => {
-    console.log('Pagination data:', {
-      totalPages: papelStore.pagination.totalPages,
-      currentPage: papelStore.pagination.page,
-      totalItems: papelStore.pagination.totalItems
-    })
-  })
-})
+  papelStore.fetchPapeis()
+});
 
 const papeis = computed(() => papelStore.papeis)
 const isLoading = computed(() => papelStore.loading)
@@ -48,8 +54,7 @@ const setPage = async (page) => {
         <div class="content-wrapper">
           <div class="container-xxl flex-grow-1 container-p-y">
             <h4 class="mb-1">Lista de papeis</h4>
-            <p class="mb-6">A role provided access to predefined menus and features.</p>
-
+            <p class="">Papeis do sistema.</p>
             <!-- Skeleton Loaders -->
             <div v-if="isLoading" class="row g-6">
               <div v-for="n in 6" :key="n" class="col-xl-4 col-lg-6 col-md-6">
@@ -80,7 +85,7 @@ const setPage = async (page) => {
 
             <!-- Conteúdo real -->
             <template v-else>
-              <div class="row g-2 mb-3">
+              <div class="row g-2 mb-2">
                 <div v-for="papel in papeis" :key="papel.id" class="col-xl-3 col-lg-4 col-md-3">
                   <!-- Seu card de papel existente -->
                   <div class="card">
@@ -109,32 +114,10 @@ const setPage = async (page) => {
                       <div class="d-flex justify-content-between align-items-end">
                         <div class="role-heading">
                           <h5 class="mb-1">{{ papel.description }}</h5>
-                          <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#addRoleModal"
-                            class="role-edit-modal"><span>Edit
-                              Role</span></a>
+                          <a @click="modalJoinRolesToPermission" href="javascript:;" data-bs-toggle="modal" data-bs-target="#addRoleModal"
+                            class="role-edit-modal"><span>Edit Role</span></a>
                         </div>
                         <a href="javascript:void(0);"><i class="icon-base ti tabler-copy icon-md text-heading"></i></a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Card para adicionar novo papel -->
-                <div class="col-xl-3 col-lg-4 col-md-3">
-                  <div class="card h-100">
-                    <div class="row h-100">
-                      <div class="col-sm-5">
-                        <div class="d-flex align-items-end h-100 justify-content-center mt-sm-0 mt-4">
-                          <img src="../../assets/img/illustrations/add-new-roles.png" class="img-fluid" alt="Image"
-                            width="83">
-                        </div>
-                      </div>
-                      <div class="col-sm-7">
-                        <div class="card-body text-sm-end text-center ps-sm-0">
-                          <button data-bs-target="#addRoleModal" data-bs-toggle="modal"
-                            class="btn btn-sm btn-primary text-nowrap add-new-role waves-effect waves-light">
-                            Adicionar novo papel</button>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -147,7 +130,7 @@ const setPage = async (page) => {
                     <ul class="pagination justify-content-center">
                       <li class="page-item prev" :class="{ disabled: currentPage === 1 || isLoading }">
                         <a class="page-link" href="javascript:void(0);" @click="setPage(currentPage - 1)"
-                          :aria-disabled="currentPage === 1 || isLoading">
+                          :aria-disabled="currentPage === 1 || isLoading"> <<
                           <i class="tf-icon bx bx-chevron-left"></i>
                         </a>
                       </li>
@@ -162,7 +145,7 @@ const setPage = async (page) => {
 
                       <li class="page-item next" :class="{ disabled: currentPage === totalPages || isLoading }">
                         <a class="page-link" href="" @click="setPage(currentPage + 1)"
-                          :aria-disabled="currentPage === totalPages || isLoading">
+                          :aria-disabled="currentPage === totalPages || isLoading"> >>
                           <i class="tf-icon bx bx-chevron-right"></i>
                         </a>
                       </li>
@@ -170,10 +153,15 @@ const setPage = async (page) => {
                   </nav>
                 </div>
               </div>
+              <modalAddRole v-model="modalAddProcesso" />
+              <ModalJoinPermissionToRole v-model="modalJoinRoleToPermission" />
             </template>
           </div>
         </div>
       </div>
+    </div>
+    <div class="buy-now">
+      <a href="#!" class="btn btn-primary btn-buy-now" @click="openModal">Novo papel</a>
     </div>
   </div>
 </template>
