@@ -22,7 +22,7 @@ export const useProcessoStore = defineStore('processo', () => {
   async function listarProcessos(page = 1, pageSize = 12) {
     loading.value = true;
     error.value = null;
-    
+
     try {
       const response = await api.get('/processos/listar-por-letra', {
         params: { page, pageSize },
@@ -40,7 +40,7 @@ export const useProcessoStore = defineStore('processo', () => {
           hasNextPage: false,
           hasPreviousPage: false
         };
-      } 
+      }
       // Verifica se a resposta tem estrutura de paginação
       else if (response.data.processos) {
         processos.value = response.data.processos;
@@ -52,7 +52,7 @@ export const useProcessoStore = defineStore('processo', () => {
           hasNextPage: page < Math.ceil(response.data.processos.length / pageSize),
           hasPreviousPage: page > 1
         };
-      } 
+      }
       // Caso padrão (assume que é a lista de processos)
       else {
         processos.value = response.data;
@@ -69,7 +69,7 @@ export const useProcessoStore = defineStore('processo', () => {
     } catch (err) {
       console.error('Erro ao carregar processos:', err);
       error.value = err.response?.data?.message || 'Erro ao carregar processos';
-      
+
       // Limpa os processos em caso de erro
       processos.value = [];
       pagination.value = {
@@ -97,8 +97,7 @@ export const useProcessoStore = defineStore('processo', () => {
   }
 
 
-  async function filtrarProcessos({ numero = '', ano = '', numeroAno = '' }) {
-    // Limpa espaços e garante string
+  async function filtrarProcessos({ numero = '', ano = '', numeroAno = '' }, page = 1, pageSize = 12) {
     const filtros = {}
     if (numero) filtros.numero = numero
     if (ano) filtros.ano = ano
@@ -111,31 +110,34 @@ export const useProcessoStore = defineStore('processo', () => {
     try {
       if (!numero && !ano && !numeroAno) {
         console.log('🔁 Nenhum filtro preenchido. Recarregando todos os processos...')
-        await listarProcessos()
+        await listarProcessos(page, pageSize)
         return
       }
+
       console.log('🔎 Enviando filtros para API:', { numero, ano, numeroAno })
       const response = await api.get('/processos/filtrar', {
-        params: filtros,
+        params: { ...filtros, page, pageSize },
         headers: {
           Authorization: `Bearer ${authStore.accessToken}`
         }
       })
+      console.log('📥 Resposta da API:', response.data)
 
-    processos.value = response.data.processos || response.data;
-       if (response.data.pagination) {
+      processos.value = response.data.data || [];
+
+      if (response.data.pagination) {
         pagination.value = response.data.pagination;
       } else {
         pagination.value = {
-          currentPage: page,
-          pageSize,
-          totalItems: processos.value.length,
-          totalPages: Math.ceil(processos.value.length / pageSize),
-          hasNextPage: (page * pageSize) < processos.value.length,
-          hasPreviousPage: page > 1
+          currentPage: 1,
+          pageSize: response.data.data.length,
+          totalItems: response.data.count,
+          totalPages: 1,
+          hasNextPage: false,
+          hasPreviousPage: false
         };
+
       }
-      
     } catch (err) {
       error.value = err.response?.data?.message || 'Erro ao filtrar processos'
     } finally {
@@ -176,26 +178,26 @@ export const useProcessoStore = defineStore('processo', () => {
   }
 
   // Computed property que retorna estatísticas completas
-const estatisticasProcessos = computed(() => {
-  const processList = Array.isArray(processos.value) ? processos.value : [];
-  
-  return processList.map(processo => {
-    const arguidos = processo.arguidos || [];
-    const presos = arguidos.filter(arguido =>
-      arguido.arguido?.estado?.descricao === 'Preso'
-    ).length;
-    const soltos = arguidos.filter(arguido =>
-      arguido.arguido?.estado?.descricao === 'Solto'
-    ).length;
+  const estatisticasProcessos = computed(() => {
+    const processList = Array.isArray(processos.value) ? processos.value : [];
 
-    return {
-      ...processo,
-      totalArguidos: arguidos.length,
-      arguidosPresos: presos,
-      arguidosSoltos: soltos
-    };
+    return processList.map(processo => {
+      const arguidos = processo.arguidos || [];
+      const presos = arguidos.filter(arguido =>
+        arguido.arguido?.estado?.descricao === 'Preso'
+      ).length;
+      const soltos = arguidos.filter(arguido =>
+        arguido.arguido?.estado?.descricao === 'Solto'
+      ).length;
+
+      return {
+        ...processo,
+        totalArguidos: arguidos.length,
+        arguidosPresos: presos,
+        arguidosSoltos: soltos
+      };
+    });
   });
-});
 
   // Retorna o total de processos com pelo menos 1 arguido preso
   const totalProcessosComArguidosPresos = computed(() => {

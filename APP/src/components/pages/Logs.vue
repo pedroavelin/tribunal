@@ -159,9 +159,8 @@ onMounted(async () => {
   }
 })
 
-
-// Páginas visíveis na paginação
-const visiblePages = computed(() => {
+  // Páginas visíveis na paginação
+  const visiblePages = computed(() => {
   const pages = []
   const current = logsStore.pagination.page
   const total = logsStore.totalPages
@@ -230,7 +229,6 @@ const actionBadgeClass = (action) => {
     'DELETE': 'bg-danger',
     'default': 'bg-secondary'
   }
-
   return classes[action] || classes.default
 }
 </script>
